@@ -29,7 +29,7 @@ export default function Official() {
   const [selectedItem, setSelectedItem] = useState(null)
 
 
-  // 0 - BO   MR -1    SCHEDULES - 2 BR - 3
+  // 0 - BO,   MR -1,    SCHEDULES - 2, BR - 3, Services - 4
   const [tab, seTab] = useState(0)
 
   const [searchVal, setSearchVal] = useState('')
@@ -274,34 +274,38 @@ export default function Official() {
 
 
               <div onClick={() => changeTab(0)} className={`p-4 w-100 rounded ${tab == 0 ? 'active-nav' : ''} pointer`}>
-                <span className="f-white">
+              <i class="bi bi-person f-white icon"></i>
+                <span className="f-white ms-2 nav-item">
                   Barangay Officials
                 </span>
               </div>
 
 
               <div onClick={() => changeTab(1)} className={`p-4 w-100 rounded ${tab == 1 ? 'active-nav' : ''} pointer`}>
-                <span className="f-white">
+              <i class="bi bi-people-fill f-white icon"></i>
+                <span className="f-white ms-2 nav-item">
                   Manage Residents
                 </span>
               </div>
 
 
               <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded ${tab == 2 ? 'active-nav' : ''} pointer`}>
-                <span className="f-white">
+              <i class="bi bi-calendar-date f-white icon"></i>
+                <span className="f-white ms-2 nav-item">
                   Schedules
                 </span>
               </div>
 
 
               <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded ${tab == 2 ? 'active-nav' : ''} pointer`}>
-                <span className="f-white">
+              <i class="bi bi-person-fill-slash f-white icon"></i>
+                <span className="f-white ms-2 nav-item">
                   Blotter
                 </span>
               </div>
 
               <div onClick={() => changeTab(3)} className={`p-4 w-100 rounded ${tab == 3 ? 'active-nav' : ''} pointer`}>
-                <span className="f-white">
+                <span className="f-white nav-item">
                   Services
                 </span>
               </div>
@@ -625,7 +629,7 @@ export default function Official() {
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
                 <div className="border-bottom p-2 pb-4 mt-3">
-                  <h2 className="f-white">Barangay Services</h2>
+                  <h2 className="f-white">List of Document Type</h2>
                 </div>
 
                 <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
@@ -636,10 +640,12 @@ export default function Official() {
                   </div>
 
                   <div >
-                    <Button>
+                    <button
+                      data-bs-toggle="modal" data-bs-target="#addBarangayServices"
+                      className="primary bg-yellow p-2 rounded">
                       <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
-                      <span className="fw-bold">Services</span>
-                    </Button>
+                      <span className="fw-bold">Document Type</span>
+                    </button>
                   </div>
                 </div>
 
@@ -1120,6 +1126,73 @@ export default function Official() {
 
           {/* Add Resident */}
 
+          {/* Add barangay services */}
+
+          <div id="addBarangayServices" class="modal" tabindex="-1">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Add Barangay Services</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                <div class="mb-3">
+                    <label class="form-label">Title</label>
+                    <input
+                      id='emailinput'
+                      // value={resident.email || resident.Email}
+                      onChange={(val) => {
+                        // if (val.target.value != "") {
+                        //   document.getElementById('emailinput').style.border = '1px solid #dee2e6'
+                        // }
+                        // else {
+                        //   document.getElementById('emailinput').style.border = '1px solid red'
+                        // }
+                        // setResident({
+                        //   ...resident, ...{
+                        //     email: val.target.value
+                        //   }
+                        // })
+
+                      }}
+                      class="form-control" />
+
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea
+                      id='emailinput'
+                      // value={resident.email || resident.Email}
+                      onChange={(val) => {
+                        // if (val.target.value != "") {
+                        //   document.getElementById('emailinput').style.border = '1px solid #dee2e6'
+                        // }
+                        // else {
+                        //   document.getElementById('emailinput').style.border = '1px solid red'
+                        // }
+                        // setResident({
+                        //   ...resident, ...{
+                        //     email: val.target.value
+                        //   }
+                        // })
+
+                      }}
+                      class="form-control" />
+
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button data-bs-dismiss="modal" onClick={() => deleteOffials()} type="button" class="btn btn-primary bg-green">Yes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Add barangay services */}
+
 
           {/* Confirm delete modal */}
 
@@ -1131,7 +1204,7 @@ export default function Official() {
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <p>Are you sure you want to delete this user "<span className="fw-bold">{selectedItem != null && selectedItem.full_name}</span>"?</p>
+          
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

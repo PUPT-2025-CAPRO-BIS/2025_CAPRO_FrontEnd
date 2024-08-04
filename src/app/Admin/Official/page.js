@@ -7,12 +7,18 @@ import { LogOut } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
+
+import 'react-quill/dist/quill.snow.css';
+import ReactQuill from "react-quill";
+import { addDocumentTypeApi } from "@/redux/reducer/document";
+
+
 
 export default function Official() {
   const dispatch = useDispatch();
@@ -25,6 +31,8 @@ export default function Official() {
   ])
 
   const [isEdit, setIsEdit] = useState(false);
+
+
 
   const [selectedItem, setSelectedItem] = useState(null)
 
@@ -40,6 +48,7 @@ export default function Official() {
 
 
   // Resident
+
   const [startDate, setStartDate] = useState();
   const [resident, setResident] = useState({
     first_name: '',
@@ -66,6 +75,19 @@ export default function Official() {
   })
   // male 0 female 1
   // Resident
+
+
+
+  // Barangay services
+
+  const [services, setServices] = useState({
+    service: '',
+    description: ''
+  })
+
+  // Baranay services
+
+  const [value, setValue] = useState('');
 
   useEffect(() => {
 
@@ -154,6 +176,7 @@ export default function Official() {
     }
 
 
+
     dispatch(updateOfficials(merge))
     setTimeout(() => {
       setCount(count + 1)
@@ -195,6 +218,10 @@ export default function Official() {
 
   const addResident = async () => {
 
+
+
+
+
     if (resident.first_name == "") {
       document.getElementById('fnameinput').style.border = '1px solid red'
     }
@@ -223,11 +250,11 @@ export default function Official() {
     if (resident.civil_status_id == "") {
       document.getElementById('civilinput').style.border = '1px solid red'
     }
-    
-    if(resident.first_name != "" && resident.last_name != "" && resident.birthday != "" && resident.cell_number != ""
-        && resident.male_female !== "" && resident.civil_status_id != ""
 
-    ){
+    if (resident.first_name != "" && resident.last_name != "" && resident.birthday != "" && resident.cell_number != ""
+      && resident.male_female !== "" && resident.civil_status_id != ""
+
+    ) {
 
       let merge = {
         resident,
@@ -238,11 +265,21 @@ export default function Official() {
 
       isEdit ? dispatch(editResidentApi(merge)) : dispatch(addResidentApi(merge))
 
+
     }
 
 
   }
+  const addDocumentType = () => {
 
+    let merge = {
+      data: services,
+      token: token.token
+    }
+
+
+    dispatch(addDocumentTypeApi(merge))
+  }
   useEffect(() => {
 
   }, [])
@@ -274,7 +311,7 @@ export default function Official() {
 
 
               <div onClick={() => changeTab(0)} className={`p-4 w-100 rounded ${tab == 0 ? 'active-nav' : ''} pointer`}>
-              <i class="bi bi-person f-white icon"></i>
+                <i class="bi bi-person f-white icon"></i>
                 <span className="f-white ms-2 nav-item">
                   Barangay Officials
                 </span>
@@ -282,7 +319,8 @@ export default function Official() {
 
 
               <div onClick={() => changeTab(1)} className={`p-4 w-100 rounded ${tab == 1 ? 'active-nav' : ''} pointer`}>
-              <i class="bi bi-people-fill f-white icon"></i>
+
+                <i class="bi bi-people-fill f-white icon"></i>
                 <span className="f-white ms-2 nav-item">
                   Manage Residents
                 </span>
@@ -290,7 +328,8 @@ export default function Official() {
 
 
               <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded ${tab == 2 ? 'active-nav' : ''} pointer`}>
-              <i class="bi bi-calendar-date f-white icon"></i>
+
+                <i class="bi bi-calendar-date f-white icon"></i>
                 <span className="f-white ms-2 nav-item">
                   Schedules
                 </span>
@@ -298,7 +337,8 @@ export default function Official() {
 
 
               <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded ${tab == 2 ? 'active-nav' : ''} pointer`}>
-              <i class="bi bi-person-fill-slash f-white icon"></i>
+
+                <i class="bi bi-person-fill-slash f-white icon"></i>
                 <span className="f-white ms-2 nav-item">
                   Blotter
                 </span>
@@ -334,6 +374,8 @@ export default function Official() {
                 LOGOUT
               </button>
             </div>
+
+
 
             <div className="d-flex flex-column align-items-center justify-content-center w-100 p-5 rounded bg-green">
               <h1 className="f-white">
@@ -442,10 +484,12 @@ export default function Official() {
                               <div id={k + i.full_name + "button"} className="d-flex d-none">
 
                                 <button
-                                  data-bs-toggle="modal" data-bs-target="#addResidentModal"
+                                  data-bs-toggle="modal" data-bs-target="#exampleModal"
                                   onClick={() => {
-                                    setSelectedResident(i)
-                                    setIsEdit(true)
+
+                                    console.log("eto po: ", i)
+                                    setSelectedItem(i)
+
                                     document.getElementById(k + i.full_name + "button").classList.add('d-none')
                                     document.getElementById(k + i.full_name + "action").classList.remove('d-none')
                                   }}
@@ -539,7 +583,7 @@ export default function Official() {
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
                     {
-                       alluser.list.map((i, k) => {
+                      alluser.list.map((i, k) => {
                         return (
 
                           // Put dynamic className
@@ -561,23 +605,23 @@ export default function Official() {
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-                                
+
                               </span>
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-                                
+
                               </span>
                             </RowItem>
                             <RowItem>
                               <span id={k + i.full_name + "action"}
-                                  onClick={() => {
-                                    document.getElementById(k + i.full_name + "button").classList.remove('d-none')
-                                    document.getElementById(k + i.full_name + "action").classList.add('d-none')
+                                onClick={() => {
+                                  document.getElementById(k + i.full_name + "button").classList.remove('d-none')
+                                  document.getElementById(k + i.full_name + "action").classList.add('d-none')
 
-                                  }}
-                                  className="f-white bg-yellow p-2 rounded">
-                                  ACTION
+                                }}
+                                className="f-white bg-yellow p-2 rounded">
+                                ACTION
                               </span>
                               <div id={k + i.full_name + "button"} className="d-flex d-none">
 
@@ -585,6 +629,7 @@ export default function Official() {
                                   data-bs-toggle="modal" data-bs-target="#addResidentModal"
                                   onClick={() => {
 
+                                    setIsEdit(true)
                                     setResident(i)
                                     document.getElementById(k + i.full_name + "button").classList.add('d-none')
                                     document.getElementById(k + i.full_name + "action").classList.remove('d-none')
@@ -642,7 +687,8 @@ export default function Official() {
                   <div >
                     <button
                       data-bs-toggle="modal" data-bs-target="#addBarangayServices"
-                      className="primary bg-yellow p-2 rounded">
+                      className="primary bg-yellow p-2 rounded"
+                    >
                       <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
                       <span className="fw-bold">Document Type</span>
                     </button>
@@ -731,8 +777,8 @@ export default function Official() {
                 </div>
                 <div class="modal-body">
                   <div class="mb-3">
-                    <label class="form-label">Name</label>
-                    <input
+                    <label class="form-label fw-bold">{selectedItem != null && selectedItem.full_name}</label>
+                    {/* <input
                       value={selectedItem != null && selectedItem.full_name}
                       onChange={(val) => {
                         if (selectedItem != null) {
@@ -742,7 +788,7 @@ export default function Official() {
                           })
                         }
                       }}
-                      class="form-control" />
+                      class="form-control" /> */}
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Chairmanship</label>
@@ -895,7 +941,7 @@ export default function Official() {
 
           {/* Add Resident */}
 
-          {console.log(resident, "--> NANI")}
+          { }
 
           <div class="modal fade" id="addResidentModal" tabindex="-1" aria-labelledby="addResidentModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -1004,14 +1050,15 @@ export default function Official() {
                         e.preventDefault();
                       }}
                       selected={startDate} onChange={(date) => {
-                          document.getElementById('bdayinput').style.border = '1px solid #dee2e6'
+                        document.getElementById('bdayinput').style.border = '1px solid #dee2e6'
 
-                          setResident({
-                            ...resident, ...{
-                              birthday: date
-                            }
-                          })
-                          setStartDate(date)
+
+                        setResident({
+                          ...resident, ...{
+                            birthday: date
+                          }
+                        })
+                        setStartDate(date)
                       }
                       } />
                   </div>
@@ -1050,10 +1097,10 @@ export default function Official() {
                         checked={resident.male_female == 0}
                         onChange={() => {
 
-                         
-                            document.getElementById('genderinput').style.border = '0px solid #dee2e6'
-                          
-                          
+
+                          document.getElementById('genderinput').style.border = '0px solid #dee2e6'
+
+
                           setResident({
                             ...resident, ...{
                               male_female: 0
@@ -1071,9 +1118,9 @@ export default function Official() {
                         checked={resident.male_female == 1}
                         onChange={() => {
 
-                    
-                            document.getElementById('genderinput').style.border = '0px solid #dee2e6'
-                         
+
+                          document.getElementById('genderinput').style.border = '0px solid #dee2e6'
+
                           setResident({
                             ...resident, ...{
                               male_female: 1
@@ -1096,7 +1143,7 @@ export default function Official() {
                       value={resident.civil_status_id}
                       id='civilinput'
                       onChange={(v) => {
-                         document.getElementById('civilinput').style.border = '0px solid #dee2e6'
+                        document.getElementById('civilinput').style.border = '0px solid #dee2e6'
                         setResident({
                           ...resident, ...{
                             civil_status_id: v.target.value
@@ -1117,7 +1164,7 @@ export default function Official() {
 
                 </div>
                 <div class="modal-footer">
-                  <button type="button" onClick={() => {}} class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" onClick={() => { }} class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                   <button type="button" onClick={() => addResident()} class="btn btn-primary bg-green">Save changes</button>
                 </div>
               </div>
@@ -1125,6 +1172,7 @@ export default function Official() {
           </div>
 
           {/* Add Resident */}
+
 
           {/* Add barangay services */}
 
@@ -1137,55 +1185,50 @@ export default function Official() {
                 </div>
                 <div class="modal-body">
 
-                <div class="mb-3">
+                  <div class="mb-3">
                     <label class="form-label">Title</label>
                     <input
-                      id='emailinput'
-                      // value={resident.email || resident.Email}
+                      id='serviceinput'
+                      value={services.service}
                       onChange={(val) => {
-                        // if (val.target.value != "") {
-                        //   document.getElementById('emailinput').style.border = '1px solid #dee2e6'
-                        // }
-                        // else {
-                        //   document.getElementById('emailinput').style.border = '1px solid red'
-                        // }
-                        // setResident({
-                        //   ...resident, ...{
-                        //     email: val.target.value
-                        //   }
-                        // })
+                        setServices({
+                          ...services, ...{
+                            service: val.target.value
+                          }
+                        })
 
                       }}
                       class="form-control" />
 
                   </div>
 
+                  <div className="mb-3">
+                    <label class="form-label">Legend</label>
+
+                    <span>Ex. {'<<first_name>>'} as placeholder</span>
+                  </div>
+
                   <div class="mb-3">
                     <label class="form-label">Description</label>
-                    <textarea
-                      id='emailinput'
-                      // value={resident.email || resident.Email}
-                      onChange={(val) => {
-                        // if (val.target.value != "") {
-                        //   document.getElementById('emailinput').style.border = '1px solid #dee2e6'
-                        // }
-                        // else {
-                        //   document.getElementById('emailinput').style.border = '1px solid red'
-                        // }
-                        // setResident({
-                        //   ...resident, ...{
-                        //     email: val.target.value
-                        //   }
-                        // })
 
+                    <ReactQuill
+                      //  value={formik.values.message}
+                      onChange={(val) => {
+                        setServices({
+                          ...services, ...{
+                            description: val
+                          }
+                        })
                       }}
-                      class="form-control" />
+                      placeholder="Enter the message..........."
+                    />
+
 
                   </div>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                  <button data-bs-dismiss="modal" onClick={() => deleteOffials()} type="button" class="btn btn-primary bg-green">Yes</button>
+                  <button data-bs-dismiss="modal" onClick={() => addDocumentType()} type="button" class="btn btn-primary bg-green">Save</button>
                 </div>
               </div>
             </div>
@@ -1204,7 +1247,7 @@ export default function Official() {
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-          
+
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

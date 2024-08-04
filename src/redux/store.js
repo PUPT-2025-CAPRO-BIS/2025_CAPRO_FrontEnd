@@ -5,6 +5,7 @@ import officials from "./reducer/officials";
 import alluser from "./reducer/resident";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // Default local storage
+import document from "./reducer/document";
 
 
 const persistConfig = {
@@ -16,7 +17,8 @@ const persistConfig = {
 const rootReducer = combineReducers({
   user: user,
   officials: officials,
-  alluser: alluser
+  alluser: alluser,
+  document: document,
   //add all your reducers here
 },);
 

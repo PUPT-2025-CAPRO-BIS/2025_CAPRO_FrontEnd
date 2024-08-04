@@ -8,7 +8,6 @@ import { SignOn, loginUser } from '@/redux/reducer/user';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 
-
 export default function Home() {
   const router = useRouter()
   const [email, setEmail] = useState('')
@@ -107,10 +106,10 @@ export default function Home() {
           <div className="mb-3 w-100">
             <input 
                 value={pass}
+                 type="password"
                 onChange={(v) => {
                   setPass(v.target.value)
-                }}
-              type="email" className="form-control rounded-pill" id="exampleFormControlInput1" placeholder="Password" />
+                }} className="form-control rounded-pill" id="exampleFormControlInput1" placeholder="Password" />
           </div>
 
       

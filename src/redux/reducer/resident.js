@@ -30,7 +30,7 @@ apiClient.interceptors.response.use(
 // Define async thunks
 export const addResidentApi = createAsyncThunk('user/noVerificationRegistration', async (data) => {
     let params = data
-    console.log(params, "--> PASOK?")
+
   const res = await apiClient.post('/noVerificationRegistration', {
         ...params.resident, ...{
         birthday: moment(params.birthday).format("YYYY-MM-DD")
@@ -44,6 +44,21 @@ export const addResidentApi = createAsyncThunk('user/noVerificationRegistration'
   return res.data;
 });
 
+export const editResidentApi = createAsyncThunk('user/changeResidentInformation', async (data) => {
+  let params = data
+
+const res = await apiClient.post('/changeResidentInformation', {
+      ...params.resident, ...{
+      birthday: moment(params.birthday).format("YYYY-MM-DD")
+      }
+},{
+  headers:{
+      'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+  }
+});
+return res.data;
+});
 
 export const loadAllUsers = createAsyncThunk('user/viewAllUsers', async (bearer) => {
     
@@ -86,11 +101,19 @@ const usersSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(addResidentApi.fulfilled, (state, action) => {
-        console.log(action, "--> RECEIVE REDUCER")
         state.status = 'succeeded';
       })
       .addCase(addResidentApi.rejected, (state) => {
-        
+        state.status = 'failed';
+      });
+      builder
+      .addCase(editResidentApi.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(editResidentApi.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+      })
+      .addCase(editResidentApi.rejected, (state) => {
         state.status = 'failed';
       });
   },

@@ -207,3 +207,11 @@ a {
   padding: 10px;
   cursor: pointer;
 }
+
+.icon{
+  font-size: 30px;
+}
+
+.nav-item{
+  font-size: 20px;
+}

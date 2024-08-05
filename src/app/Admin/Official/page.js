@@ -16,7 +16,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from "react-quill";
-import { addDocumentTypeApi, getDocumentTypeApi } from "@/redux/reducer/document";
+import { addDocumentTypeApi, deleteDocumentTypeApi, getDocumentTypeApi } from "@/redux/reducer/document";
 
 
 
@@ -33,6 +33,7 @@ export default function Official() {
 
   const [success, setSuccess] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [message,SetMessage] = useState('')
 
   const [isEdit, setIsEdit] = useState(false);
 
@@ -88,6 +89,8 @@ export default function Official() {
     service: '',
     description: ''
   })
+
+
 
   // Baranay services
 
@@ -184,13 +187,49 @@ export default function Official() {
       token: token.token
     }
 
+    const fetchData = async () => {
+
+    
+
+      try {
+        const result = await dispatch(deleteOffialsApi(merge)).unwrap();
+
+        // Handle success, e.g., navigate to another page
+        document.getElementById('selctednameadd').value = ''
+        setSelectedSearchItem({
+          chairmanship: '',
+          position: '',
+          status: '',
+        })
+
+        setSelectedItem(null)
+
+        setCount(count + 1)
+        SetMessage('Successfully deleted a barangay official information')
+        setShowSuccess(true)
+        setSuccess(true)
+
+        if(result.success){
+          setShowSuccess(true)
+          setSuccess(true)
+        }
+        else{
+          setShowSuccess(true)
+          setSuccess(false)
+        }
+        
 
 
-    dispatch(deleteOffialsApi(merge))
-    setTimeout(() => {
-      setCount(count + 1)
-      setSelectedItem('')
-    }, 3000)
+      } catch (error) {
+        
+        // Handle error, e.g., show an error message
+      }
+    };
+
+    fetchData();
+
+
+   
   }
 
 
@@ -202,6 +241,47 @@ export default function Official() {
       token: token.token
     }
 
+    const fetchData = async () => {
+
+    
+
+      try {
+        const result = await dispatch(updateOfficials(merge)).unwrap();
+
+        // Handle success, e.g., navigate to another page
+        document.getElementById('selctednameadd').value = ''
+        setSelectedSearchItem({
+          chairmanship: '',
+          position: '',
+          status: '',
+        })
+
+        setSelectedItem(null)
+
+        setCount(count + 1)
+        SetMessage('Successfully updated a barangay official information')
+        setShowSuccess(true)
+        setSuccess(true)
+
+        if(result.success){
+          setShowSuccess(true)
+          setSuccess(true)
+        }
+        else{
+          setShowSuccess(true)
+          setSuccess(false)
+        }
+        
+
+
+      } catch (error) {
+        
+        // Handle error, e.g., show an error message
+      }
+    };
+
+    fetchData();
+
 
 
     dispatch(updateOfficials(merge))
@@ -209,11 +289,7 @@ export default function Official() {
       setCount(count + 1)
 
       document.getElementById('selctednameadd').value = ''
-      setSelectedItem({
-        chairmanship: '',
-        position: '',
-        status: '',
-      })
+      setSelectedItem(null)
     }, 3000)
 
 
@@ -227,19 +303,48 @@ export default function Official() {
       token: token.token
     }
 
-    dispatch(addOfficials(merge))
-    setTimeout(() => {
-      setCount(count + 1)
+    const fetchData = async () => {
 
-      document.getElementById('selctednameadd').value = ''
-      setSelectedSearchItem({
-        chairmanship: '',
-        position: '',
-        status: '',
-      })
-    }, 3000)
+    
+
+      try {
+        const result = await dispatch(addOfficials(merge)).unwrap();
+
+        // Handle success, e.g., navigate to another page
+        document.getElementById('selctednameadd').value = ''
+        setSelectedSearchItem({
+          chairmanship: '',
+          position: '',
+          status: '',
+        })
+
+        setSelectedSearchItem(null)
+
+        setCount(count + 1)
+        SetMessage('Successfully added a barangay official')
+        setShowSuccess(true)
+        setSuccess(true)
+
+        if(result.success){
+          setShowSuccess(true)
+          setSuccess(true)
+        }
+        else{
+          setShowSuccess(true)
+          setSuccess(false)
+        }
+        
 
 
+      } catch (error) {
+        
+        // Handle error, e.g., show an error message
+      }
+    };
+
+    fetchData();
+
+    
   }
 
 
@@ -314,7 +419,7 @@ export default function Official() {
 
         // Handle success, e.g., navigate to another page
 
-        
+        SetMessage('Successfully added a barangay service')
         setServices({
           service: '',
           description: ''
@@ -346,6 +451,60 @@ export default function Official() {
 
 
   }
+
+  const deleteDocumentType = () => {
+
+    let merge = {
+      data: selectedItem,
+      token: token.token
+    }
+
+    
+
+  
+    const fetchData = async () => {
+
+    
+
+      try {
+        const result = await dispatch(deleteDocumentTypeApi(merge)).unwrap();
+
+        // Handle success, e.g., navigate to another page
+
+        SetMessage('Successfully deleted a barangay service')
+        setServices({
+          service: '',
+          description: ''
+        })  
+
+        setCount(count + 1)
+
+        setShowSuccess(true)
+        setSuccess(true)
+
+        if(result.success){
+          setShowSuccess(true)
+          setSuccess(true)
+        }
+        else{
+          setShowSuccess(true)
+          setSuccess(false)
+        }
+        
+
+
+      } catch (error) {
+        
+        // Handle error, e.g., show an error message
+      }
+    };
+
+    fetchData();
+
+
+  }
+
+
   useEffect(() => {
 
   }, [])
@@ -361,7 +520,7 @@ export default function Official() {
   return (
     <main className={`container-fluid`}>
       <Auth>
-        <div className="row vh-100">
+        <div className="row vh-100" style={{backgroundColor: "white"}}>
 
           <div className="col-lg-4 p-5 d-flex flex-column bg-green side-bg">
 
@@ -508,11 +667,13 @@ export default function Official() {
 
 
                   {/* Table body */}
-
+                
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
                     {
                       officials.officials.list.map((i, k) => {
+
+                       
                         return (
 
                           // Put dynamic className
@@ -836,6 +997,7 @@ export default function Official() {
                                   data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
 
                                   onClick={() => {
+                                    setSelectedItem(i)
                                     document.getElementById(k + i.service + "button").classList.add('d-none')
                                     document.getElementById(k + i.service + "action").classList.remove('d-none')
                                   }}
@@ -1344,7 +1506,7 @@ export default function Official() {
 
 
           {/* Confirm delete modal */}
-          { }
+          { console.log(selectedItem)}
 
           <div id="deleteConfirmModal" class="modal" tabindex="-1">
             <div class="modal-dialog">
@@ -1354,15 +1516,21 @@ export default function Official() {
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  Are you sure you want to delete <span className="fw-bold">{selectedItem != null && selectedItem.full_name}</span>?
+                  Are you sure you want to delete <span className="fw-bold">{selectedItem != null && (selectedItem.full_name || selectedItem.service)}</span>?
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                  <button data-bs-dismiss="modal" onClick={() => deleteOffials()} type="button" class="btn btn-primary bg-green">Yes</button>
+                  <button data-bs-dismiss="modal" onClick={() => {
+                    
+                    tab == 0 && deleteOffials()
+                    tab == 3 && deleteDocumentType()
+                  }} type="button" class="btn btn-primary bg-green">Yes</button>
                 </div>
               </div>
             </div>
           </div>
+
+          
 
                       {
                         showSuccess &&
@@ -1374,7 +1542,7 @@ export default function Official() {
                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                              </div>
                              <div class="modal-body">
-                              {success ? "Successfully added" : "Something went wrong."}
+                              {success ? message : "Something went wrong."}
                              </div>
                              <div class="modal-footer">
                                <button type="button" class="btn btn-secondary" onClick={() => setShowSuccess(false)}>Close</button>

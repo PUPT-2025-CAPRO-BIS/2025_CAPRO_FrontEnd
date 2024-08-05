@@ -16,7 +16,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from "react-quill";
-import { addDocumentTypeApi } from "@/redux/reducer/document";
+import { addDocumentTypeApi, getDocumentTypeApi } from "@/redux/reducer/document";
 
 
 
@@ -25,6 +25,7 @@ export default function Official() {
   const router = useRouter()
   const officials = useSelector(state => state)
   const alluser = useSelector(state => state.alluser)
+  const documentList = useSelector(state => state.document)
   const token = useSelector(state => state.user)
   const [sample, setSample] = useState([
     1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
@@ -90,7 +91,7 @@ export default function Official() {
   const [value, setValue] = useState('');
 
   useEffect(() => {
-
+    
     if (tab == 0) {
       const fetchData = async () => {
 
@@ -119,8 +120,31 @@ export default function Official() {
         }
       };
 
+
       fetchData();
     }
+
+
+
+    if(tab == 3){
+      
+      const fetchData = async () => {
+
+        try {
+          const result = await dispatch(getDocumentTypeApi(token.token)).unwrap();
+            
+          // Handle success, e.g., navigate to another page
+        } catch (error) {
+
+          // Handle error, e.g., show an error message
+        }
+      };
+
+      fetchData();
+    }
+
+    
+
   }, [tab, count]);
 
 
@@ -279,6 +303,16 @@ export default function Official() {
 
 
     dispatch(addDocumentTypeApi(merge))
+
+    setTimeout(() => {
+      setServices({
+        service: '',
+        description: ''
+      })
+
+      setCount(count + 1)
+
+    }, 3000)
   }
   useEffect(() => {
 
@@ -487,7 +521,7 @@ export default function Official() {
                                   data-bs-toggle="modal" data-bs-target="#exampleModal"
                                   onClick={() => {
 
-                                    console.log("eto po: ", i)
+                                    
                                     setSelectedItem(i)
 
                                     document.getElementById(k + i.full_name + "button").classList.add('d-none')
@@ -722,30 +756,58 @@ export default function Official() {
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
                     {
-                      sample.map((i, k) => {
+                      documentList.list.map((i, k) => {
                         return (
 
                           // Put dynamic className
                           <div className='d-flex col-lg-12 justify-content-around row-item-container'>
                             <RowItem>
                               <span className="f-white">
-                                John Doe
+                                {i.id}
                               </span>
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-                                John Doe
+                                {i.service}
                               </span>
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-                                John Doe
+                                {i.service}
                               </span>
                             </RowItem>
                             <RowItem>
-                              <span className="f-white">
-                                John Doe
+                            <span id={k + i.service + "action"}
+                                onClick={() => {
+                                  
+                                  document.getElementById(k + i.service + "button").classList.remove('d-none')
+                                  document.getElementById(k + i.service + "action").classList.add('d-none')
+                                }}
+                                className="f-white bg-yellow p-2 rounded">
+                                ACTION
                               </span>
+                              <div id={k + i.service + "button"} className="d-flex d-none">
+
+                                <button
+                                  data-bs-toggle="modal" data-bs-target="#addResidentModal"
+                                  onClick={() => {
+
+                                  
+                                    document.getElementById(k + i.service + "button").classList.add('d-none')
+                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
+                                  }}
+                                  type="button" class="btn btn-primary">Edit</button>
+
+                                <button
+                                  data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
+
+                                  onClick={() => {
+                                    document.getElementById(k + i.service + "button").classList.add('d-none')
+                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
+                                  }}
+                                  type="button" class="btn btn-danger ms-3">Delete</button>
+
+                              </div>
                             </RowItem>
                           </div>
 
@@ -766,7 +828,7 @@ export default function Official() {
           </div>
 
           {/* Modal */
-
+    console.log(selectedItem)
           }
           <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -818,7 +880,7 @@ export default function Official() {
                       }}
                       class="form-control" />
                   </div>
-                  <div class="mb-3">
+                  {/* <div class="mb-3">
                     <label class="form-label">Status</label>
                     <input
                       value={selectedItem != null && selectedItem.status}
@@ -831,7 +893,7 @@ export default function Official() {
                         }
                       }}
                       class="form-control" />
-                  </div>
+                  </div> */}
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -913,7 +975,7 @@ export default function Official() {
                       }}
                       class="form-control" />
                   </div>
-                  <div class="mb-3">
+                  {/* <div class="mb-3">
                     <label class="form-label">Status</label>
                     <input
                       value={selectedSearchItem != null && selectedSearchItem.status}
@@ -926,7 +988,7 @@ export default function Official() {
                         }
                       }}
                       class="form-control" />
-                  </div>
+                  </div> */}
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -1247,7 +1309,7 @@ export default function Official() {
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-
+                      Are you sure you want to delete this user?
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

@@ -19,7 +19,7 @@ apiClient.interceptors.response.use(
   response => response,
   error => {
     if (error.response && error.response.status === 401) {
-      
+
       // Handle unauthorized access, e.g., redirect to login
     }
     return Promise.reject(error);
@@ -28,59 +28,63 @@ apiClient.interceptors.response.use(
 
 // Define async thunks
 export const loadOfficials = createAsyncThunk('user/getofficial', async (bearer) => {
-    
+  
   const res = await apiClient.get('/viewBarangayOfficials', {
-    headers:{
-        'Authorization': `Bearer ${bearer}`, // Replace with your actual token
-        'Content-Type': 'application/json',
+    headers: {
+      'Authorization': `Bearer ${bearer}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }, params: {
+      search_value: '',
+      page_number: 1,
+      item_per_page: 10
     }
   });
   return res.data;
 });
 
 export const addOfficials = createAsyncThunk('user/addofficial', async (data) => {
-      
+
   const res = await apiClient.post('/assignBarangayOfficial', {
     chairmanship: data.selectedSearchItem.chairmanship,
     user_id: data.selectedSearchItem.id,
     position: data.selectedSearchItem.position,
     // status: data.selectedSearchItem.status
   }, {
-    headers:{
+    headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token
       'Content-Type': 'application/json',
-  }
+    }
   });
   return res.data;
 });
 
 
 export const updateOfficials = createAsyncThunk('user/updateofficial', async (data) => {
-      
+
   const res = await apiClient.post('/changeBarangayOfficialDetails', {
     chairmanship: data.selectedItem.chairmanship,
     user_id: data.selectedItem.user_id,
     position: data.selectedItem.position,
     status: data.selectedItem.status
   }, {
-    headers:{
+    headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token
       'Content-Type': 'application/json',
-  }
+    }
   });
   return res.data;
 });
 
 export const deleteOffialsApi = createAsyncThunk('user/deleteofficial', async (data) => {
-      
-    
+
+  
   const res = await apiClient.post('/deleteBarangayOfficial', {
     user_id: data.selectedItem.user_id
   }, {
-    headers:{
+    headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token
       'Content-Type': 'application/json',
-  }
+    }
   });
   return res.data;
 });
@@ -101,59 +105,59 @@ const officialsSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(loadOfficials.fulfilled, (state, action) => {
-        
+
         state.status = 'succeeded';
         state.list = action.payload;
       })
       .addCase(loadOfficials.rejected, (state) => {
-        
+
         state.status = 'failed';
       });
 
-      builder
+    builder
       .addCase(addOfficials.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(addOfficials.fulfilled, (state, action) => {
 
-        
+
         state.status = 'succeeded';
         // state.list = action.payload;
       })
       .addCase(addOfficials.rejected, (state) => {
-        
+
         state.status = 'failed';
       });
 
-      builder
+    builder
       .addCase(deleteOffialsApi.pending, (state) => {
-        
+
         state.status = 'loading';
       })
       .addCase(deleteOffialsApi.fulfilled, (state, action) => {
 
-        
+
         state.status = 'succeeded';
         // state.list = action.payload;
       })
       .addCase(deleteOffialsApi.rejected, (state) => {
-        
+
         state.status = 'failed';
       });
 
-      builder
+    builder
       .addCase(updateOfficials.pending, (state) => {
-        
+
         state.status = 'loading';
       })
       .addCase(updateOfficials.fulfilled, (state, action) => {
 
-        
+
         state.status = 'succeeded';
         // state.list = action.payload;
       })
       .addCase(updateOfficials.rejected, (state) => {
-        
+
         state.status = 'failed';
       });
   },

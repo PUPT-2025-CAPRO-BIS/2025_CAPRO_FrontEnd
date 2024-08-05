@@ -55,6 +55,22 @@ return res.data;
 });
 
 
+export const deleteDocumentTypeApi = createAsyncThunk('user/deleteDocumentType', async (data) => {
+
+  console.log(data, "--> AWIT SYO")
+  const res = await apiClient.post('/deleteDocumentType',  
+    {
+      document_type_id: data.data.id
+    },{
+  headers:{
+    'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+    'Content-Type': 'application/json',
+  }
+  });
+  return res.data;
+  });
+  
+
 
 
 

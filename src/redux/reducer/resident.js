@@ -20,7 +20,7 @@ apiClient.interceptors.response.use(
   response => response,
   error => {
     if (error.response && error.response.status === 401) {
-      
+
       // Handle unauthorized access, e.g., redirect to login
     }
     return Promise.reject(error);
@@ -29,16 +29,16 @@ apiClient.interceptors.response.use(
 
 // Define async thunks
 export const addResidentApi = createAsyncThunk('user/noVerificationRegistration', async (data) => {
-    let params = data
+  let params = data
 
   const res = await apiClient.post('/noVerificationRegistration', {
-        ...params.resident, ...{
-        birthday: moment(params.birthday).format("YYYY-MM-DD")
-        }
-  },{
-    headers:{
-        'Authorization': `Bearer ${data.token}`, // Replace with your actual token
-        'Content-Type': 'application/json',
+    ...params.resident, ...{
+      birthday: moment(params.birthday).format("YYYY-MM-DD")
+    }
+  }, {
+    headers: {
+      'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
     }
   });
   return res.data;
@@ -47,29 +47,34 @@ export const addResidentApi = createAsyncThunk('user/noVerificationRegistration'
 export const editResidentApi = createAsyncThunk('user/changeResidentInformation', async (data) => {
   let params = data
 
-const res = await apiClient.post('/changeResidentInformation', {
-      ...params.resident, ...{
+  const res = await apiClient.post('/changeResidentInformation', {
+    ...params.resident, ...{
       birthday: moment(params.birthday).format("YYYY-MM-DD")
-      }
-},{
-  headers:{
+    }
+  }, {
+    headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token
       'Content-Type': 'application/json',
-  }
-});
-return res.data;
+    }
+  });
+  return res.data;
 });
 
+
 export const loadAllUsers = createAsyncThunk('user/viewAllUsers', async (bearer) => {
-    
-    const res = await apiClient.get('/viewAllUsers', {
-      headers:{
-          'Authorization': `Bearer ${bearer}`, // Replace with your actual token
-          'Content-Type': 'application/json',
-      }
-    });
-    return res.data;
+
+  const res = await apiClient.get('/viewAllUsers', {
+    headers: {
+      'Authorization': `Bearer ${bearer}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }, params: {
+      search_value: '',
+      page_number: 1,
+      item_per_page: 10
+    }
   });
+  return res.data;
+});
 
 
 // Create slice
@@ -92,28 +97,33 @@ const usersSlice = createSlice({
         state.list = action.payload;
       })
       .addCase(loadAllUsers.rejected, (state) => {
-        
+
         state.status = 'failed';
       });
 
-      builder
+    builder
       .addCase(addResidentApi.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(addResidentApi.fulfilled, (state, action) => {
+
         state.status = 'succeeded';
       })
       .addCase(addResidentApi.rejected, (state) => {
+
         state.status = 'failed';
       });
-      builder
+
+    builder
       .addCase(editResidentApi.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(editResidentApi.fulfilled, (state, action) => {
+
         state.status = 'succeeded';
       })
       .addCase(editResidentApi.rejected, (state) => {
+
         state.status = 'failed';
       });
   },

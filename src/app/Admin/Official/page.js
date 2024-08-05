@@ -33,7 +33,7 @@ export default function Official() {
 
   const [success, setSuccess] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
-  const [message,SetMessage] = useState('')
+  const [message, SetMessage] = useState('')
 
   const [isEdit, setIsEdit] = useState(false);
 
@@ -85,10 +85,12 @@ export default function Official() {
 
   // Barangay services
 
-  const [services, setServices] = useState({
+
+  const [sss, setSSS] = useState({
     service: '',
-    description: ''
   })
+
+  const [serviceDesc,setServiceDesc] = useState('')
 
 
 
@@ -189,7 +191,7 @@ export default function Official() {
 
     const fetchData = async () => {
 
-    
+
 
       try {
         const result = await dispatch(deleteOffialsApi(merge)).unwrap();
@@ -209,19 +211,19 @@ export default function Official() {
         setShowSuccess(true)
         setSuccess(true)
 
-        if(result.success){
+        if (result.success) {
           setShowSuccess(true)
           setSuccess(true)
         }
-        else{
+        else {
           setShowSuccess(true)
           setSuccess(false)
         }
-        
+
 
 
       } catch (error) {
-        
+
         // Handle error, e.g., show an error message
       }
     };
@@ -229,7 +231,7 @@ export default function Official() {
     fetchData();
 
 
-   
+
   }
 
 
@@ -243,7 +245,7 @@ export default function Official() {
 
     const fetchData = async () => {
 
-    
+
 
       try {
         const result = await dispatch(updateOfficials(merge)).unwrap();
@@ -263,19 +265,19 @@ export default function Official() {
         setShowSuccess(true)
         setSuccess(true)
 
-        if(result.success){
+        if (result.success) {
           setShowSuccess(true)
           setSuccess(true)
         }
-        else{
+        else {
           setShowSuccess(true)
           setSuccess(false)
         }
-        
+
 
 
       } catch (error) {
-        
+
         // Handle error, e.g., show an error message
       }
     };
@@ -305,7 +307,7 @@ export default function Official() {
 
     const fetchData = async () => {
 
-    
+
 
       try {
         const result = await dispatch(addOfficials(merge)).unwrap();
@@ -325,26 +327,26 @@ export default function Official() {
         setShowSuccess(true)
         setSuccess(true)
 
-        if(result.success){
+        if (result.success) {
           setShowSuccess(true)
           setSuccess(true)
         }
-        else{
+        else {
           setShowSuccess(true)
           setSuccess(false)
         }
-        
+
 
 
       } catch (error) {
-        
+
         // Handle error, e.g., show an error message
       }
     };
 
     fetchData();
 
-    
+
   }
 
 
@@ -405,14 +407,22 @@ export default function Official() {
   const addDocumentType = () => {
 
     let merge = {
-      data: services,
+      data: {
+        description: serviceDesc,
+        service: sss.service
+      },
       token: token.token
     }
 
-  
+    setSSS({
+      service: '',
+    })
+
+    setServiceDesc('')
+
     const fetchData = async () => {
 
-    
+
 
       try {
         const result = await dispatch(addDocumentTypeApi(merge)).unwrap();
@@ -420,29 +430,25 @@ export default function Official() {
         // Handle success, e.g., navigate to another page
 
         SetMessage('Successfully added a barangay service')
-        setServices({
-          service: '',
-          description: ''
-        })
-
+     
         setCount(count + 1)
 
         setShowSuccess(true)
         setSuccess(true)
 
-        if(result.success){
+        if (result.success) {
           setShowSuccess(true)
           setSuccess(true)
         }
-        else{
+        else {
           setShowSuccess(true)
           setSuccess(false)
         }
-        
+
 
 
       } catch (error) {
-        
+
         // Handle error, e.g., show an error message
       }
     };
@@ -459,12 +465,12 @@ export default function Official() {
       token: token.token
     }
 
-    
 
-  
+
+
     const fetchData = async () => {
 
-    
+
 
       try {
         const result = await dispatch(deleteDocumentTypeApi(merge)).unwrap();
@@ -472,35 +478,44 @@ export default function Official() {
         // Handle success, e.g., navigate to another page
 
         SetMessage('Successfully deleted a barangay service')
-        setServices({
+        setSSS({
           service: '',
-          description: ''
-        })  
+        
+        })
+        setServiceDesc('')
 
         setCount(count + 1)
 
         setShowSuccess(true)
         setSuccess(true)
 
-        if(result.success){
+        if (result.success) {
           setShowSuccess(true)
           setSuccess(true)
         }
-        else{
+        else {
           setShowSuccess(true)
           setSuccess(false)
         }
-        
+
 
 
       } catch (error) {
-        
+
         // Handle error, e.g., show an error message
       }
     };
 
     fetchData();
 
+
+  }
+
+  const viewCreatedTemplate = (val) => {
+    
+      
+    window.open(`https://18.141.22.83/api/generatePdf?doc_id=${val.id}&download=0`)
+    // https://18.141.22.83/api/generatePdf?doc_id=14&download=0
 
   }
 
@@ -520,7 +535,7 @@ export default function Official() {
   return (
     <main className={`container-fluid`}>
       <Auth>
-        <div className="row vh-100" style={{backgroundColor: "white"}}>
+        <div className="row vh-100" style={{ backgroundColor: "white" }}>
 
           <div className="col-lg-4 p-5 d-flex flex-column bg-green side-bg">
 
@@ -667,13 +682,13 @@ export default function Official() {
 
 
                   {/* Table body */}
-                
+
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
                     {
                       officials.officials.list.map((i, k) => {
 
-                       
+
                         return (
 
                           // Put dynamic className
@@ -984,14 +999,32 @@ export default function Official() {
                               <div id={k + i.service + "button"} className="d-flex d-none">
 
                                 <button
-                                  data-bs-toggle="modal" data-bs-target="#addResidentModal"
+                                  data-bs-toggle="modal" data-bs-target="#addBarangayServices"
                                   onClick={() => {
+                           
+                                    setSSS({
+                                      service: i.service,
+                                    })
 
+                                    setServiceDesc(i.description)
 
+                                    
+                                    
+                                    setIsEdit(true)
                                     document.getElementById(k + i.service + "button").classList.add('d-none')
                                     document.getElementById(k + i.service + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-primary">Edit</button>
+
+                                <button
+                                  onClick={() => {
+
+                                    viewCreatedTemplate(i)
+                                    setSelectedItem(i)
+                                    document.getElementById(k + i.service + "button").classList.add('d-none')
+                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
+                                  }}
+                                  type="button" class="btn btn-warning ms-3">View</button>
 
                                 <button
                                   data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
@@ -1438,19 +1471,19 @@ export default function Official() {
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title">Add Barangay Services</h5>
+                  <h5 class="modal-title">{isEdit ? "Edit" : "Add"} Barangay Services</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
 
                   <div class="mb-3">
-                    <label class="form-label">Title</label>
+                    <label class="form-label">{sss.service}</label>
                     <input
                       id='serviceinput'
-                      value={services.service}
+                      value={sss.service}
                       onChange={(val) => {
-                        setServices({
-                          ...services, ...{
+                        setSSS({
+                          ...sss, ...{
                             service: val.target.value
                           }
                         })
@@ -1480,13 +1513,9 @@ export default function Official() {
 
                     <ReactQuill
                       //  value={formik.values.message}
-                      value={services.description}
+                      value={serviceDesc}
                       onChange={(val) => {
-                        setServices({
-                          ...services, ...{
-                            description: val
-                          }
-                        })
+                        setServiceDesc(val)
                       }}
                       placeholder="Enter the message..........."
                     />
@@ -1496,7 +1525,7 @@ export default function Official() {
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                  <button  data-bs-dismiss="modal" onClick={() => addDocumentType()} type="button" class="btn btn-primary bg-green">Save</button>
+                  <button data-bs-dismiss="modal" onClick={() => addDocumentType()} type="button" class="btn btn-primary bg-green">Save</button>
                 </div>
               </div>
             </div>
@@ -1506,7 +1535,7 @@ export default function Official() {
 
 
           {/* Confirm delete modal */}
-          { console.log(selectedItem)}
+          {}
 
           <div id="deleteConfirmModal" class="modal" tabindex="-1">
             <div class="modal-dialog">
@@ -1521,7 +1550,7 @@ export default function Official() {
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                   <button data-bs-dismiss="modal" onClick={() => {
-                    
+
                     tab == 0 && deleteOffials()
                     tab == 3 && deleteDocumentType()
                   }} type="button" class="btn btn-primary bg-green">Yes</button>
@@ -1530,28 +1559,28 @@ export default function Official() {
             </div>
           </div>
 
-          
 
-                      {
-                        showSuccess &&
-                         <div id="statusModal " class="modal fade show d-block">
-                         <div class="modal-dialog">
-                           <div class="modal-content">
-                             <div class="modal-header">
-                               {/* <h5 class="modal-title">Delete</h5> */}
-                               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                             </div>
-                             <div class="modal-body">
-                              {success ? message : "Something went wrong."}
-                             </div>
-                             <div class="modal-footer">
-                               <button type="button" class="btn btn-secondary" onClick={() => setShowSuccess(false)}>Close</button>
-                               
-                             </div>
-                           </div>
-                         </div>
-                       </div>
-                      }
+
+          {
+            showSuccess &&
+            <div id="statusModal " class="modal fade show d-block">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    {/* <h5 class="modal-title">Delete</h5> */}
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    {success ? message : "Something went wrong."}
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onClick={() => setShowSuccess(false)}>Close</button>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
 
 
           {/* Modal */}

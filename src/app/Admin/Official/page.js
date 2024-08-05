@@ -89,6 +89,7 @@ export default function Official() {
   const [sss, setSSS] = useState({
     service: '',
   })
+  const [isCert, setIsCert] = useState(1)
 
   const [serviceDesc,setServiceDesc] = useState('')
 
@@ -409,13 +410,15 @@ export default function Official() {
     let merge = {
       data: {
         description: serviceDesc,
-        service: sss.service
+        service: sss.service,
+        isCertificate: isCert
       },
       token: token.token
     }
 
     setSSS({
       service: '',
+      isCertificate: 1
     })
 
     setServiceDesc('')
@@ -480,7 +483,7 @@ export default function Official() {
         SetMessage('Successfully deleted a barangay service')
         setSSS({
           service: '',
-        
+          isCertificate: 1
         })
         setServiceDesc('')
 
@@ -1003,8 +1006,11 @@ export default function Official() {
                                   onClick={() => {
                            
                                     setSSS({
-                                      service: i.service,
+                                      ...sss, ...{
+                                        service: i.service,
+                                      }
                                     })
+                                    
 
                                     setServiceDesc(i.description)
 
@@ -1476,8 +1482,47 @@ export default function Official() {
                 </div>
                 <div class="modal-body">
 
+                <div id='certificateinput' class="mb-3">
+                    <label class="form-label">Is this a certificate?</label>
+                    <div class="form-check">
+                      <input
+                        checked={isCert == 1 ? true : false}
+                        onChange={() => {
+
+
+                          // document.getElementById('genderinput').style.border = '0px solid #dee2e6'
+
+                          
+                          setIsCert(1)
+                        }}
+                        class="form-check-input" type="radio" name="isCertificate" id="isCertificate" />
+                      <label class="form-check-label" for="flexRadioDefault2">
+                        Yes
+                      </label>
+                    </div>
+
+                    <div class="form-check">
+                      <input
+                        checked={isCert == 0 ? true : false}
+                        onChange={() => {
+
+                          
+
+                          // document.getElementById('genderinput').style.border = '0px solid #dee2e6'
+
+                          setIsCert(0)
+                          
+                        }}
+                        class="form-check-input" type="radio" name="isCertificate" id="isCertificate" />
+                      <label class="form-check-label" for="flexRadioDefault2">
+                        No
+                      </label>
+                    </div>
+
+                  </div>
+
                   <div class="mb-3">
-                    <label class="form-label">{sss.service}</label>
+                    <label class="form-label">Document Title</label>
                     <input
                       id='serviceinput'
                       value={sss.service}
@@ -1497,16 +1542,16 @@ export default function Official() {
 
                     <label class="form-label">Legend</label>
 
-                    <span className="ms-3">Ex. {'<<first_name>>'} as placeholder</span>
+                    <span className="ms-3" style={{fontSize: "12px", color:"red"}}>Ex. {'{first_name}'} as placeholder</span>
 
 
                   </div>
 
-                  <div className="mb-3">
+                  {/* <div className="mb-3">
                     <label class="form-label">For Barangay ID</label>
 
-                    <span className="ms-3">Ex. {'<<first_name>>'}  {'<<middle_name>>'} {'<<last_name>>'} {'<<address>>'}as placeholder</span>
-                  </div>
+                    <span className="ms-3">Ex. {'{first_name}'}  {'{middle_name}'} {'{last_name'} {'{address}'}as placeholder</span>
+                  </div> */}
 
                   <div class="mb-3">
                     <label class="form-label">Description</label>

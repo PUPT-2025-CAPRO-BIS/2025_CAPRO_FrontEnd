@@ -29,10 +29,11 @@ apiClient.interceptors.response.use(
 // Define async thunks
 
 export const addDocumentTypeApi = createAsyncThunk('user/addDocumentType', async (data) => {
-      
+      console.log('hala', data)
   const res = await apiClient.post('/addDocumentType', {
     service: data.data.service,
-    description: data.data.description
+    description: data.data.description,
+    isCertificate: data.data.isCertificate
     // status: data.selectedSearchItem.status
   }, {
     headers:{

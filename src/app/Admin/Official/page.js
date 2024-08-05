@@ -31,6 +31,9 @@ export default function Official() {
     1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
   ])
 
+  const [success, setSuccess] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
+
   const [isEdit, setIsEdit] = useState(false);
 
 
@@ -91,7 +94,7 @@ export default function Official() {
   const [value, setValue] = useState('');
 
   useEffect(() => {
-    
+
     if (tab == 0) {
       const fetchData = async () => {
 
@@ -126,13 +129,13 @@ export default function Official() {
 
 
 
-    if(tab == 3){
-      
+    if (tab == 3) {
+
       const fetchData = async () => {
 
         try {
           const result = await dispatch(getDocumentTypeApi(token.token)).unwrap();
-            
+
           // Handle success, e.g., navigate to another page
         } catch (error) {
 
@@ -143,7 +146,7 @@ export default function Official() {
       fetchData();
     }
 
-    
+
 
   }, [tab, count]);
 
@@ -301,18 +304,47 @@ export default function Official() {
       token: token.token
     }
 
+  
+    const fetchData = async () => {
 
-    dispatch(addDocumentTypeApi(merge))
+    
 
-    setTimeout(() => {
-      setServices({
-        service: '',
-        description: ''
-      })
+      try {
+        const result = await dispatch(addDocumentTypeApi(merge)).unwrap();
 
-      setCount(count + 1)
+        // Handle success, e.g., navigate to another page
 
-    }, 3000)
+        
+        setServices({
+          service: '',
+          description: ''
+        })
+
+        setCount(count + 1)
+
+        setShowSuccess(true)
+        setSuccess(true)
+
+        if(result.success){
+          setShowSuccess(true)
+          setSuccess(true)
+        }
+        else{
+          setShowSuccess(true)
+          setSuccess(false)
+        }
+        
+
+
+      } catch (error) {
+        
+        // Handle error, e.g., show an error message
+      }
+    };
+
+    fetchData();
+
+
   }
   useEffect(() => {
 
@@ -521,7 +553,7 @@ export default function Official() {
                                   data-bs-toggle="modal" data-bs-target="#exampleModal"
                                   onClick={() => {
 
-                                    
+
                                     setSelectedItem(i)
 
                                     document.getElementById(k + i.full_name + "button").classList.add('d-none')
@@ -674,6 +706,8 @@ export default function Official() {
                                   data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
 
                                   onClick={() => {
+
+                                    setSelectedItem(i)
                                     setResident(i)
                                     document.getElementById(k + i.full_name + "button").classList.add('d-none')
                                     document.getElementById(k + i.full_name + "action").classList.remove('d-none')
@@ -777,9 +811,9 @@ export default function Official() {
                               </span>
                             </RowItem>
                             <RowItem>
-                            <span id={k + i.service + "action"}
+                              <span id={k + i.service + "action"}
                                 onClick={() => {
-                                  
+
                                   document.getElementById(k + i.service + "button").classList.remove('d-none')
                                   document.getElementById(k + i.service + "action").classList.add('d-none')
                                 }}
@@ -792,7 +826,7 @@ export default function Official() {
                                   data-bs-toggle="modal" data-bs-target="#addResidentModal"
                                   onClick={() => {
 
-                                  
+
                                     document.getElementById(k + i.service + "button").classList.add('d-none')
                                     document.getElementById(k + i.service + "action").classList.remove('d-none')
                                   }}
@@ -828,7 +862,7 @@ export default function Official() {
           </div>
 
           {/* Modal */
-    console.log(selectedItem)
+
           }
           <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -1265,9 +1299,18 @@ export default function Official() {
                   </div>
 
                   <div className="mb-3">
+
                     <label class="form-label">Legend</label>
 
-                    <span>Ex. {'<<first_name>>'} as placeholder</span>
+                    <span className="ms-3">Ex. {'<<first_name>>'} as placeholder</span>
+
+
+                  </div>
+
+                  <div className="mb-3">
+                    <label class="form-label">For Barangay ID</label>
+
+                    <span className="ms-3">Ex. {'<<first_name>>'}  {'<<middle_name>>'} {'<<last_name>>'} {'<<address>>'}as placeholder</span>
                   </div>
 
                   <div class="mb-3">
@@ -1275,6 +1318,7 @@ export default function Official() {
 
                     <ReactQuill
                       //  value={formik.values.message}
+                      value={services.description}
                       onChange={(val) => {
                         setServices({
                           ...services, ...{
@@ -1290,7 +1334,7 @@ export default function Official() {
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                  <button data-bs-dismiss="modal" onClick={() => addDocumentType()} type="button" class="btn btn-primary bg-green">Save</button>
+                  <button  data-bs-dismiss="modal" onClick={() => addDocumentType()} type="button" class="btn btn-primary bg-green">Save</button>
                 </div>
               </div>
             </div>
@@ -1300,6 +1344,7 @@ export default function Official() {
 
 
           {/* Confirm delete modal */}
+          { }
 
           <div id="deleteConfirmModal" class="modal" tabindex="-1">
             <div class="modal-dialog">
@@ -1309,7 +1354,7 @@ export default function Official() {
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                      Are you sure you want to delete this user?
+                  Are you sure you want to delete <span className="fw-bold">{selectedItem != null && selectedItem.full_name}</span>?
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -1318,6 +1363,29 @@ export default function Official() {
               </div>
             </div>
           </div>
+
+                      {
+                        showSuccess &&
+                         <div id="statusModal " class="modal fade show d-block">
+                         <div class="modal-dialog">
+                           <div class="modal-content">
+                             <div class="modal-header">
+                               {/* <h5 class="modal-title">Delete</h5> */}
+                               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                             </div>
+                             <div class="modal-body">
+                              {success ? "Successfully added" : "Something went wrong."}
+                             </div>
+                             <div class="modal-footer">
+                               <button type="button" class="btn btn-secondary" onClick={() => setShowSuccess(false)}>Close</button>
+                               
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+                      }
+
+
           {/* Modal */}
         </div>
       </Auth>

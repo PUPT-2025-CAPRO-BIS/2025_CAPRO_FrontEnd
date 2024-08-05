@@ -29,7 +29,7 @@ apiClient.interceptors.response.use(
 // Define async thunks
 
 export const addDocumentTypeApi = createAsyncThunk('user/addDocumentType', async (data) => {
-      console.log(data, "--> AWIT   ")
+      
   const res = await apiClient.post('/addDocumentType', {
     service: data.data.service,
     description: data.data.description
@@ -44,7 +44,7 @@ export const addDocumentTypeApi = createAsyncThunk('user/addDocumentType', async
 });
 
 export const getDocumentTypeApi = createAsyncThunk('user/getDocumentTypes', async (data) => {
-  console.log(data, "--> AWIT ?????????????  ")
+  
 const res = await apiClient.get('/getDocumentTypes',  {
 headers:{
   'Authorization': `Bearer ${data}`, // Replace with your actual token
@@ -74,7 +74,7 @@ const officialsSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(getDocumentTypeApi.fulfilled, (state, action) => {
-        console.log(action, "--> ACTION")
+        
         state.status = 'succeeded';
         state.list = action.payload
 

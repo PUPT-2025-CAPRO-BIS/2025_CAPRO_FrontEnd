@@ -199,6 +199,13 @@ let html = `
 //   </Document>
 // );
 
+export const IDTemplate = () => {
+
+    <div>
+        BRGY ID
+    </div>
+}
+
 export const DocumentTemplate = () => {
 
     return (

@@ -43,6 +43,8 @@ export const addDocumentTypeApi = createAsyncThunk('user/addDocumentType', async
   return res.data;
 });
 
+
+
 export const getDocumentTypeApi = createAsyncThunk('user/getDocumentTypes', async (data) => {
   
 const res = await apiClient.get('/getDocumentTypes',  {

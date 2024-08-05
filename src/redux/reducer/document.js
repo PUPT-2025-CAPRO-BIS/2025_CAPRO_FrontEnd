@@ -43,6 +43,18 @@ export const addDocumentTypeApi = createAsyncThunk('user/addDocumentType', async
   return res.data;
 });
 
+export const getDocumentTypeApi = createAsyncThunk('user/getDocumentTypes', async (data) => {
+  console.log(data, "--> AWIT ?????????????  ")
+const res = await apiClient.get('/getDocumentTypes',  {
+headers:{
+  'Authorization': `Bearer ${data}`, // Replace with your actual token
+  'Content-Type': 'application/json',
+}
+});
+return res.data;
+});
+
+
 
 
 
@@ -58,15 +70,16 @@ const officialsSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(addDocumentTypeApi.pending, (state) => {
+      .addCase(getDocumentTypeApi.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(addDocumentTypeApi.fulfilled, (state, action) => {
-        
+      .addCase(getDocumentTypeApi.fulfilled, (state, action) => {
+        console.log(action, "--> ACTION")
         state.status = 'succeeded';
+        state.list = action.payload
 
       })
-      .addCase(addDocumentTypeApi.rejected, (state) => {
+      .addCase(getDocumentTypeApi.rejected, (state) => {
         
         state.status = 'failed';
       });

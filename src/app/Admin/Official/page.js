@@ -91,7 +91,7 @@ export default function Official() {
   })
   const [isCert, setIsCert] = useState(1)
 
-  const [serviceDesc,setServiceDesc] = useState('')
+  const [serviceDesc, setServiceDesc] = useState('')
 
 
 
@@ -433,7 +433,7 @@ export default function Official() {
         // Handle success, e.g., navigate to another page
 
         SetMessage('Successfully added a barangay service')
-     
+
         setCount(count + 1)
 
         setShowSuccess(true)
@@ -515,8 +515,8 @@ export default function Official() {
   }
 
   const viewCreatedTemplate = (val) => {
-    
-      
+
+
     window.open(`https://18.141.22.83/api/generatePdf?doc_id=${val.id}&download=0`)
     // https://18.141.22.83/api/generatePdf?doc_id=14&download=0
 
@@ -588,7 +588,8 @@ export default function Official() {
               </div>
 
               <div onClick={() => changeTab(3)} className={`p-4 w-100 rounded ${tab == 3 ? 'active-nav' : ''} pointer`}>
-                <span className="f-white nav-item">
+                <i class="bi bi-file-earmark-diff-fill f-white icon" ></i>
+                <span className="f-white nav-item ms-2">
                   Services
                 </span>
               </div>
@@ -600,27 +601,72 @@ export default function Official() {
 
           </div>
 
-          <div className="col-lg-8 d-flex flex-column align-items-center justify-content-center" style={{}}>
-            <div>
-              <button onClick={async () => {
+          <div className="col-lg-8 d-flex flex-column align-items-center justify-content-center mt-5" style={{}}>
 
-                try {
-                  const result = await dispatch(LogOut());
-                  router.replace('/', { scroll: false })
-                  // Handle success, e.g., navigate to another page
-                } catch (error) {
+       
 
-                  // Handle error, e.g., show an error message
-                }
+            <div class="dropdown d-flex align-items-center justify-content-between w-100" >
 
-              }}>
-                LOGOUT
+              <h4>
+              {
+                tab == 0 && "Barangay Officials"
+              }
+
+              {
+                tab == 1 && "Barangay Officials"
+              }
+
+              {
+                tab == 3 && "Barangay Services"
+              }
+            
+              </h4>
+              <div style={{position:"relative"}}>
+              <div
+                className="d-flex align-items-center justify-content-center"
+                style={{ height: "70px", width: "70px", borderRadius: "35px", border: "1px solid green", backgroundColor: "white", position:"absolute", left: -50, bottom: -10 }}>
+                <i class="bi bi-person-fill" style={{ fontSize: "50px" }}></i>
+              </div>
+              <button class="btn-remove bg-yellow roundedEnd p-3" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+
+
+                <span className="f-white ms-3">
+                  Administrator
+                </span>
               </button>
+              <ul class="dropdown-menu">
+
+
+
+                <div
+                  className="pointer p-2 hover"
+                  onClick={async () => {
+
+                    try {
+                      const result = await dispatch(LogOut());
+                      router.replace('/', { scroll: false })
+                      // Handle success, e.g., navigate to another page
+                    } catch (error) {
+
+                      // Handle error, e.g., show an error message
+                    }
+
+                  }}
+                >
+                  <span>
+                    Logout
+                  </span>
+                </div>
+              </ul>
+              </div>
+
             </div>
 
 
 
-            <div className="d-flex flex-column align-items-center justify-content-center w-100 p-5 rounded bg-green">
+
+            <div className="d-flex flex-column align-items-center justify-content-center w-100 p-5 rounded bg-green mt-3">
               <h1 className="f-white">
                 BARANGAY CENTRAL BICUTAN
               </h1>
@@ -934,7 +980,7 @@ export default function Official() {
                   <div >
                     <button
                       data-bs-toggle="modal" data-bs-target="#addBarangayServices"
-                      className="primary bg-yellow p-2 rounded"
+                      className="primary bg-yellow p-2 rounded border-0"
                     >
                       <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
                       <span className="fw-bold">Document Type</span>
@@ -1004,18 +1050,18 @@ export default function Official() {
                                 <button
                                   data-bs-toggle="modal" data-bs-target="#addBarangayServices"
                                   onClick={() => {
-                           
+
                                     setSSS({
                                       ...sss, ...{
                                         service: i.service,
                                       }
                                     })
-                                    
+
 
                                     setServiceDesc(i.description)
 
-                                    
-                                    
+
+
                                     setIsEdit(true)
                                     document.getElementById(k + i.service + "button").classList.add('d-none')
                                     document.getElementById(k + i.service + "action").classList.remove('d-none')
@@ -1482,7 +1528,7 @@ export default function Official() {
                 </div>
                 <div class="modal-body">
 
-                <div id='certificateinput' class="mb-3">
+                  <div id='certificateinput' class="mb-3">
                     <label class="form-label">Is this a certificate?</label>
                     <div class="form-check">
                       <input
@@ -1492,7 +1538,7 @@ export default function Official() {
 
                           // document.getElementById('genderinput').style.border = '0px solid #dee2e6'
 
-                          
+
                           setIsCert(1)
                         }}
                         class="form-check-input" type="radio" name="isCertificate" id="isCertificate" />
@@ -1506,12 +1552,12 @@ export default function Official() {
                         checked={isCert == 0 ? true : false}
                         onChange={() => {
 
-                          
+
 
                           // document.getElementById('genderinput').style.border = '0px solid #dee2e6'
 
                           setIsCert(0)
-                          
+
                         }}
                         class="form-check-input" type="radio" name="isCertificate" id="isCertificate" />
                       <label class="form-check-label" for="flexRadioDefault2">
@@ -1542,7 +1588,7 @@ export default function Official() {
 
                     <label class="form-label">Legend</label>
 
-                    <span className="ms-3" style={{fontSize: "12px", color:"red"}}>Ex. {'{first_name}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{first_name}'} as placeholder</span>
 
 
                   </div>
@@ -1580,7 +1626,7 @@ export default function Official() {
 
 
           {/* Confirm delete modal */}
-          {}
+          { }
 
           <div id="deleteConfirmModal" class="modal" tabindex="-1">
             <div class="modal-dialog">

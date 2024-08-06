@@ -216,6 +216,8 @@ a {
   font-size: 20px;
 }
 
+
+
 .controls {
   display: flex;
   border: 1px solid #ccc;
@@ -239,4 +241,21 @@ a {
 
 .tempate-font-officials{
   font-size: 10px;
+}
+
+
+.hover:hover {
+  background-color: #058c61;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #FFFF
+}
+
+.btn-remove{
+  border: none;
+  /* background-color: transparent; */
+}
+
+.roundedEnd{
+  border-top-right-radius: 100px;
+  border-bottom-right-radius: 100px;
 }

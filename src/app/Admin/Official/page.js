@@ -1,7 +1,7 @@
 'use client'
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
-import { addOfficials, deleteOffialsApi, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
+import { addOfficials, dashboardViewApi, deleteOffialsApi, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
 import { addResidentApi, editResidentApi, loadAllUsers } from "@/redux/reducer/resident";
 import { LogOut } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
@@ -26,10 +26,13 @@ export default function Official() {
   const officials = useSelector(state => state)
   const alluser = useSelector(state => state.alluser)
   const documentList = useSelector(state => state.document)
+  const dashboard = useSelector(state => state.officials.dashboardData)
   const token = useSelector(state => state.user)
   const [sample, setSample] = useState([
     1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
   ])
+
+  console.log(dashboard, "--> AWW")
 
   const [success, setSuccess] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
@@ -42,8 +45,8 @@ export default function Official() {
   const [selectedItem, setSelectedItem] = useState(null)
 
 
-  // 0 - BO,   MR -1,    SCHEDULES - 2, BR - 3, Services - 4
-  const [tab, seTab] = useState(0)
+  // 0 - BO,   MR -1,    SCHEDULES - 2, BR - 3, Services - 4 Dashboard -10
+  const [tab, seTab] = useState(10)
 
   const [searchVal, setSearchVal] = useState('')
   const [searchOfficial, setSearchOfficial] = useState([])
@@ -100,6 +103,22 @@ export default function Official() {
   const [value, setValue] = useState('');
 
   useEffect(() => {
+
+    if (tab == 10) {
+      const fetchData = async () => {
+
+        try {
+          const result = await dispatch(dashboardViewApi(token.token)).unwrap();
+         
+          // Handle success, e.g., navigate to another page
+        } catch (error) {
+
+          // Handle error, e.g., show an error message
+        }
+      };
+
+      fetchData();
+    }
 
     if (tab == 0) {
       const fetchData = async () => {
@@ -552,6 +571,14 @@ export default function Official() {
 
             <div className="flex-column mt-5">
 
+              <div onClick={() => changeTab(10)} className={`p-4 w-100 rounded ${tab == 10 ? 'active-nav' : ''} pointer`}>
+                <i class="bi bi-person f-white icon"></i>
+                <span className="f-white ms-2 nav-item">
+                  Dashboard
+                </span>
+              </div>
+
+
 
               <div onClick={() => changeTab(0)} className={`p-4 w-100 rounded ${tab == 0 ? 'active-nav' : ''} pointer`}>
                 <i class="bi bi-person f-white icon"></i>
@@ -603,78 +630,287 @@ export default function Official() {
 
           <div className="col-lg-8 d-flex flex-column align-items-center justify-content-center mt-5" style={{}}>
 
-       
+
 
             <div class="dropdown d-flex align-items-center justify-content-between w-100" >
 
               <h4>
-              {
-                tab == 0 && "Barangay Officials"
-              }
+                {
+                  tab == 10 && "Dashboard"
+                }
+                {
+                  tab == 0 && "Barangay Officials"
+                }
 
-              {
-                tab == 1 && "Barangay Officials"
-              }
+                {
+                  tab == 1 && "Barangay Officials"
+                }
 
-              {
-                tab == 3 && "Barangay Services"
-              }
-            
+                {
+                  tab == 3 && "Barangay Services"
+                }
+
               </h4>
-              <div style={{position:"relative"}}>
-              <div
-                className="d-flex align-items-center justify-content-center"
-                style={{ height: "70px", width: "70px", borderRadius: "35px", border: "1px solid green", backgroundColor: "white", position:"absolute", left: -50, bottom: -10 }}>
-                <i class="bi bi-person-fill" style={{ fontSize: "50px" }}></i>
-              </div>
-              <button class="btn-remove bg-yellow roundedEnd p-3" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-
-
-
-                <span className="f-white ms-3">
-                  Administrator
-                </span>
-              </button>
-              <ul class="dropdown-menu">
-
-
-
+              <div style={{ position: "relative" }}>
                 <div
-                  className="pointer p-2 hover"
-                  onClick={async () => {
+                  className="d-flex align-items-center justify-content-center"
+                  style={{ height: "70px", width: "70px", borderRadius: "35px", border: "1px solid green", backgroundColor: "white", position: "absolute", left: -50, bottom: -10 }}>
+                  <i class="bi bi-person-fill" style={{ fontSize: "50px" }}></i>
+                </div>
+                <button class="btn-remove bg-yellow roundedEnd p-3" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 
-                    try {
-                      const result = await dispatch(LogOut());
-                      router.replace('/', { scroll: false })
-                      // Handle success, e.g., navigate to another page
-                    } catch (error) {
 
-                      // Handle error, e.g., show an error message
-                    }
 
-                  }}
-                >
-                  <span>
-                    Logout
+                  <span className="f-white ms-3">
+                    Administrator
+                  </span>
+                </button>
+                <ul class="dropdown-menu">
+
+
+
+                  <div
+                    className="pointer p-2 hover"
+                    onClick={async () => {
+
+                      try {
+                        const result = await dispatch(LogOut());
+                        router.replace('/', { scroll: false })
+                        // Handle success, e.g., navigate to another page
+                      } catch (error) {
+
+                        // Handle error, e.g., show an error message
+                      }
+
+                    }}
+                  >
+                    <span>
+                      Logout
+                    </span>
+                  </div>
+                </ul>
+              </div>
+
+            </div>
+
+
+
+
+            {
+              tab != 10 ?
+                <div className="d-flex flex-column align-items-center justify-content-center w-100 p-5 rounded bg-green mt-3">
+                  <h1 className="f-white">
+                    BARANGAY CENTRAL BICUTAN
+                  </h1>
+
+                  <span className="f-white">
+                    Sunflower Street, Taguig City, Metro Manila
                   </span>
                 </div>
-              </ul>
-              </div>
 
-            </div>
+                :
+
+                <div className="col-12 d-flex mt-5">
+
+                  <div className="col-6" >
+                    <img
+                      style={{
+                        height: "300px",
+                        width: "100%",
+                        objectFit: "cover"
+                      }}
+                      // src={require('../assets/')}
+                      src='/images/TaguigSky.jpg'
+                    />
+                  </div>
+
+                  <div className="col-6 bg-green p-5" >
+                    <h4 className="f-white">
+                      DID YOU KNOW?
+                    </h4>
+
+                    <p className="f-white">
+                      Bonifacio Global City (BGC) in Taguig is a modern business and lifestyle district in Metro Manila, known for its upscale shopping centers, trendy restaurants, and vibrant nightlife. Originally a military camp named Fort Bonifacio, it has transformed into a major financial and commercial hub, attracting both local and international businesses.
+                    </p>
+
+                  </div>
+
+                </div>
+            }
+
+            {/* Dashboard */}
+            {
+              tab == 10 &&
+
+              <>
+                <div className="col-12 mt-5 ">
+                  <h4>Resident Information</h4>
+                  <div className="col-12 d-flex">
+
+                    <div className="d-flex bg-green p-3 align-items-center rounded">
+                      <i class="bi bi-house-door f-white" style={{ fontSize: "50px" }}></i>
+                      <div className="flex-column d-flex ms-3 align-items-center">
+                        <span className="f-white">
+                          Count of Residents
+                        </span>
+
+                        <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
+                          {dashboard.count_of_residents}
+                        </span>
+                      </div>
+                    </div>
+
+
+                    <div className="d-flex bg-green p-3 align-items-center rounded ms-3">
+                      <i class="bi bi-gender-male f-white" style={{ fontSize: "50px" }}></i>
+                      <div className="flex-column d-flex ms-3 align-items-center">
+                        <span className="f-white">
+                          Count of Male
+                        </span>
+
+                        <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
+                          {dashboard.males}
+                        </span>
+                      </div>
+                    </div>
+
+
+                    <div className="d-flex bg-green p-3 align-items-center rounded ms-3">
+                      <i class="bi bi-gender-female f-white" style={{ fontSize: "50px" }}></i>
+                      <div className="flex-column d-flex ms-3 align-items-center">
+                        <span className="f-white">
+                          Count of Female
+                        </span>
+
+                        <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
+                        {dashboard.females}
+                        </span>
+                      </div>
+                    </div>
+
+
+                    <div className="d-flex bg-green p-3 align-items-center rounded ms-3">
+                      <i class="bi bi-person-wheelchair f-white" style={{ fontSize: "50px" }}></i>
+                      <div className="flex-column d-flex ms-3 align-items-center">
+                        <span className="f-white">
+                          Count of Seniors
+                        </span>
+
+                        <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
+                          {dashboard.count_of_seniors}
+                        </span>
+                      </div>
+                    </div>
 
 
 
+                  </div>
+                </div>
 
-            <div className="d-flex flex-column align-items-center justify-content-center w-100 p-5 rounded bg-green mt-3">
-              <h1 className="f-white">
-                BARANGAY CENTRAL BICUTAN
-              </h1>
+                <div className="col-12 d-flex justify-content-start mb-5">
+                  <div className="mt-5 col-5">
+                    <h4>Apointment Schedules</h4>
+                    <div className="col-12 d-flex">
 
-              <span className="f-white">
-                Sunflower Street, Taguig City, Metro Manila
-              </span>
-            </div>
+                      <div className="d-flex bg-green p-3 align-items-center rounded">
+                        <i class="bi bi-calendar-date f-white" style={{ fontSize: "50px" }}></i>
+                        <div className="flex-column d-flex ms-3 align-items-center">
+                          <span className="f-white">
+                            Count of total schedules
+                          </span>
+
+                          <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
+                            {dashboard.schedules}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div className="mt-5">
+                    <h4>Complaints</h4>
+
+                    <div className="d-flex">
+                      <div className=" d-flex">
+
+                      <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{width:"200px"}}>
+                          <i class="bi bi-hand-thumbs-down f-white" style={{ fontSize: "50px" }}></i>
+                          <div className="flex-column d-flex ms-3 align-items-center">
+                            <span className="f-white">
+                              Unresolve
+                            </span>
+
+                            <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
+                              {dashboard.unresolved}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className=" d-flex ms-3">
+
+                        <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{width:"200px"}}>
+                          <i class="bi bi-lightning f-white" style={{ fontSize: "50px" }}></i>
+                          <div className="flex-column d-flex ms-3 align-items-center">
+                            <span className="f-white">
+                              Ongoing
+                            </span>
+
+                            <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
+                              {dashboard.ongoing}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div className="d-flex mt-3">
+                      <div className=" d-flex">
+
+                      <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{width:"200px"}}>
+                          <i class="bi bi-hand-thumbs-up f-white" style={{ fontSize: "50px" }}></i>
+                          <div className="flex-column d-flex ms-3 align-items-center">
+                            <span className="f-white">
+                              Settled
+                            </span>
+
+                            <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
+                              {dashboard.settled}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className=" d-flex ms-3">
+
+                      <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{width:"200px"}}>
+                          <i class="bi bi-x-octagon-fill f-white" style={{ fontSize: "50px" }}></i>
+                          <div className="flex-column d-flex ms-3 align-items-center">
+                            <span className="f-white">
+                              Dismissed
+                            </span>
+
+                            <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
+                              {dashboard.dismissed}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                  </div>
+                </div>
+
+
+              </>
+            }
+
+            {/* Dashboard */}
+
+
 
             {/* BO */}
             {tab == 0 &&

@@ -7,6 +7,17 @@ const initialState = {
   list: [],
   status: 'idle',  // Start with 'idle' instead of 'false'
   token: '',
+  dashboardData:  {
+    "count_of_residents": 0,
+    "males": "0",
+    "females": "0",
+    "count_of_seniors": "0",
+    "schedules": 0,
+    "unresolved": 0,
+    "ongoing": 0,
+    "settled": 0,
+    "dismissed": 0
+}
 };
 
 // Create axios instance
@@ -89,6 +100,18 @@ export const deleteOffialsApi = createAsyncThunk('user/deleteofficial', async (d
   return res.data;
 });
 
+
+export const dashboardViewApi = createAsyncThunk('user/dashboardView', async (token) => {
+
+  const res = await apiClient.get('/dashboardView',  {
+    headers: {
+      'Authorization': `Bearer ${token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }
+  });
+  return res.data;
+});
+
 // Create slice
 const officialsSlice = createSlice({
   name: 'user',
@@ -157,6 +180,24 @@ const officialsSlice = createSlice({
         // state.list = action.payload;
       })
       .addCase(updateOfficials.rejected, (state) => {
+
+        state.status = 'failed';
+      });
+
+      // dashboardViewApi
+
+      builder
+      .addCase(dashboardViewApi.pending, (state) => {
+
+        state.status = 'loading';
+      })
+      .addCase(dashboardViewApi.fulfilled, (state, action) => {
+
+        
+        state.status = 'succeeded';
+        state.dashboardData = action.payload[0];
+      })
+      .addCase(dashboardViewApi.rejected, (state) => {
 
         state.status = 'failed';
       });

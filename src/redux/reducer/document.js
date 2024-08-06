@@ -29,7 +29,7 @@ apiClient.interceptors.response.use(
 // Define async thunks
 
 export const addDocumentTypeApi = createAsyncThunk('user/addDocumentType', async (data) => {
-      console.log('hala', data)
+      
   const res = await apiClient.post('/addDocumentType', {
     service: data.data.service,
     description: data.data.description,
@@ -60,7 +60,7 @@ return res.data;
 
 export const deleteDocumentTypeApi = createAsyncThunk('user/deleteDocumentType', async (data) => {
 
-  console.log(data, "--> AWIT SYO")
+  
   const res = await apiClient.post('/deleteDocumentType',  
     {
       document_type_id: data.data.id

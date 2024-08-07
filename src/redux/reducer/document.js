@@ -29,7 +29,7 @@ apiClient.interceptors.response.use(
 // Define async thunks
 
 export const addDocumentTypeApi = createAsyncThunk('user/addDocumentType', async (data) => {
-      console.log('hala', data)
+      
   const res = await apiClient.post('/addDocumentType', {
     service: data.data.service,
     description: data.data.description,
@@ -57,10 +57,27 @@ headers:{
 return res.data;
 });
 
+export const updateDocumentTypesApi = createAsyncThunk('user/updateDocumentTypes', async (data) => {
+      console.log(data, '--> chcek if has id')
+  const res = await apiClient.post('/updateDocumentTypes', {
+    doc_id: data.data.doc_id,
+    service: data.data.service,
+    description: data.data.description,
+    isCertificate: data.data.isCertificate
+    // status: data.selectedSearchItem.status
+  }, {
+    headers:{
+      'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+  }
+  });
+  return res.data;
+});
+
 
 export const deleteDocumentTypeApi = createAsyncThunk('user/deleteDocumentType', async (data) => {
 
-  console.log(data, "--> AWIT SYO")
+  
   const res = await apiClient.post('/deleteDocumentType',  
     {
       document_type_id: data.data.id

@@ -16,7 +16,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from "react-quill";
-import { addDocumentTypeApi, deleteDocumentTypeApi, getDocumentTypeApi } from "@/redux/reducer/document";
+import { addDocumentTypeApi, deleteDocumentTypeApi, getDocumentTypeApi, updateDocumentTypesApi } from "@/redux/reducer/document";
 
 
 
@@ -32,7 +32,7 @@ export default function Official() {
     1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
   ])
 
-  console.log(dashboard, "--> AWW")
+  
 
   const [success, setSuccess] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
@@ -93,6 +93,7 @@ export default function Official() {
     service: '',
   })
   const [isCert, setIsCert] = useState(1)
+  const [docId, setDocId] = useState('')
 
   const [serviceDesc, setServiceDesc] = useState('')
 
@@ -430,43 +431,78 @@ export default function Official() {
       data: {
         description: serviceDesc,
         service: sss.service,
-        isCertificate: isCert
+        isCertificate: isCert,
+        doc_id: docId
       },
       token: token.token
     }
 
     setSSS({
       service: '',
-      isCertificate: 1
+      isCertificate: 1,
+      doc_id: ''
     })
+    
 
     setServiceDesc('')
-
+    console.log(isEdit, "--> IS EDIT")
     const fetchData = async () => {
 
 
 
+
       try {
-        const result = await dispatch(addDocumentTypeApi(merge)).unwrap();
+        let result =''
+
+        if(isEdit){
+          result = await dispatch(updateDocumentTypesApi(merge)).unwrap();
+
+          SetMessage('Successfully updated a barangay service')
+
+          setCount(count + 1)
+  
+          setIsEdit(false)
+          setShowSuccess(true)
+          setSuccess(true)
+  
+          if (result.success) {
+            setShowSuccess(true)
+            setSuccess(true)
+          }
+          else {
+            setShowSuccess(true)
+            setSuccess(false)
+          }
+  
+        }
+
+        else{
+         result = await dispatch(addDocumentTypeApi(merge)).unwrap();
+
+
+
+          SetMessage('Successfully added a barangay service')
+
+          setCount(count + 1)
+  
+          setIsEdit(false)
+          setShowSuccess(true)
+          setSuccess(true)
+  
+          if (result.success) {
+            setShowSuccess(true)
+            setSuccess(true)
+          }
+          else {
+            setShowSuccess(true)
+            setSuccess(false)
+          }
+  
+        }
 
         // Handle success, e.g., navigate to another page
 
-        SetMessage('Successfully added a barangay service')
-
-        setCount(count + 1)
-
-        setShowSuccess(true)
-        setSuccess(true)
-
-        if (result.success) {
-          setShowSuccess(true)
-          setSuccess(true)
-        }
-        else {
-          setShowSuccess(true)
-          setSuccess(false)
-        }
-
+   
 
 
       } catch (error) {
@@ -1286,7 +1322,8 @@ export default function Official() {
                                 <button
                                   data-bs-toggle="modal" data-bs-target="#addBarangayServices"
                                   onClick={() => {
-
+                                    
+                                    setDocId(i.id)
                                     setSSS({
                                       ...sss, ...{
                                         service: i.service,
@@ -1760,7 +1797,7 @@ export default function Official() {
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title">{isEdit ? "Edit" : "Add"} Barangay Services</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  <button type="button" onClick={()=>setIsEdit(false)} class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
 

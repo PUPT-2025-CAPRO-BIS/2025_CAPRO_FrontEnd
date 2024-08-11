@@ -20,7 +20,8 @@ import { addDocumentTypeApi, deleteDocumentTypeApi, getDocumentTypeApi, updateDo
 
 
 
-export default function Official() {
+export default function Official({ params }) {
+    
   const dispatch = useDispatch();
   const router = useRouter()
   const officials = useSelector(state => state)
@@ -32,7 +33,51 @@ export default function Official() {
     1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
   ])
 
+  //get indx 1 in url
+  const [currentPage, setCurrentPage] = useState(params.page[1])
+  const [totalPage, setTotalPage] = useState(0)
+
+  const [searchItemList, setSearchItemList] = useState('')
+
+
+  const handleKeyDown = (event) => {
+
+
+    let slug = ''
+
+
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Optional: Prevents the default action if needed
+      let data = {
+        token: token.token,
+        currentPage,
+        searchItemList
+      }
   
+      if(tab == 0) slug = dispatch(loadOfficials(data)).unwrap();
+      if(tab == 3) slug = dispatch(getDocumentTypeApi(data)).unwrap();
+      const fetchData = async () => {
+
+        try {
+          const result = await slug
+          
+
+          setTotalPage(result.total_pages)
+
+      
+          // Handle success, e.g., navigate to another page
+        } catch (error) {
+
+          // Handle error, e.g., show an error message
+        }
+      };
+
+      fetchData();
+      
+      // You can perform any action here, like submitting a form or calling a function
+    }
+  };
+
 
   const [success, setSuccess] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
@@ -103,14 +148,48 @@ export default function Official() {
 
   const [value, setValue] = useState('');
 
+
   useEffect(() => {
+
+    let getPage = params.page[0]
+    let getPageNumber = params.page[1]
+
+    
+
+
+    if (getPage == "Staff") {
+      setCurrentPage(getPageNumber)
+      seTab(0)
+    }
+    if(getPage == "Services"){
+      setCurrentPage(getPageNumber)
+      seTab(3)
+    }
+
+    if(getPage == "Dashboard"){
+      setCurrentPage(getPageNumber)
+      seTab(10)
+    }
+
+
+  }, [])
+
+  
+
+  useEffect(() => {
+
+    let data = {
+      token: token.token,
+      currentPage,
+      searchItemList
+    }
 
     if (tab == 10) {
       const fetchData = async () => {
 
         try {
           const result = await dispatch(dashboardViewApi(token.token)).unwrap();
-         
+
           // Handle success, e.g., navigate to another page
         } catch (error) {
 
@@ -122,11 +201,21 @@ export default function Official() {
     }
 
     if (tab == 0) {
+
+    
+
+
       const fetchData = async () => {
 
         try {
-          const result = await dispatch(loadOfficials(token.token)).unwrap();
+          const result = await dispatch(loadOfficials(data)).unwrap();
+          
 
+          setTotalPage(result.total_pages)
+
+          if(currentPage > result.total_pages){
+            alert("Invalid url")
+          }
           // Handle success, e.g., navigate to another page
         } catch (error) {
 
@@ -160,8 +249,14 @@ export default function Official() {
       const fetchData = async () => {
 
         try {
-          const result = await dispatch(getDocumentTypeApi(token.token)).unwrap();
+          const result = await dispatch(getDocumentTypeApi(data)).unwrap();
+          
+          setTotalPage(result.total_pages)
 
+          if(currentPage > result.total_pages){
+            alert("Invalid url")
+          }
+          
           // Handle success, e.g., navigate to another page
         } catch (error) {
 
@@ -442,29 +537,29 @@ export default function Official() {
       isCertificate: 1,
       doc_id: ''
     })
-    
+
 
     setServiceDesc('')
-    console.log(isEdit, "--> IS EDIT")
+    
     const fetchData = async () => {
 
 
 
 
       try {
-        let result =''
+        let result = ''
 
-        if(isEdit){
+        if (isEdit) {
           result = await dispatch(updateDocumentTypesApi(merge)).unwrap();
 
           SetMessage('Successfully updated a barangay service')
 
           setCount(count + 1)
-  
+
           setIsEdit(false)
           setShowSuccess(true)
           setSuccess(true)
-  
+
           if (result.success) {
             setShowSuccess(true)
             setSuccess(true)
@@ -473,22 +568,22 @@ export default function Official() {
             setShowSuccess(true)
             setSuccess(false)
           }
-  
+
         }
 
-        else{
-         result = await dispatch(addDocumentTypeApi(merge)).unwrap();
+        else {
+          result = await dispatch(addDocumentTypeApi(merge)).unwrap();
 
 
 
           SetMessage('Successfully added a barangay service')
 
           setCount(count + 1)
-  
+
           setIsEdit(false)
           setShowSuccess(true)
           setSuccess(true)
-  
+
           if (result.success) {
             setShowSuccess(true)
             setSuccess(true)
@@ -497,12 +592,12 @@ export default function Official() {
             setShowSuccess(true)
             setSuccess(false)
           }
-  
+
         }
 
         // Handle success, e.g., navigate to another page
 
-   
+
 
 
       } catch (error) {
@@ -583,9 +678,63 @@ export default function Official() {
   }, [])
 
 
+  const search = () => {
+
+  }
 
   const changeTab = (v) => {
-    seTab(v)
+    
+
+    
+    if(v == 0) {
+      router.replace('/Admin/Official/Staff/1')
+    }
+    if(v == 3){
+      router.replace('/Admin/Official/Services/1')
+    }
+
+      seTab(v)
+  }
+
+
+  const paginate = (v, k ) => {
+
+    let slug = ''
+    
+
+    if(tab == 0) slug = "Staff"
+    if(tab == 3) slug = "Services"
+
+    
+
+    if(k == 1){
+      //next
+      
+      if(currentPage >= totalPage){
+        setCurrentPage(totalPage)
+
+      }
+      else{
+
+        //tab 0
+        router.replace(`/Admin/Official/${slug}/` + (parseInt(currentPage) + 1))
+      }
+   
+    }
+    else if(k == 0){
+      //previous
+      if(currentPage >= 2)
+      {
+          //tab 0
+        router.replace(`/Admin/Official/${slug}/` + (parseInt(currentPage) - 1))
+      }
+      else{
+        setCurrentPage(1)
+      }
+      
+      
+    }
+
   }
 
 
@@ -819,7 +968,7 @@ export default function Official() {
                         </span>
 
                         <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
-                        {dashboard.females}
+                          {dashboard.females}
                         </span>
                       </div>
                     </div>
@@ -870,7 +1019,7 @@ export default function Official() {
                     <div className="d-flex">
                       <div className=" d-flex">
 
-                      <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{width:"200px"}}>
+                        <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{ width: "200px" }}>
                           <i class="bi bi-hand-thumbs-down f-white" style={{ fontSize: "50px" }}></i>
                           <div className="flex-column d-flex ms-3 align-items-center">
                             <span className="f-white">
@@ -886,7 +1035,7 @@ export default function Official() {
 
                       <div className=" d-flex ms-3">
 
-                        <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{width:"200px"}}>
+                        <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{ width: "200px" }}>
                           <i class="bi bi-lightning f-white" style={{ fontSize: "50px" }}></i>
                           <div className="flex-column d-flex ms-3 align-items-center">
                             <span className="f-white">
@@ -905,7 +1054,7 @@ export default function Official() {
                     <div className="d-flex mt-3">
                       <div className=" d-flex">
 
-                      <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{width:"200px"}}>
+                        <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{ width: "200px" }}>
                           <i class="bi bi-hand-thumbs-up f-white" style={{ fontSize: "50px" }}></i>
                           <div className="flex-column d-flex ms-3 align-items-center">
                             <span className="f-white">
@@ -921,7 +1070,7 @@ export default function Official() {
 
                       <div className=" d-flex ms-3">
 
-                      <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{width:"200px"}}>
+                        <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{ width: "200px" }}>
                           <i class="bi bi-x-octagon-fill f-white" style={{ fontSize: "50px" }}></i>
                           <div className="flex-column d-flex ms-3 align-items-center">
                             <span className="f-white">
@@ -961,7 +1110,10 @@ export default function Official() {
 
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
-                    <input type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Username" />
+                    <input
+                    onKeyDown={handleKeyDown}
+                    onChange={(v) => setSearchItemList(v.target.value)}  
+                    type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Offial name" />
                   </div>
 
                   {
@@ -1007,7 +1159,7 @@ export default function Official() {
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
                     {
-                      officials.officials.list.map((i, k) => {
+                      officials.officials.list.data.map((i, k) => {
 
 
                         return (
@@ -1079,6 +1231,8 @@ export default function Official() {
                   </div>
 
                   {/* Table body */}
+
+
                 </div>
 
               </div>
@@ -1099,7 +1253,10 @@ export default function Official() {
 
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
-                    <input type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Username" />
+                    <input 
+                       onKeyDown={handleKeyDown}
+                       onChange={(v) => setSearchItemList(v.target.value)}  
+                      type="email" className="form-control rounded ms-2" placeholder="Title" />
                   </div>
 
                   <div >
@@ -1246,7 +1403,10 @@ export default function Official() {
 
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
-                    <input type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
+                    <input 
+                        onKeyDown={handleKeyDown}
+                        onChange={(v) => setSearchItemList(v.target.value)}  
+                      type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
                   </div>
 
                   <div >
@@ -1287,7 +1447,7 @@ export default function Official() {
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
                     {
-                      documentList.list.map((i, k) => {
+                      documentList.list.data.map((i, k) => {
                         return (
 
                           // Put dynamic className
@@ -1322,7 +1482,7 @@ export default function Official() {
                                 <button
                                   data-bs-toggle="modal" data-bs-target="#addBarangayServices"
                                   onClick={() => {
-                                    
+
                                     setDocId(i.id)
                                     setSSS({
                                       ...sss, ...{
@@ -1374,10 +1534,46 @@ export default function Official() {
                   {/* Table body */}
                 </div>
 
+
+
+
               </div>
             }
 
             {/* Barangay services */}
+
+            {
+              tab != 10 &&
+              <div className="col-12 d-flex align-items-center justify-content-between mt-5 mb-5">
+              <div>
+                
+                Showing <span className="fw-bold">{currentPage}</span> of <span class="fw-bold">{totalPage}</span>
+              </div>
+
+              <div className="d-flex align-items-center justify-content-center">
+
+              <div 
+                onClick={() => paginate(null, 0)}
+                className="bg-yellow rounded p-2 f-white d-flex align-items-center justify-content-center" style={{width: "70px"}}>
+                  Prev
+                </div>
+
+                <div className="d-flex align-items-center justify-content-center bg-green f-white ms-2 me-2" style={{height: "50px", width:"50px", borderRadius: "25px"}}>
+                  1
+                </div>
+
+
+                <div 
+                   onClick={() => paginate(null, 1)}
+                  className="bg-yellow rounded p-2 f-white d-flex align-items-center justify-content-center" style={{width: "70px"}}>
+                  Next
+                </div>
+
+              </div>
+
+            </div>
+            }
+
 
           </div>
 
@@ -1797,7 +1993,7 @@ export default function Official() {
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title">{isEdit ? "Edit" : "Add"} Barangay Services</h5>
-                  <button type="button" onClick={()=>setIsEdit(false)} class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => { setIsEdit(false) }}></button>
                 </div>
                 <div class="modal-body">
 

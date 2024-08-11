@@ -50,8 +50,12 @@ export const getDocumentTypeApi = createAsyncThunk('user/getDocumentTypes', asyn
   
 const res = await apiClient.get('/getDocumentTypes',  {
 headers:{
-  'Authorization': `Bearer ${data}`, // Replace with your actual token
+  'Authorization': `Bearer ${data.token}`, // Replace with your actual token
   'Content-Type': 'application/json',
+}, params:{
+  search_value: data.searchItemList,
+      page_number: data.currentPage,
+      item_per_page: 10
 }
 });
 return res.data;

@@ -38,15 +38,15 @@ apiClient.interceptors.response.use(
 );
 
 // Define async thunks
-export const loadOfficials = createAsyncThunk('user/getofficial', async (bearer) => {
-  
+export const loadOfficials = createAsyncThunk('user/getofficial', async (data) => {
+  console.log(data, "--> DAMN")
   const res = await apiClient.get('/viewBarangayOfficials', {
     headers: {
-      'Authorization': `Bearer ${bearer}`, // Replace with your actual token
+      'Authorization': `Bearer ${data.token}`, // Replace with your actual token
       'Content-Type': 'application/json',
     }, params: {
-      search_value: '',
-      page_number: 1,
+      search_value: data.searchItemList,
+      page_number: data.currentPage,
       item_per_page: 10
     }
   });

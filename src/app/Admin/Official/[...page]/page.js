@@ -1158,8 +1158,9 @@ export default function Official({ params }) {
 
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
+                    
                     {
-                      officials.officials.list.data.map((i, k) => {
+                      officials.officials.list.length != 0 && officials.officials.list.data.map((i, k) => {
 
 
                         return (
@@ -1447,7 +1448,7 @@ export default function Official({ params }) {
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
                     {
-                      documentList.list.data.map((i, k) => {
+                      documentList.list.length != 0 && documentList.list.data.map((i, k) => {
                         return (
 
                           // Put dynamic className

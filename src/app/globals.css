@@ -172,6 +172,12 @@ a {
   background-position: center;
 }
 
+.bg-3{
+  background-image: url('../../public//images/Background1.png');
+  background-size: cover;
+  background-position: center;
+}
+
 .logo-bg{
   background-image: url('../assets//TitleforSideBar.png');
   background-size: contain;

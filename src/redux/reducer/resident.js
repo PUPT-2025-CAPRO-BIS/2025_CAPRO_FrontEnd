@@ -77,6 +77,58 @@ export const loadAllUsers = createAsyncThunk('user/viewAllUsers', async (bearer)
 });
 
 
+
+export const generateOTPapi = createAsyncThunk('user/generateOTP', async (data) => {
+
+
+  const res = await apiClient.post('/generateOTP', {
+    email: data.email,
+    birthday: data.birthday
+
+  }, {
+    headers: {
+      // 'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }
+  });
+  return res.data;
+});
+
+export const otpLoginApi = createAsyncThunk('user/otpLogin', async (data) => {
+
+
+  const res = await apiClient.post('/otpLogin', {
+    email: data.email,
+    otp: data.otp
+
+  }, {
+    headers: {
+      // 'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }
+  });
+  return res.data;
+});
+
+export const createAppointmentApi = createAsyncThunk('user/createAppointment', async (data) => {
+
+  console.log('received', data)
+
+  const res = await apiClient.post('/createAppointment', {
+    document_type_id: data.id,
+    schedule_date: data.selectedDate,
+    file_upload : data.file_upload
+
+  }, {
+    headers: {
+      'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }
+  });
+  return res.data;
+});
+
+
 // Create slice
 const usersSlice = createSlice({
   name: 'user',

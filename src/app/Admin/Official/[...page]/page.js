@@ -1858,6 +1858,8 @@ export default function Official({ params }) {
                     <label class="form-label">Birthday</label>
                     <DatePicker
                       id='bdayinput'
+                      showMonthDropdown={true}
+                      showYearDropdown={true}
                       className="w-100 form-control"
                       onKeyDown={(e) => {
                         e.preventDefault();

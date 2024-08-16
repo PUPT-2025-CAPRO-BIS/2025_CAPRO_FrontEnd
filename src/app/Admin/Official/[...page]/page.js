@@ -2,7 +2,7 @@
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
 import { addOfficials, dashboardViewApi, deleteOffialsApi, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
-import { addResidentApi, editResidentApi, loadAllUsers } from "@/redux/reducer/resident";
+import { addResidentApi, deleteResidentInformationApi, editResidentApi, loadAllUsers } from "@/redux/reducer/resident";
 import { LogOut } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
 import Image from "next/image";
@@ -54,8 +54,8 @@ export default function Official({ params }) {
         searchItemList
       }
   
-      if(tab == 0) slug = dispatch(loadOfficials(data)).unwrap();
-      if(tab == 3) slug = dispatch(getDocumentTypeApi(data)).unwrap();
+      if (tab == 0) slug = dispatch(loadOfficials(data)).unwrap();
+      if (tab == 3) slug = dispatch(getDocumentTypeApi(data)).unwrap();
       const fetchData = async () => {
 
         try {
@@ -161,7 +161,7 @@ export default function Official({ params }) {
       setCurrentPage(getPageNumber)
       seTab(0)
     }
-    if(getPage == "Services"){
+    if (getPage == "Services") {
       setCurrentPage(getPageNumber)
       seTab(3)
     }
@@ -213,7 +213,7 @@ export default function Official({ params }) {
 
           setTotalPage(result.total_pages)
 
-          if(currentPage > result.total_pages){
+          if (currentPage > result.total_pages) {
             alert("Invalid url")
           }
           // Handle success, e.g., navigate to another page
@@ -253,7 +253,7 @@ export default function Official({ params }) {
           
           setTotalPage(result.total_pages)
 
-          if(currentPage > result.total_pages){
+          if (currentPage > result.total_pages) {
             alert("Invalid url")
           }
           
@@ -512,6 +512,67 @@ export default function Official({ params }) {
         token: token.token
       }
 
+      if (isEdit) {
+        try {
+          const result = await dispatch(editResidentApi(merge)).unwrap();
+
+          if (result.success) {
+            setSuccess(true)
+            setShowSuccess(true)
+            SetMessage(`Resident ${resident.first_name} information has been updated`)
+            setResident({
+              first_name: '',
+              middle_name: '',
+              last_name: '',
+              email: '',
+              pass: '',
+              birthday: '',
+              cell_number: '',
+              civil_status_id: '',
+              male_female: ''
+            })
+            setCount(count + 1)
+          }
+          else{
+            setSuccess(false)
+            setShowSuccess(true)
+          }
+        }
+        catch (error) {
+
+        }
+      }
+      else {
+        try {
+          const result = await dispatch(addResidentApi(merge)).unwrap();
+
+          if (result.success) {
+            setSuccess(true)
+            setShowSuccess(true)
+            SetMessage(`Resident ${resident.first_name} information has been added`)
+            setResident({
+              first_name: '',
+              middle_name: '',
+              last_name: '',
+              email: '',
+              pass: '',
+              birthday: '',
+              cell_number: '',
+              civil_status_id: '',
+              male_female: ''
+            })
+
+            setCount(count + 1)
+          }
+          else{
+            setSuccess(false)
+            setShowSuccess(true)
+          }
+        }
+        catch (error) {
+
+        }
+      }
 
       isEdit ? dispatch(editResidentApi(merge)) : dispatch(addResidentApi(merge))
 
@@ -520,6 +581,41 @@ export default function Official({ params }) {
 
 
   }
+  
+  const deleteResident = async () => {
+    // deleteResidentInformationApi
+
+    let merge = {
+      id: resident.id,
+
+      token: token.token
+    }
+
+    console.log('di pumasok??', merge)
+
+    try {
+      const result = await dispatch(deleteResidentInformationApi(merge)).unwrap();
+      
+
+      if (result.success == true) {
+        console.log("SUCCESS: ", result.success)
+        setShowSuccess(true)
+        setSuccess(true)
+        SetMessage(`Resident ${resident.first_name} has been deleted.`)
+        setCount(count + 1)
+      }
+      else {
+
+        setShowSuccess(true)
+        SetMessage('Something went wrong!!')
+      }
+    }
+    catch (error) {
+
+    }
+  }
+
+
   const addDocumentType = () => {
 
     let merge = {
@@ -683,52 +779,51 @@ export default function Official({ params }) {
   }
 
   const changeTab = (v) => {
-    
 
     
-    if(v == 0) {
+
+    if (v == 0) {
       router.replace('/Admin/Official/Staff/1')
     }
-    if(v == 3){
+    if (v == 3) {
       router.replace('/Admin/Official/Services/1')
     }
 
-      seTab(v)
+    seTab(v)
   }
 
 
-  const paginate = (v, k ) => {
+  const paginate = (v, k) => {
 
     let slug = ''
     
 
-    if(tab == 0) slug = "Staff"
-    if(tab == 3) slug = "Services"
-
+    if (tab == 0) slug = "Staff"
+    if (tab == 3) slug = "Services"
     
 
-    if(k == 1){
+    
+    if (k == 1) {
       //next
       
-      if(currentPage >= totalPage){
+      if (currentPage >= totalPage) {
         setCurrentPage(totalPage)
 
       }
-      else{
+      else {
 
         //tab 0
         router.replace(`/Admin/Official/${slug}/` + (parseInt(currentPage) + 1))
       }
    
     }
-    else if(k == 0){
+    else if (k == 0) {
       //previous
-      if(currentPage >= 2)
-      {
-          //tab 0
+      if (currentPage >= 2) {
+        //tab 0
         router.replace(`/Admin/Official/${slug}/` + (parseInt(currentPage) - 1))
       }
-      else{
+      else {
         setCurrentPage(1)
       }
       
@@ -739,6 +834,7 @@ export default function Official({ params }) {
 
 
 
+  
   return (
     <main className={`container-fluid`}>
       <Auth>
@@ -1111,9 +1207,9 @@ export default function Official({ params }) {
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
                     <input
-                    onKeyDown={handleKeyDown}
-                    onChange={(v) => setSearchItemList(v.target.value)}  
-                    type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Offial name" />
+                      onKeyDown={handleKeyDown}
+                      onChange={(v) => setSearchItemList(v.target.value)}
+                      type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Offial name" />
                   </div>
 
                   {
@@ -1254,9 +1350,9 @@ export default function Official({ params }) {
 
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
-                    <input 
-                       onKeyDown={handleKeyDown}
-                       onChange={(v) => setSearchItemList(v.target.value)}  
+                    <input
+                      onKeyDown={handleKeyDown}
+                      onChange={(v) => setSearchItemList(v.target.value)}  
                       type="email" className="form-control rounded ms-2" placeholder="Title" />
                   </div>
 
@@ -1304,7 +1400,7 @@ export default function Official({ params }) {
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
                     {
-                      alluser.list.map((i, k) => {
+                      alluser.list.data.map((i, k) => {
                         return (
 
                           // Put dynamic className
@@ -1362,6 +1458,7 @@ export default function Official({ params }) {
 
                                   onClick={() => {
 
+                                    
                                     setSelectedItem(i)
                                     setResident(i)
                                     document.getElementById(k + i.full_name + "button").classList.add('d-none')
@@ -1404,9 +1501,9 @@ export default function Official({ params }) {
 
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
-                    <input 
-                        onKeyDown={handleKeyDown}
-                        onChange={(v) => setSearchItemList(v.target.value)}  
+                    <input
+                      onKeyDown={handleKeyDown}
+                      onChange={(v) => setSearchItemList(v.target.value)} 
                       type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
                   </div>
 
@@ -1546,33 +1643,33 @@ export default function Official({ params }) {
             {
               tab != 10 &&
               <div className="col-12 d-flex align-items-center justify-content-between mt-5 mb-5">
-              <div>
-                
-                Showing <span className="fw-bold">{currentPage}</span> of <span class="fw-bold">{totalPage}</span>
+                <div>
+
+                  Showing <span className="fw-bold">{currentPage}</span> of <span class="fw-bold">{totalPage}</span>
+                </div>
+
+                <div className="d-flex align-items-center justify-content-center">
+
+                  <div
+                    onClick={() => paginate(null, 0)}
+                    className="bg-yellow rounded p-2 f-white d-flex align-items-center justify-content-center" style={{ width: "70px" }}>
+                    Prev
+                  </div>
+
+                  <div className="d-flex align-items-center justify-content-center bg-green f-white ms-2 me-2" style={{ height: "50px", width: "50px", borderRadius: "25px" }}>
+                    1
+                  </div>
+
+
+                  <div
+                    onClick={() => paginate(null, 1)}
+                    className="bg-yellow rounded p-2 f-white d-flex align-items-center justify-content-center" style={{ width: "70px" }}>
+                    Next
+                  </div>
+
+                </div>
+
               </div>
-
-              <div className="d-flex align-items-center justify-content-center">
-
-              <div 
-                onClick={() => paginate(null, 0)}
-                className="bg-yellow rounded p-2 f-white d-flex align-items-center justify-content-center" style={{width: "70px"}}>
-                  Prev
-                </div>
-
-                <div className="d-flex align-items-center justify-content-center bg-green f-white ms-2 me-2" style={{height: "50px", width:"50px", borderRadius: "25px"}}>
-                  1
-                </div>
-
-
-                <div 
-                   onClick={() => paginate(null, 1)}
-                  className="bg-yellow rounded p-2 f-white d-flex align-items-center justify-content-center" style={{width: "70px"}}>
-                  Next
-                </div>
-
-              </div>
-
-            </div>
             }
 
 
@@ -1980,7 +2077,7 @@ export default function Official({ params }) {
                 </div>
                 <div class="modal-footer">
                   <button type="button" onClick={() => { }} class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" onClick={() => addResident()} class="btn btn-primary bg-green">Save changes</button>
+                  <button data-bs-dismiss="modal" type="button" onClick={() => addResident()} class="btn btn-primary bg-green">Save changes</button>
                 </div>
               </div>
             </div>
@@ -2114,6 +2211,7 @@ export default function Official({ params }) {
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                   <button data-bs-dismiss="modal" onClick={() => {
 
+                    tab == 1 && deleteResident()
                     tab == 0 && deleteOffials()
                     tab == 3 && deleteDocumentType()
                   }} type="button" class="btn btn-primary bg-green">Yes</button>

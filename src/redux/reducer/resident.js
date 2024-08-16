@@ -60,6 +60,23 @@ export const editResidentApi = createAsyncThunk('user/changeResidentInformation'
   return res.data;
 });
 
+// deleteResidentInformation
+
+export const deleteResidentInformationApi = createAsyncThunk('user/deleteResidentInformation', async (data) => {
+  
+
+  const res = await apiClient.post('/deleteResidentInformation', {
+      user_id: data.id
+  }, {
+    headers: {
+      'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }
+  });
+  return res.data;
+});
+
+
 
 export const loadAllUsers = createAsyncThunk('user/viewAllUsers', async (bearer) => {
 
@@ -112,7 +129,7 @@ export const otpLoginApi = createAsyncThunk('user/otpLogin', async (data) => {
 
 export const createAppointmentApi = createAsyncThunk('user/createAppointment', async (data) => {
 
-  console.log('received', data)
+  
 
   const res = await apiClient.post('/createAppointment', {
     document_type_id: data.id,

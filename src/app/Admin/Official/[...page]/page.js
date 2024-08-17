@@ -281,7 +281,7 @@ export default function Official({ params }) {
     //v search val
     // officials list
     let tmpArr = []
-    alluser.list.map((i, k) => {
+    alluser.list.data.map((i, k) => {
 
       let fullname = i.first_name + " " + i.middle_name + " " + i.last_name
 
@@ -1699,7 +1699,7 @@ export default function Official({ params }) {
                   <div class="mb-3">
                     <label class="form-label">Chairmanship</label>
                     <input
-                      value={selectedItem != null && selectedItem.chairmanship}
+                      value={selectedItem != null ? selectedItem.chairmanship: ''}
                       onChange={(val) => {
                         if (selectedItem != null) {
                           setSelectedItem({
@@ -1713,7 +1713,7 @@ export default function Official({ params }) {
                   <div class="mb-3">
                     <label class="form-label">Position</label>
                     <input
-                      value={selectedItem != null && selectedItem.position}
+                      value={selectedItem != null ? selectedItem.position: ''}
                       onChange={(val) => {
                         if (selectedItem != null) {
                           setSelectedItem({

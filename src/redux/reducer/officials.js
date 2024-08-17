@@ -39,7 +39,7 @@ apiClient.interceptors.response.use(
 
 // Define async thunks
 export const loadOfficials = createAsyncThunk('user/getofficial', async (data) => {
-  console.log(data, "--> DAMN")
+
   const res = await apiClient.get('/viewBarangayOfficials', {
     headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token

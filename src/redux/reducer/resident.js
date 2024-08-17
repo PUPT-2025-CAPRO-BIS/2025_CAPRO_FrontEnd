@@ -78,15 +78,15 @@ export const deleteResidentInformationApi = createAsyncThunk('user/deleteResiden
 
 
 
-export const loadAllUsers = createAsyncThunk('user/viewAllUsers', async (bearer) => {
+export const loadAllUsers = createAsyncThunk('user/viewAllUsers', async (data) => {
 
   const res = await apiClient.get('/viewAllUsers', {
     headers: {
-      'Authorization': `Bearer ${bearer}`, // Replace with your actual token
+      'Authorization': `Bearer ${data.token}`, // Replace with your actual token
       'Content-Type': 'application/json',
     }, params: {
-      search_value: '',
-      page_number: 1,
+      search_value: data.searchItemList,
+      page_number: data.currentPage,
       item_per_page: 10
     }
   });

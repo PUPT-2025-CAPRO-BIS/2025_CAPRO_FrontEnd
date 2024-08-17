@@ -9,7 +9,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
+import 'react-calendar/dist/Calendar.css';
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -17,7 +17,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from "react-quill";
 import { addDocumentTypeApi, deleteDocumentTypeApi, getDocumentTypeApi, updateDocumentTypesApi } from "@/redux/reducer/document";
-
+import Calendar from "react-calendar";
+import moment from "moment";
 
 
 export default function Official({ params }) {
@@ -39,6 +40,7 @@ export default function Official({ params }) {
 
   const [searchItemList, setSearchItemList] = useState('')
 
+  const [showAddResident, setShowAddResident] = useState(false)
 
   const handleKeyDown = (event) => {
 
@@ -56,11 +58,15 @@ export default function Official({ params }) {
   
       if (tab == 0) slug = dispatch(loadOfficials(data)).unwrap();
       if (tab == 3) slug = dispatch(getDocumentTypeApi(data)).unwrap();
+
+      
+      if(tab == 1) slug = dispatch(loadAllUsers(data)).unwrap();
       const fetchData = async () => {
 
         try {
           const result = await slug
           
+          console.log('result: ', result)
 
           setTotalPage(result.total_pages)
 
@@ -165,6 +171,10 @@ export default function Official({ params }) {
       setCurrentPage(getPageNumber)
       seTab(3)
     }
+    if (getPage == "Resident") {
+      setCurrentPage(getPageNumber)
+      seTab(1)
+    }
 
     if(getPage == "Dashboard"){
       setCurrentPage(getPageNumber)
@@ -214,7 +224,7 @@ export default function Official({ params }) {
           setTotalPage(result.total_pages)
 
           if (currentPage > result.total_pages) {
-            alert("Invalid url")
+            //alert("Invalid url")
           }
           // Handle success, e.g., navigate to another page
         } catch (error) {
@@ -229,7 +239,9 @@ export default function Official({ params }) {
       const fetchData = async () => {
 
         try {
-          const result = await dispatch(loadAllUsers(token.token)).unwrap();
+          const result = await dispatch(loadAllUsers(data)).unwrap();
+
+          setTotalPage(result.total_pages)
 
           // Handle success, e.g., navigate to another page
         } catch (error) {
@@ -469,7 +481,7 @@ export default function Official({ params }) {
   const addResident = async () => {
 
 
-
+    setShowAddResident(false)
 
 
     if (resident.first_name == "") {
@@ -486,7 +498,7 @@ export default function Official({ params }) {
     }
 
     if (resident.birthday == "") {
-      document.getElementById('bdayinput').style.border = '1px solid red'
+      //document.getElementById('bdayinput').style.border = '1px solid red'
     }
 
     if (resident.cell_number == "") {
@@ -529,11 +541,11 @@ export default function Official({ params }) {
               birthday: '',
               cell_number: '',
               civil_status_id: '',
-              male_female: ''
+              male_female: '',
             })
             setCount(count + 1)
           }
-          else{
+          else {
             setSuccess(false)
             setShowSuccess(true)
           }
@@ -545,7 +557,7 @@ export default function Official({ params }) {
       else {
         try {
           const result = await dispatch(addResidentApi(merge)).unwrap();
-
+          console.log("RESULT: ", result)
           if (result.success) {
             setSuccess(true)
             setShowSuccess(true)
@@ -564,7 +576,7 @@ export default function Official({ params }) {
 
             setCount(count + 1)
           }
-          else{
+          else {
             setSuccess(false)
             setShowSuccess(true)
           }
@@ -573,9 +585,6 @@ export default function Official({ params }) {
 
         }
       }
-
-      isEdit ? dispatch(editResidentApi(merge)) : dispatch(addResidentApi(merge))
-
 
     }
 
@@ -780,10 +789,14 @@ export default function Official({ params }) {
 
   const changeTab = (v) => {
 
-    
+    console.log(v, "--> CHECK ME")
+
 
     if (v == 0) {
       router.replace('/Admin/Official/Staff/1')
+    }
+    if(v == 1){
+      router.replace('/Admin/Official/Resident/1')
     }
     if (v == 3) {
       router.replace('/Admin/Official/Services/1')
@@ -1209,7 +1222,7 @@ export default function Official({ params }) {
                     <input
                       onKeyDown={handleKeyDown}
                       onChange={(v) => setSearchItemList(v.target.value)}
-                      type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Offial name" />
+                      type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Official name" />
                   </div>
 
                   {
@@ -1358,7 +1371,9 @@ export default function Official({ params }) {
 
                   <div >
                     <button
-                      data-bs-toggle="modal" data-bs-target="#addResidentModal"
+                      onClick={() => {
+                        setShowAddResident(true)
+                      }}
                       className="primary bg-yellow p-2 rounded" style={{ border: "0px" }}
                     >
                       <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
@@ -1853,7 +1868,13 @@ export default function Official({ params }) {
 
           { }
 
-          <div class="modal fade" id="addResidentModal" tabindex="-1" aria-labelledby="addResidentModalLabel" aria-hidden="true">
+          {
+
+          showAddResident && 
+
+            <div class="modal fade show d-block" style={{backgroundColor:"rgba(0,0,0,0.5)"}} 
+                  id="addResidentModal" tabindex="-1" 
+                    aria-labelledby="addResidentModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content" style={{ maxHeight: "720px", overflowY: "scroll" }}>
                 <div class="modal-header">
@@ -1932,7 +1953,7 @@ export default function Official({ params }) {
                     <label class="form-label">Email</label>
                     <input
                       id='emailinput'
-                      value={resident.email || resident.Email}
+                      value={resident.Email == undefined ? resident.email : resident.Email}
                       onChange={(val) => {
                         if (val.target.value != "") {
                           document.getElementById('emailinput').style.border = '1px solid #dee2e6'
@@ -1953,26 +1974,21 @@ export default function Official({ params }) {
 
                   <div class="mb-3 d-flex flex-column">
                     <label class="form-label">Birthday</label>
-                    <DatePicker
-                      id='bdayinput'
-                      showMonthDropdown={true}
-                      showYearDropdown={true}
-                      className="w-100 form-control"
-                      onKeyDown={(e) => {
-                        e.preventDefault();
-                      }}
-                      selected={startDate} onChange={(date) => {
-                        document.getElementById('bdayinput').style.border = '1px solid #dee2e6'
-
+                    <Calendar
+                       id='bdayinput'
+                      className="mt-3"
+                      onChange={(v) => {
+                        // document.getElementById('bdayinput').style.border = '1px solid #dee2e6'
 
                         setResident({
                           ...resident, ...{
-                            birthday: date
+                            birthday: moment(v).format("YYYY-MM-DD")
                           }
                         })
-                        setStartDate(date)
+                        setStartDate(moment(v).format("YYYY-MM-DD"))
                       }
-                      } />
+                    }
+                    />
                   </div>
 
                   <div class="mb-3">
@@ -2006,7 +2022,7 @@ export default function Official({ params }) {
                     <label class="form-label">Gender</label>
                     <div class="form-check">
                       <input
-                        checked={resident.male_female == 0}
+                        checked={resident.male_female === 0 ? true : false}
                         onChange={() => {
 
 
@@ -2024,10 +2040,10 @@ export default function Official({ params }) {
                         Male
                       </label>
                     </div>
-
+                    {console.log(resident.male_female, "--> CHECK")}
                     <div class="form-check">
                       <input
-                        checked={resident.male_female == 1}
+                        checked={resident.male_female === 1 ? true : false}
                         onChange={() => {
 
 
@@ -2055,7 +2071,7 @@ export default function Official({ params }) {
                       value={resident.civil_status_id}
                       id='civilinput'
                       onChange={(v) => {
-                        document.getElementById('civilinput').style.border = '0px solid #dee2e6'
+                        document.getElementById('civilinput').style.border = '1px solid #dee2e6'
                         setResident({
                           ...resident, ...{
                             civil_status_id: v.target.value
@@ -2063,7 +2079,7 @@ export default function Official({ params }) {
                         })
                       }}
                       class="form-select" aria-label="Default select example">
-                      <option selected>Civil status</option>
+                      <option value="null">Civil Status</option>
                       <option value="0">Single</option>
                       <option value="1">Married</option>
                       <option value="2">Widowed</option>
@@ -2076,12 +2092,15 @@ export default function Official({ params }) {
 
                 </div>
                 <div class="modal-footer">
-                  <button type="button" onClick={() => { }} class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button data-bs-dismiss="modal" type="button" onClick={() => addResident()} class="btn btn-primary bg-green">Save changes</button>
+                <button type="button" onClick={() => { setShowAddResident(false)}} class="btn btn-secondary">Close</button>
+                  <button  type="button" onClick={() => {
+                    addResident()
+                  }} class="btn btn-primary bg-green">Save changes</button>
                 </div>
               </div>
             </div>
           </div>
+          }
 
           {/* Add Resident */}
 

@@ -21,11 +21,11 @@ export default function CreateAppointment() {
     const dispatch = useDispatch()
     const router = useRouter()
 
-    const [birthday, setBirthday] = useState('1992-11-03')
-    const [email, setEmail] = useState('afeil@example.net')
+    // const [birthday, setBirthday] = useState('1992-11-03')
+    // const [email, setEmail] = useState('afeil@example.net')
 
-    // const [birthday, setBirthday] = useState('')
-    // const [email, setEmail] = useState('')
+    const [birthday, setBirthday] = useState('')
+    const [email, setEmail] = useState('')
 
     const [otp, setOTP] = useState('')
     const [success, setSuccess] = useState(false)

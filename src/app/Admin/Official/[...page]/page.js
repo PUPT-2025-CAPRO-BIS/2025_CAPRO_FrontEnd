@@ -60,13 +60,11 @@ export default function Official({ params }) {
       if (tab == 3) slug = dispatch(getDocumentTypeApi(data)).unwrap();
 
       
-      if(tab == 1) slug = dispatch(loadAllUsers(data)).unwrap();
+      if  (tab == 1) slug = dispatch(loadAllUsers(data)).unwrap();
       const fetchData = async () => {
 
         try {
           const result = await slug
-          
-          console.log('result: ', result)
 
           setTotalPage(result.total_pages)
 
@@ -188,6 +186,7 @@ export default function Official({ params }) {
 
   useEffect(() => {
 
+    setLoading(true)
     let data = {
       token: token.token,
       currentPage,
@@ -205,22 +204,17 @@ export default function Official({ params }) {
 
           // Handle error, e.g., show an error message
         }
+        setLoading(false)
       };
-
       fetchData();
     }
 
     if (tab == 0) {
-
-    
-
-
       const fetchData = async () => {
 
         try {
           const result = await dispatch(loadOfficials(data)).unwrap();
           
-
           setTotalPage(result.total_pages)
 
           if (currentPage > result.total_pages) {
@@ -231,10 +225,11 @@ export default function Official({ params }) {
 
           // Handle error, e.g., show an error message
         }
+        setLoading(false)
       };
-
       fetchData();
     }
+
     if (tab == 1 || tab == 0) {
       const fetchData = async () => {
 
@@ -249,15 +244,10 @@ export default function Official({ params }) {
           // Handle error, e.g., show an error message
         }
       };
-
-
       fetchData();
     }
 
-
-
     if (tab == 3) {
-
       const fetchData = async () => {
 
         try {
@@ -274,8 +264,8 @@ export default function Official({ params }) {
 
           // Handle error, e.g., show an error message
         }
+        setLoading(false)
       };
-
       fetchData();
     }
 
@@ -480,10 +470,6 @@ export default function Official({ params }) {
 
   const addResident = async () => {
 
-
-    setShowAddResident(false)
-
-
     if (resident.first_name == "") {
       document.getElementById('fnameinput').style.border = '1px solid red'
     }
@@ -528,7 +514,8 @@ export default function Official({ params }) {
         try {
           const result = await dispatch(editResidentApi(merge)).unwrap();
 
-          if (result.success) {
+          if (result.success == true) {
+            setIsEdit(false)
             setSuccess(true)
             setShowSuccess(true)
             SetMessage(`Resident ${resident.first_name} information has been updated`)
@@ -544,6 +531,7 @@ export default function Official({ params }) {
               male_female: '',
             })
             setCount(count + 1)
+            setShowAddResident(false)
           }
           else {
             setSuccess(false)
@@ -558,7 +546,8 @@ export default function Official({ params }) {
         try {
           const result = await dispatch(addResidentApi(merge)).unwrap();
           console.log("RESULT: ", result)
-          if (result.success) {
+          if (result.success == true) {
+            setIsEdit(false)
             setSuccess(true)
             setShowSuccess(true)
             SetMessage(`Resident ${resident.first_name} information has been added`)
@@ -573,7 +562,7 @@ export default function Official({ params }) {
               civil_status_id: '',
               male_female: ''
             })
-
+            setShowAddResident(false)
             setCount(count + 1)
           }
           else {
@@ -607,7 +596,6 @@ export default function Official({ params }) {
       
 
       if (result.success == true) {
-        console.log("SUCCESS: ", result.success)
         setShowSuccess(true)
         setSuccess(true)
         SetMessage(`Resident ${resident.first_name} has been deleted.`)
@@ -778,31 +766,26 @@ export default function Official({ params }) {
   }
 
 
-  useEffect(() => {
-
-  }, [])
-
-
   const search = () => {
 
   }
 
   const changeTab = (v) => {
 
-    console.log(v, "--> CHECK ME")
-
-
     if (v == 0) {
-      router.replace('/Admin/Official/Staff/1')
+      router.push('/Admin/Official/Staff/1')
     }
     if(v == 1){
-      router.replace('/Admin/Official/Resident/1')
+      router.push('/Admin/Official/Resident/1')
     }
     if (v == 3) {
-      router.replace('/Admin/Official/Services/1')
+      router.push('/Admin/Official/Services/1')
+    }
+    if (v == 10) {
+      router.push('/Admin/Official/Dashboard')
     }
 
-    seTab(v)
+    //seTab(v)
   }
 
 
@@ -1366,7 +1349,7 @@ export default function Official({ params }) {
                     <input
                       onKeyDown={handleKeyDown}
                       onChange={(v) => setSearchItemList(v.target.value)}  
-                      type="email" className="form-control rounded ms-2" placeholder="Title" />
+                      type="email" className="form-control rounded ms-2" placeholder="Search name" />
                   </div>
 
                   <div >
@@ -1437,7 +1420,7 @@ export default function Official({ params }) {
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-
+                                {i.male_female == 0 ? "Male" : "Female"}
                               </span>
                             </RowItem>
                             <RowItem>
@@ -1458,9 +1441,7 @@ export default function Official({ params }) {
                               <div id={k + i.full_name + "button"} className="d-flex d-none">
 
                                 <button
-                                  data-bs-toggle="modal" data-bs-target="#addResidentModal"
                                   onClick={() => {
-
                                     setIsEdit(true)
                                     setResident(i)
                                     document.getElementById(k + i.full_name + "button").classList.add('d-none')
@@ -1870,236 +1851,240 @@ export default function Official({ params }) {
 
           {
 
-          showAddResident && 
+          showAddResident &&
 
-            <div class="modal fade show d-block" style={{backgroundColor:"rgba(0,0,0,0.5)"}} 
-                  id="addResidentModal" tabindex="-1" 
-                    aria-labelledby="addResidentModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content" style={{ maxHeight: "720px", overflowY: "scroll" }}>
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="addOfficialModalLabel"> {isEdit ? "Edit Resident" : "Add Resident"}</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <div class="mb-3">
-                    <label class="form-label">First name</label>
-                    <input
-                      id='fnameinput'
-                      value={resident.first_name}
-                      onChange={(val) => {
-
-                        if (val.target.value != "") {
-                          document.getElementById('fnameinput').style.border = '1px solid #dee2e6'
+          <div class="modal fade show d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)" }} 
+              id="addResidentModal" tabindex="-1" 
+                aria-labelledby="addResidentModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style={{ maxHeight: "720px", overflowY: "scroll" }}>
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="addOfficialModalLabel"> {isEdit ? "Edit Resident" : "Add Resident"}</h1>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label class="form-label">First name</label>
+                  <input
+                    id='fnameinput'
+                    value={resident.first_name}
+                    onChange={(val) => {
+                      if (val.target.value != "") {
+                        document.getElementById('fnameinput').style.border = '1px solid #dee2e6'
+                      }
+                      else {
+                        document.getElementById('fnameinput').style.border = '1px solid red'
+                      }
+                      setResident({
+                        ...resident, ...{
+                          first_name: val.target.value
                         }
-                        else {
-                          document.getElementById('fnameinput').style.border = '1px solid red'
-                        }
-
-                        setResident({
-                          ...resident, ...{
-                            first_name: val.target.value
-                          }
-                        })
-
-                      }}
-                      class="form-control" />
+                      })
+                      
+                    }}
+                    class="form-control" />
 
                   </div>
 
                   <div class="mb-3">
-                    <label class="form-label">Middle name</label>
-                    <input
-                      value={resident.middle_name}
-                      onChange={(val) => {
-
-                        setResident({
+                      <label class="form-label">Middle name</label>
+                      <input
+                        value={resident.middle_name}
+                        onChange={(val) => {
+                          setResident({
                           ...resident, ...{
                             middle_name: val.target.value
                           }
                         })
-
                       }}
                       class="form-control" />
 
                   </div>
 
                   <div class="mb-3">
-                    <label class="form-label">Last name</label>
-                    <input
-                      id='lnameinput'
-                      value={resident.last_name}
-                      onChange={(val) => {
-
-                        if (val.target.value != "") {
-                          document.getElementById('lnameinput').style.border = '1px solid #dee2e6'
-                        }
-                        else {
-                          document.getElementById('lnameinput').style.border = '1px solid red'
-                        }
-
-                        setResident({
-                          ...resident, ...{
-                            last_name: val.target.value
-                          }
-                        })
-
-                      }}
-                      class="form-control" />
-
-                  </div>
-
-                  <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input
-                      id='emailinput'
-                      value={resident.Email == undefined ? resident.email : resident.Email}
-                      onChange={(val) => {
-                        if (val.target.value != "") {
-                          document.getElementById('emailinput').style.border = '1px solid #dee2e6'
-                        }
-                        else {
-                          document.getElementById('emailinput').style.border = '1px solid red'
-                        }
-                        setResident({
-                          ...resident, ...{
-                            email: val.target.value
-                          }
-                        })
-
-                      }}
-                      class="form-control" />
-
-                  </div>
-
-                  <div class="mb-3 d-flex flex-column">
-                    <label class="form-label">Birthday</label>
-                    <Calendar
-                       id='bdayinput'
-                      className="mt-3"
-                      onChange={(v) => {
-                        // document.getElementById('bdayinput').style.border = '1px solid #dee2e6'
-
-                        setResident({
-                          ...resident, ...{
-                            birthday: moment(v).format("YYYY-MM-DD")
-                          }
-                        })
-                        setStartDate(moment(v).format("YYYY-MM-DD"))
-                      }
-                    }
-                    />
-                  </div>
-
-                  <div class="mb-3">
-                    <label class="form-label">Phone number</label>
-                    <input
-                      id='phoneinput'
-                      value={resident.cell_number}
-                      onChange={(val) => {
-
-                        if (val.target.value != "") {
-                          document.getElementById('phoneinput').style.border = '1px solid #dee2e6'
-                        }
-                        else {
-                          document.getElementById('phoneinput').style.border = '1px solid red'
-                        }
-
-                        setResident({
-                          ...resident, ...{
-                            cell_number: val.target.value
-                          }
-                        })
-
-                      }}
-                      class="form-control" />
-
-                  </div>
-
-
-
-                  <div id='genderinput' class="mb-3">
-                    <label class="form-label">Gender</label>
-                    <div class="form-check">
+                      <label class="form-label">Last name</label>
                       <input
-                        checked={resident.male_female === 0 ? true : false}
-                        onChange={() => {
+                        id='lnameinput'
+                        value={resident.last_name}
+                        onChange={(val) => {
 
-
-                          document.getElementById('genderinput').style.border = '0px solid #dee2e6'
-
+                        if (val.target.value != "") {
+                            document.getElementById('lnameinput').style.border = '1px solid #dee2e6'
+                          }
+                        else {
+                            document.getElementById('lnameinput').style.border = '1px solid red'
+                          }
 
                           setResident({
                             ...resident, ...{
-                              male_female: 0
+                              last_name: val.target.value
+                            }
+                          })
+
+                          }}
+                            class="form-control" />
+
+                        </div>
+
+                        <div class="mb-3">
+                      <label class="form-label">Email</label>
+                      <input
+                        id='emailinput'
+                        value={resident.Email == undefined ? resident.email : resident.Email}
+                        onChange={(val) => {
+                          if (val.target.value != "") {
+                            document.getElementById('emailinput').style.border = '1px solid #dee2e6'
+                          }
+                          else {
+                            document.getElementById('emailinput').style.border = '1px solid red'
+                          }
+                          setResident({
+                            ...resident, ...{
+                              email: val.target.value
                             }
                           })
                         }}
-                        class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
-                      <label class="form-check-label" for="flexRadioDefault2">
-                        Male
-                      </label>
+                        class="form-control" />
+
                     </div>
-                    {console.log(resident.male_female, "--> CHECK")}
-                    <div class="form-check">
+
+                    <div class="mb-3 d-flex flex-column">
+                      <label class="form-label">Birthday</label>
+
+                      <Calendar
+                        id='bdayinput'
+                        className="mt-3"
+                        value={resident.birthday}
+                        onChange={(v) => {
+                          // document.getElementById('bdayinput').style.border = '1px solid #dee2e6'
+                          setResident({
+                            ...resident, ...{
+                              birthday: moment(v).format("YYYY-MM-DD")
+                            }
+                          })
+                          setStartDate(moment(v).format("YYYY-MM-DD"))
+                        }}
+                      />
+
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Phone number</label>
                       <input
-                        checked={resident.male_female === 1 ? true : false}
-                        onChange={() => {
+                        id='phoneinput'
+                        value={resident.cell_number}
+                        onChange={(val) => {
+                          if (val.target.value != "") {
+                            document.getElementById('phoneinput').style.border = '1px solid #dee2e6'
+                          }
+                          else {
+                            document.getElementById('phoneinput').style.border = '1px solid red'
+                          }
+                          setResident({
+                            ...resident, ...{
+                              cell_number: val.target.value
+                            }
+                          })
+
+                        }}
+                        class="form-control"/>
+
+                    </div>
+
+                    <div id='genderinput' class="mb-3">
+                      <label class="form-label">Gender</label>
+                      <div class="form-check">
+                        <input
+                          checked={resident.male_female === 0 ? true : false}
+                          onChange={() => {
 
 
-                          document.getElementById('genderinput').style.border = '0px solid #dee2e6'
+                            document.getElementById('genderinput').style.border = '0px solid #dee2e6'
+
+
+                            setResident({
+                              ...resident, ...{
+                                male_female: 0
+                              }
+                            })
+                          }}
+                          class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          Male
+                        </label>
+                      </div>
+                      { }
+                      <div class="form-check">
+                        <input
+                          checked={resident.male_female === 1 ? true : false}
+                          onChange={() => {
+
+
+                            document.getElementById('genderinput').style.border = '0px solid #dee2e6'
+
+                            setResident({
+                              ...resident, ...{
+                                male_female: 1
+                              }
+                            })
+                          }}
+                          class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          Female
+                        </label>
+                      </div>
+
+                    </div>
+
+
+                    <div class="mb-3">
+                      <label class="form-label">Civil Status</label>
+                      <select
+                        value={resident.civil_status_id}
+                        id='civilinput'
+                        onChange={(v) => {
+                          document.getElementById('civilinput').style.border = '1px solid #dee2e6'
 
                           setResident({
                             ...resident, ...{
-                              male_female: 1
+                              civil_status_id: v.target.value
                             }
                           })
                         }}
-                        class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
-                      <label class="form-check-label" for="flexRadioDefault2">
-                        Female
-                      </label>
+                        class="form-select" aria-label="Default select example">
+                        <option value="null">Civil Status</option>
+                        <option value={1}>Single</option>
+                        <option value={2}>Married</option>
+                        <option value={3}>Widowed</option>
+                        <option value={4}>Legally Separated</option>
+                      </select>
                     </div>
 
                   </div>
 
+                  <div class="modal-footer">
+                    <button type="button" onClick={() => {
+                      setResident({
+                        first_name: '',
+                        middle_name: '',
+                        last_name: '',
+                        email: '',
+                        pass: '',
+                        birthday: '',
+                        cell_number: '',
+                        civil_status_id: '',
+                        male_female: ''
+                      })
+                      setShowAddResident(false)
 
-                  <div class="mb-3">
-                    <label class="form-label">Civil Status</label>
-
-                    <select
-                      value={resident.civil_status_id}
-                      id='civilinput'
-                      onChange={(v) => {
-                        document.getElementById('civilinput').style.border = '1px solid #dee2e6'
-                        setResident({
-                          ...resident, ...{
-                            civil_status_id: v.target.value
-                          }
-                        })
-                      }}
-                      class="form-select" aria-label="Default select example">
-                      <option value="null">Civil Status</option>
-                      <option value="0">Single</option>
-                      <option value="1">Married</option>
-                      <option value="2">Widowed</option>
-                      <option value="3">Legally Separated</option>
-                    </select>
-
+                    }} class="btn btn-secondary">Close</button>
+                    <button type="button" onClick={() => {
+                      addResident()
+                    }} class="btn btn-primary bg-green">Save changes</button>
                   </div>
 
-
-
-                </div>
-                <div class="modal-footer">
-                <button type="button" onClick={() => { setShowAddResident(false)}} class="btn btn-secondary">Close</button>
-                  <button  type="button" onClick={() => {
-                    addResident()
-                  }} class="btn btn-primary bg-green">Save changes</button>
                 </div>
               </div>
             </div>
-          </div>
           }
 
           {/* Add Resident */}
@@ -2256,6 +2241,21 @@ export default function Official({ params }) {
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onClick={() => setShowSuccess(false)}>Close</button>
 
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+
+          {
+            loading &&
+            <div id="statusModal " class="modal fade show d-block">
+              <div class="d-flex align-items-center justify-content-center" style={{height:"100vh", backgroundColor:"rgba(0,0,0,0.4)"}}>
+                <div class="modal-content d-flex align-items-center" style={{backgroundColor:"transparent "}}>
+                  <div class="">
+                    <h2 className="f-white">
+                      Loading .....
+                    </h2>
                   </div>
                 </div>
               </div>

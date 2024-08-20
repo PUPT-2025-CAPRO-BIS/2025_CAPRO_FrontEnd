@@ -165,10 +165,17 @@ export default function Official({ params }) {
       setCurrentPage(getPageNumber)
       seTab(0)
     }
+
     if (getPage == "Services") {
       setCurrentPage(getPageNumber)
       seTab(3)
     }
+
+    if (getPage == "Schedule") {
+      setCurrentPage(getPageNumber)
+      seTab(2)
+    }
+
     if (getPage == "Resident") {
       setCurrentPage(getPageNumber)
       seTab(1)
@@ -778,6 +785,9 @@ export default function Official({ params }) {
     if(v == 1){
       router.push('/Admin/Official/Resident/1')
     }
+    if (v == 2) {
+      router.push('/Admin/Official/Schedule/1')
+    }
     if (v == 3) {
       router.push('/Admin/Official/Services/1')
     }
@@ -883,7 +893,7 @@ export default function Official({ params }) {
               </div>
 
 
-              <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded ${tab == 2 ? 'active-nav' : ''} pointer`}>
+              <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded ${tab == 4 ? 'active-nav' : ''} pointer`}>
 
                 <i class="bi bi-person-fill-slash f-white icon"></i>
                 <span className="f-white ms-2 nav-item">
@@ -1481,7 +1491,149 @@ export default function Official({ params }) {
 
             {/* MANAGE RESIDENT */}
 
+            {/* Schedule */}
 
+            {
+              tab == 2 &&
+              <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
+
+                <div className="border-bottom p-2 pb-4 mt-3">
+                  <h2 className="f-white">Schedule</h2>
+                </div>
+
+                <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
+
+                  <div className="d-flex align-items-center">
+                    <span className="f-white">Search:</span>
+                    <input
+                      onKeyDown={handleKeyDown}
+                      onChange={(v) => setSearchItemList(v.target.value)}
+                      type="email" className="form-control rounded ms-2" placeholder="Search name" />
+                  </div>
+
+                  {/* <div >
+                    <button
+                      onClick={() => {
+                        setShowAddResident(true)
+                      }}
+                      className="primary bg-yellow p-2 rounded" style={{ border: "0px" }}
+                    >
+                      <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
+                      <span className="fw-bold">Add Resident</span>
+                    </button>
+                  </div> */}
+                </div>
+
+
+                {/*  */}
+                <div className="border-bottom p-2 pb-4 mt-3">
+
+                  {/* Table header */}
+                  <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{}}>
+                    <HeaderItem>
+                      Date
+                    </HeaderItem>
+                    <HeaderItem>
+                      Name
+                    </HeaderItem>
+                    <HeaderItem>
+                      Service
+                    </HeaderItem>
+                    <HeaderItem>
+                      Status
+                    </HeaderItem>
+                    <HeaderItem>
+                      Action
+                    </HeaderItem>
+                  </div>
+
+
+
+                  {/* Table body */}
+
+                  <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
+
+                    {
+                      alluser.list.data.map((i, k) => {
+                        return (
+
+                          // Put dynamic className
+                          <div className='d-flex col-lg-12 justify-content-around row-item-container'>
+                            <RowItem>
+                              <span className="f-white">
+                                07/07/2024
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                John Doe
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                Barangay ID
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                Pending
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span id={k + i.full_name + "action"}
+                                onClick={() => {
+                                  document.getElementById(k + i.full_name + "button").classList.remove('d-none')
+                                  document.getElementById(k + i.full_name + "action").classList.add('d-none')
+
+                                }}
+                                className="f-white bg-yellow p-2 rounded">
+                                ACTION
+                              </span>
+                              <div id={k + i.full_name + "button"} className="d-flex d-none">
+
+                                <button
+
+                                  onClick={() => {
+
+                                    setIsEdit(true)
+                                    setResident(i)
+                                    setShowAddResident(true)
+                                    document.getElementById(k + i.full_name + "button").classList.add('d-none')
+                                    document.getElementById(k + i.full_name + "action").classList.remove('d-none')
+                                  }}
+                                  type="button" class="btn btn-primary">Edit</button>
+
+                                <button
+                                  data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
+
+                                  onClick={() => {
+
+
+                                    setSelectedItem(i)
+                                    setResident(i)
+                                    document.getElementById(k + i.full_name + "button").classList.add('d-none')
+                                    document.getElementById(k + i.full_name + "action").classList.remove('d-none')
+                                  }}
+                                  type="button" class="btn btn-danger ms-3">Delete</button>
+
+                              </div>
+                            </RowItem>
+
+                          </div>
+
+                        )
+                      })
+                    }
+
+                  </div>
+
+                  {/* Table body */}
+                </div>
+
+              </div>
+            }
+
+            {/* Schedule */}
 
             {/* Barangay services */}
 

@@ -28,7 +28,7 @@ export default function CreateAppointment() {
     const [email, setEmail] = useState('')
 
     const [otp, setOTP] = useState('')
-    const [success, setSuccess] = useState(false)
+    const [success, setSuccess] = useState(null)
     const [successOTP, setSuccessOTP] = useState(false)
 
     const [accessToken, setAccessToken] = useState('')
@@ -44,6 +44,19 @@ export default function CreateAppointment() {
 
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
+    const [newResident, setNewResident] = useState(null)
+
+    const [resident, setResident] = useState({
+        first_name: '',
+        middle_name: '',
+        last_name: '',
+        email: '',
+        pass: '',
+        birthday: '',
+        cell_number: '',
+        civil_status_id: '',
+        male_female: ''
+    })
 
 
     const onDrop = useCallback((acceptedFiles) => {
@@ -283,195 +296,258 @@ export default function CreateAppointment() {
     
 
 
+
+
     return (
         <main >
             <div className=" d-flex bg-white bg-3 align-items-center justify-content-center flex-column">
+                <div>
+                    <Image
+                        className='logo-size'
+                        src={require('../../../../assets/central.png')}
+                    />
+                    <Image
+                        className='logo-size'
+                        src={require('../../../../assets/taguig.png')}
+                    />
+                    <Image
+                        className='logo-size'
+                        src={require('../../../../assets/sk.png')}
+                    />
+                </div>
 
-                <div className="schedule-form p-4 col-6 rounded">
+                <div className="d-flex flex-column align-items-center justify-content-center w-100 p-5 rounded bg-green mt-3 mb-5">
 
-                    <h4>
-                        Scheduling Form
-                    </h4>
+                    <h1 className="f-white">
+                        BARANGAY CENTRAL BICUTAN
+                    </h1>
 
-                    {
-                        !success &&
+                    <span className="f-white">
+                        Sunflower Street, Taguig City, Metro Manila
+                    </span>
+                </div>
 
-                        <div>
-                            <div className="d-flex flex-column mt-5">
-                                <span className="">Email address</span>
-                                <input
-                                    // onKeyDown={handleKeyDown}
-                                    onChange={(v) => setEmail(v.target.value)}
-                                    value={email}
-                                    type="email" className="form-control rounded mt-3" placeholder="Enter your email" />
+                
+                {
+                    newResident == null &&
+                    <>
+
+                        <div className="d-flex align-items-center justify-content-around col-6" style={{ height: "50%" }}>
+
+                            <div
+                                onClick={() => {
+                                    setNewResident(false)
+                                }}
+                                className="pointer col-5 box bg-green p-5 d-flex align-items-center justify-content-center rounded flex-column">
+                                <i class="bi bi-person-check" style={{ fontSize: "56px" }}></i>
+                                Registered
                             </div>
 
-                            <div className="d-flex flex-column mt-3">
-                                <span className="">Birthday</span>
-                                <input
-                                    // onKeyDown={handleKeyDown}
-                                    value={birthday}
-                                    onChange={(v) => setBirthday(v.target.value)}
-                                    className="form-control rounded mt-3" placeholder="YYYY-MM-DD" />
+                            <div
+                                onClick={() => {
+                                    setNewResident(true)
+                                }}
+                                className="pointer col-5 box bg-yellow p-5 d-flex align-items-center justify-content-center rounded rounded flex-column">
+                                <i class="bi bi-person-add" style={{ fontSize: "56px" }}></i>
+                                Unregistered
                             </div>
 
                         </div>
-                    }
-                    {
-                        success && !successOTP &&
+                    </>
+                }
+                                  
+                    
 
-                        <div className="d-flex flex-column mt-5">
-                            <span className="">OTP</span>
-                            <input
-                                // onKeyDown={handleKeyDown}
+
+                {
+                    newResident == false &&
+
+                    <div className="schedule-form p-4 col-6 rounded">
+
+                        <h4>
+                            Scheduling Form
+                        </h4>
+
+                        {
+                            !success &&
+                            
+                            <div>
+                                <div className="d-flex flex-column mt-5">
+                                    <span className="">Email address</span>
+                                    <input
+                                        // onKeyDown={handleKeyDown}
+                                        onChange={(v) => setEmail(v.target.value)}
+                                        value={email}
+                                        type="email" className="form-control rounded mt-3" placeholder="Enter your email" />
+                                </div>
+
+                                <div className="d-flex flex-column mt-3">
+                                    <span className="">Birthday</span>
+                                    <input
+                                        // onKeyDown={handleKeyDown}
+                                        value={birthday}
+                                        onChange={(v) => setBirthday(v.target.value)}
+                                        className="form-control rounded mt-3" placeholder="YYYY-MM-DD" />
+                                </div>
+                          
+                                </div>
+                        }
+                        {
+                            success && !successOTP &&
+
+                            <div className="d-flex flex-column mt-5">
+                                <span className="">OTP</span>
+                                <input
+                                    // onKeyDown={handleKeyDown}
+                                    onChange={(v) => {
+
+                                        if (v.target.value != "") {
+                                            setIsButtonDisabled(false)
+                                        }
+                                        else {
+                                            setIsButtonDisabled(true)
+                                        }
+                                        setOTP(v.target.value)
+
+
+                                    }}
+                                    value={otp}
+                                    type="email" className="form-control rounded mt-3" placeholder="Enter otp received in your email address" />
+                            </div>
+                        }
+
+                        {
+                            success && successOTP &&
+                            <div>               
+
+
+                            
+                            <div className="d-flex flex-column" >
+                                
+                            <label>Select date</label>
+                            <label className="fw-bold mt-3">{selectedDate}</label>
+                            <Calendar
+                                className="mt-3"
                                 onChange={(v) => {
 
-                                    if (v.target.value != "") {
-                                        setIsButtonDisabled(false)
-                                    }
-                                    else {
-                                        setIsButtonDisabled(true)
-                                    }
-                                    setOTP(v.target.value)
+                                setSelectedDate(moment(v).format("YYYY-MM-DD"))
 
-                                  
                                 }}
-                                value={otp}
-                                type="email" className="form-control rounded mt-3" placeholder="Enter otp received in your email address" />
+                            />
                         </div>
-                    }
-
-                    {
-                        success && successOTP &&
-                        <div>
 
                             
 
-                            <div className="d-flex flex-column" >
-                          
-                                <label>Select date</label>
-                                <label className="fw-bold mt-3">{selectedDate}</label>
-                                <Calendar 
-                                    className="mt-3"
-                                    onChange={(v) => {
-
-                                        setSelectedDate(moment(v).format("YYYY-MM-DD"))
-
-                                    }}
-                                />
-                            </div>
+                        <div className="mt-3">
 
 
+                            <label>Select service</label>
 
-                            <div className="mt-3">
-                                
-                           
-                                <label>Select service</label>
+                            <select
 
-                                <select
+                                onChange={(v) => {
+                                    setSelectedDoc(v.target.value)
+                                }}
+                                class="form-select" aria-label="Default select example">
 
-                                    onChange={(v) => {
-                                        setSelectedDoc(v.target.value)
-                                    }}
-                                    class="form-select" aria-label="Default select example">
+                                {documentList.map((i, k) => {
 
-                                    {documentList.map((i, k) => {
+                                    return (
+                                        <option value={i.id} key={k}>{i.service}</option>
+                                    )
 
-                                        return (
-                                            <option value={i.id} key={k}>{i.service}</option>
-                                        )
-
-                                    })}
-                                </select>
-                            </div>
-
-
-                            <div {...getRootProps()} className="mt-5" style={{ borderStyle: "dotted" }}>
-                                <input {...getInputProps()} />
-                                {
-                                    isDragActive ?
-                                        <p>Drop the files here ...</p> :
-                                        <p>Drag 'n' drop some files here, or click to select files</p>
-                                }
-
-
-                            </div>
-
-                            <div className="mt-3">
-                                {
-                                    files.length != 0 && files.map((i, k) => {
-                                        return (
-                                            <div
-                                               className="d-flex align-items-center justify-content-between mt-2"
-                                            >
-                                                <span 
-                                                    className="pointer"
-                                                     onClick={() => {
-
-                                                        setSelectedFileForViewing(i)
-                                                        setShowImage(true)
-                                                    }}
-                                                >{i.fileName}</span>
-
-                                                <div className="pointer"
-
-                                                    onClick={() => {
-                                                        let tmpArr = files
-                                                        tmpArr.splice(k, 1);
-
-
-                                                        setFiles([...tmpArr])
-                                                    }}
-
-                                                >
-                                                <i class="bi bi-trash" style={{fontSize:"30px", color:"red"}}></i>
-                                                </div>
-
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </div>
+                                })}
+                            </select>
                         </div>
-                    }
-
-                    {
-                        !success && !successOTP &&
-                        <button
-                            id='rotp'
-                            disabled={isButtonDisabled}
-                            onClick={(v) => {
-                                submit()
-                                v.preventDefault()
-                            }} type="button" class="btn btn-primary bg-green mt-5 col-12" >Request OTP</button>
 
 
-                    }
+                        <div {...getRootProps()} className="mt-5" style={{ borderStyle: "dotted" }}>
+                            <input {...getInputProps()} />
+                            {
+                                isDragActive ?
+                                    <p>Drop the files here ...</p> :
+                                    <p>Drag 'n' drop some files here, or click to select files</p>
+                            }
+                            
 
-                    {
-                        success && !successOTP &&
-                        <button
-                            disabled={isButtonDisabled}
-                            onClick={(v) => {
-                                submitOTP()
-                                v.preventDefault()
-                            }} type="button" class="btn btn-primary bg-green mt-5 col-12" >Verify OTP</button>
+                            </div>
+
+                                <div className="mt-3">
+                                    {
+                                        files.length != 0 && files.map((i, k) => {
+                                            return (
+                                                <div
+                                                    className="d-flex align-items-center justify-content-between mt-2"
+                                                >
+                                                <span
+                                                        className="pointer"
+                                                        onClick={() => {
+
+                                                            setSelectedFileForViewing(i)
+                                                            setShowImage(true)
+                                                        }}
+                                                    >{i.fileName}</span>
+
+                                                    <div className="pointer"
+
+                                                        onClick={() => {
+                                                            let tmpArr = files
+                                                            tmpArr.splice(k, 1);
 
 
-                    }
+                                                            setFiles([...tmpArr])
+                                                        }}  
 
-                    {
-                        success && successOTP &&
-                        <button
-                            disabled={isButtonDisabled}
-                            onClick={() => {
-                                createAppoint()
-                            }} type="button" class="btn btn-primary bg-green mt-5 col-12" >Create appointment</button>
+                                                        >
+                                                        <i class="bi bi-trash" style={{ fontSize: "30px", color: "red" }}></i>
+                                                    </div>
+
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        {
+                            !success && !successOTP &&
+                            <button
+                                id='rotp'
+                                disabled={isButtonDisabled}
+                                onClick={(v) => {
+                                    submit()
+                                    v.preventDefault()
+                                }} type="button" class="btn btn-primary bg-green mt-5 col-12" >Request OTP</button>
 
 
-                    }
+                        }
 
-                </div>
+                        {
+                            success && !successOTP &&
+                            <button
+                                disabled={isButtonDisabled}
+                                onClick={(v) => {
+                                    submitOTP()
+                                    v.preventDefault()
+                                }} type="button" class="btn btn-primary bg-green mt-5 col-12" >Verify OTP</button>
+
+
+                        }
+
+                        {
+                            success && successOTP &&
+                            <button
+                                disabled={isButtonDisabled}
+                                onClick={() => {
+                                    createAppoint()
+                                }} type="button" class="btn btn-primary bg-green mt-5 col-12" >Create appointment</button>
+
+
+                        }
+
+                    </div>
+                }
 
                 {
                     showSuccess &&

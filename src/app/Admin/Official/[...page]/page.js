@@ -2,7 +2,7 @@
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
 import { addOfficials, dashboardViewApi, deleteOffialsApi, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
-import { addResidentApi, approveNewResidentApi, deleteResidentInformationApi, editResidentApi, loadAllUsers } from "@/redux/reducer/resident";
+import { addResidentApi, deleteResidentInformationApi, editResidentApi, loadAllUsers, viewAllBlottersApi, viewAppointmentListApi } from "@/redux/reducer/resident";
 import { LogOut } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
 import Image from "next/image";
@@ -70,6 +70,9 @@ export default function Official({ params }) {
       }
       if (tab == 3) {
         router.push('/Admin/Official/Services/1/' + searchItemList)
+      }
+      if (tab == 4) {
+        router.push('/Admin/Official/Blotter/1/' + searchItemList)
       }
       if (tab == 10) {
         router.push('/Admin/Official/Dashboard')
@@ -179,6 +182,11 @@ export default function Official({ params }) {
       seTab(1)
     }
 
+    if (getPage == "Blotter") {
+      setCurrentPage(getPageNumber)
+      seTab(4)
+    }
+
     if(getPage == "Dashboard"){
       setCurrentPage(getPageNumber)
       seTab(10)
@@ -272,6 +280,48 @@ export default function Official({ params }) {
         setLoading(false)
       };
       fetchData();
+    }
+
+    if(tab == 2){
+      try {
+        const result =  dispatch(viewAppointmentListApi(data)).unwrap();
+
+
+
+        // setTotalPage(result.total_pages)
+
+        // if (currentPage > result.total_pages) {
+        //   alert("Invalid url")
+        // }
+
+        // Handle success, e.g., navigate to another page
+      } catch (error) {
+
+        // Handle error, e.g., show an error message
+      }
+      setLoading(false)
+    }
+
+    if(tab == 4){
+
+
+      try {
+        const result =  dispatch(viewAllBlottersApi(data)).unwrap();
+
+
+
+        // setTotalPage(result.total_pages)
+
+        // if (currentPage > result.total_pages) {
+        //   alert("Invalid url")
+        // }
+
+        // Handle success, e.g., navigate to another page
+      } catch (error) {
+
+        // Handle error, e.g., show an error message
+      }
+      setLoading(false)
     }
 
 
@@ -784,6 +834,9 @@ export default function Official({ params }) {
     }
     if (v == 3) {
       router.push('/Admin/Official/Services/1')
+    }
+    if (v == 4) {
+      router.push('/Admin/Official/Blotter/1')
     }
     if (v == 10) {
       router.push('/Admin/Official/Dashboard')

@@ -1,6 +1,6 @@
 'use client'
 import Button from "@/components/Button";
-import { createAppointmentApi, generateOTPapi, otpLoginApi } from "@/redux/reducer/resident";
+import { addResidentApi, applyNewResidentApi, createAppointmentApi, generateOTPapi, otpLoginApi } from "@/redux/reducer/resident";
 import Image from "next/image";
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from "react";
@@ -46,6 +46,7 @@ export default function CreateAppointment() {
 
     const [newResident, setNewResident] = useState(null)
 
+    const [startDate, setStartDate] = useState();
     const [resident, setResident] = useState({
         first_name: '',
         middle_name: '',
@@ -55,7 +56,10 @@ export default function CreateAppointment() {
         birthday: '',
         cell_number: '',
         civil_status_id: '',
-        male_female: ''
+        male_female: '',
+        current_address: '',
+        voter_status:'',
+        file_upload: ''
     })
 
 
@@ -153,6 +157,106 @@ export default function CreateAppointment() {
         };
 
         fetchData();
+
+    }
+
+    const addResident = async () => {
+
+        if (resident.first_name == "") {
+            document.getElementById('fnameinput').style.border = '1px solid red'
+        }
+
+        if (resident.last_name == "") {
+            document.getElementById('lnameinput').style.border = '1px solid red'
+        }
+
+
+        if (resident.email == "") {
+            document.getElementById('emailinput').style.border = '1px solid red'
+        }
+
+        if (resident.birthday == "") {
+            // document.getElementById('bdayinput').style.border = '1px solid red'
+        }
+
+        if (resident.cell_number == "") {
+            document.getElementById('phoneinput').style.border = '1px solid red'
+        }
+        if (resident.current_address == "") {
+            document.getElementById('addressinput').style.border = '1px solid red'
+        }
+
+        if (resident.current_address == "") {
+            document.getElementById('addressinput').style.border = '1px solid red'
+        }
+
+        if (resident.voter_status === "") {
+            document.getElementById('voterinput').style.border = '1px solid red'
+        }
+
+        if (resident.civil_status_id == "") {
+            document.getElementById('civilinput').style.border = '1px solid red'
+        }
+
+        if (resident.first_name != "" && resident.last_name != "" && resident.birthday != "" && resident.cell_number != ""
+            && resident.male_female !== "" && resident.civil_status_id != ""
+
+        ) {
+
+            let base64List = []
+
+            files.map((i, k) => {
+                base64List.push(i.base64)
+            })
+
+
+            let merge = {
+                resident,
+                birthday: startDate,
+                file_upload: base64List
+                // token: token.token
+            }
+
+
+                try {
+                    const result = await dispatch(applyNewResidentApi(merge)).unwrap();
+
+                    if (result.success == true) {
+                        setSuccess(true)
+                        setShowSuccess(true)
+                        setMessage(`Successfully registered, kindly wait for the approval.`)
+                        setResident({
+                            first_name: '',
+                            middle_name: '',
+                            last_name: '',
+                            email: '',
+                            pass: '',
+                            birthday: '',
+                            cell_number: '',
+                            civil_status_id: '',
+                            male_female: '',
+                            current_address:'',
+                            voter_status: 0,
+                            file_upload: ''
+                        })
+
+                        setNewResident(null)
+                    }
+                    else {
+                        setSuccess(false)
+                        setShowSuccess(true)
+                    }
+                }
+                catch (error) {
+
+                }
+
+
+
+
+
+        }
+
 
     }
 
@@ -300,7 +404,7 @@ export default function CreateAppointment() {
 
     return (
         <main >
-            <div className=" d-flex bg-white bg-3 align-items-center justify-content-center flex-column">
+            <div className="d-flex bg-3 bg-white align-items-center flex-column" style={{ overflow: "scroll" }}>
                 <div>
                     <Image
                         className='logo-size'
@@ -356,7 +460,315 @@ export default function CreateAppointment() {
                     </>
                 }
                                   
-                    
+                                  {
+                    newResident == true &&
+
+                    <div className=" schedule-form p-4 col-6 rounded" style={{}}>
+                        <h4>
+                            Enter your details below:
+                        </h4>
+                        <div class="mb-3">
+                            <label class="form-label">First name</label>
+                            <input
+                                id='fnameinput'
+                                value={resident.first_name}
+                                onChange={(val) => {
+
+                                    if (val.target.value != "") {
+                                        document.getElementById('fnameinput').style.border = '1px solid #dee2e6'
+                                    }
+                                    else {
+                                        document.getElementById('fnameinput').style.border = '1px solid red'
+                                    }
+
+                                    setResident({
+                                        ...resident, ...{
+                                            first_name: val.target.value
+                                        }
+                                    })
+
+                                }}
+                                class="form-control" />
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Middle name</label>
+                            <input
+                                value={resident.middle_name}
+                                onChange={(val) => {
+
+                                    setResident({
+                                        ...resident, ...{
+                                            middle_name: val.target.value
+                                        }
+                                    })
+
+                                }}
+                                class="form-control" />
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Last name</label>
+                            <input
+                                id='lnameinput'
+                                value={resident.last_name}
+                                onChange={(val) => {
+
+                                    if (val.target.value != "") {
+                                        document.getElementById('lnameinput').style.border = '1px solid #dee2e6'
+                                    }
+                                    else {
+                                        document.getElementById('lnameinput').style.border = '1px solid red'
+                                    }
+
+                                    setResident({
+                                        ...resident, ...{
+                                            last_name: val.target.value
+                                        }
+                                    })
+
+                                }}
+                                class="form-control" />
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input
+                                id='emailinput'
+                                value={resident.Email == undefined ? resident.email : resident.Email}
+                                onChange={(val) => {
+                                    if (val.target.value != "") {
+                                        document.getElementById('emailinput').style.border = '1px solid #dee2e6'
+                                    }
+                                    else {
+                                        document.getElementById('emailinput').style.border = '1px solid red'
+                                    }
+                                    setResident({
+                                        ...resident, ...{
+                                            email: val.target.value
+                                        }
+                                    })
+
+                                }}
+                                class="form-control" />
+
+                        </div>
+
+                        <div class="mb-3 d-flex flex-column">
+                            <label class="form-label">Birthday</label>
+                            <span>{resident.birthday}</span>
+                            <Calendar
+                                id='bdayinput'
+                                className="mt-3"
+                                value={resident.birthday}
+                                onChange={(v) => {
+                                    // document.getElementById('bdayinput').style.border = '1px solid #dee2e6'
+
+                                    setResident({
+                                        ...resident, ...{
+                                            birthday: moment(v).format("YYYY-MM-DD")
+                                        }
+                                    })
+                                    setStartDate(moment(v).format("YYYY-MM-DD"))
+                                }}
+                            />
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Current Address</label>
+                            <input
+                                id='addressinput'
+                                value={resident.current_address}
+                                onChange={(val) => {
+
+                                    if (val.target.value != "") {
+                                        document.getElementById('addressinput').style.border = '1px solid #dee2e6'
+                                    }
+                                    else {
+                                        document.getElementById('addressinput').style.border = '1px solid red'
+                                    }
+
+                                    setResident({
+                                        ...resident, ...{
+                                            current_address: val.target.value
+                                        }
+                                    })
+
+                                }}
+                                class="form-control" />
+
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label class="form-label">Phone number</label>
+                            <input
+                                id='phoneinput'
+                                value={resident.cell_number}
+                                onChange={(val) => {
+
+                                    if (val.target.value != "") {
+                                        document.getElementById('phoneinput').style.border = '1px solid #dee2e6'
+                                    }
+                                    else {
+                                        document.getElementById('phoneinput').style.border = '1px solid red'
+                                    }
+
+                                    setResident({
+                                        ...resident, ...{
+                                            cell_number: val.target.value
+                                        }
+                                    })
+
+                                }}
+                                class="form-control" />
+
+                        </div>
+
+
+
+                        <div id='genderinput' class="mb-3">
+                            <label class="form-label">Gender</label>
+                            <div class="form-check">
+                                <input
+                                    checked={resident.male_female === 0 ? true : false}
+                                    onChange={() => {
+
+
+                                        document.getElementById('genderinput').style.border = '0px solid #dee2e6'
+
+
+                                        setResident({
+                                            ...resident, ...{
+                                                male_female: 0
+                                            }
+                                        })
+                                    }}
+                                    class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                    Male
+                                </label>
+                            </div>
+                            { }
+                            <div class="form-check">
+                                <input
+                                    checked={resident.male_female === 1 ? true : false}
+                                    onChange={() => {
+
+
+                                        document.getElementById('genderinput').style.border = '0px solid #dee2e6'
+
+                                        setResident({
+                                            ...resident, ...{
+                                                male_female: 1
+                                            }
+                                        })
+                                    }}
+                                    class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                    Female
+                                </label>
+                            </div>
+
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label class="form-label">Civil Status</label>
+                            <select
+                                value={resident.civil_status_id}
+                                id='civilinput'
+                                onChange={(v) => {
+                                    document.getElementById('civilinput').style.border = '1px solid #dee2e6'
+                                    setResident({
+                                        ...resident, ...{
+                                            civil_status_id: v.target.value
+                                        }
+                                    })
+                                }}
+                                class="form-select" aria-label="Default select example">
+                                <option value="null">Civil Status</option>
+                                <option value={1}>Single</option>
+                                <option value={2}>Married</option>
+                                <option value={3}>Widowed</option>
+                                <option value={4}>Legally Separated</option>
+                            </select>
+
+                        </div>
+
+
+
+                        <div id='voterinput' class="mb-3">
+                            <label class="form-label">Voter status</label>
+                            <div class="form-check">
+                                <input
+                                    checked={resident.voter_status === 0 ? true : false}
+                                    onChange={() => {
+
+
+                                        document.getElementById('voterinput').style.border = '0px solid #dee2e6'
+
+
+                                        setResident({
+                                            ...resident, ...{
+                                                voter_status: 0
+                                            }
+                                        })
+                                    }}
+                                    class="form-check-input" type="radio" name="voter" id="voter" />
+                                <label class="form-check-label" for="voter">
+                                    No
+                                </label>
+                            </div>
+                            { }
+                            <div class="form-check">
+                                <input
+                                    checked={resident.voter_status === 1 ? true : false}
+                                    onChange={() => {
+
+
+                                        document.getElementById('voterinput').style.border = '0px solid #dee2e6'
+
+                                        setResident({
+                                            ...resident, ...{
+                                                voter_status: 1
+                                            }
+                                        })
+                                    }}
+                                    class="form-check-input" type="radio" name='voter' id="voter" />
+                                <label class="form-check-label" for="voter">
+                                    Yes
+                                </label>
+                            </div>
+
+                        </div>
+
+
+                        <div className="mt-5 mb-5" >
+                        <label class="form-label">Supporting Documents: <span className="fw-bold" style={{color:"red"}}>Valid ID</span></label>
+                        <div {...getRootProps()} style={{ borderStyle: "dotted" }}>
+                                    <input {...getInputProps()} />
+                                    {
+                                        isDragActive ?
+                                            <p>Drop the files here ...</p> :
+                                            <p>Drag 'n' drop some files here, or click to select files</p>
+                                    }
+
+
+                                </div>
+                        </div>
+
+                        <button type="button" onClick={() => {
+                            addResident()
+                        }} class="btn btn-primary bg-green">Submit</button>
+
+
+                    </div>
+                }  
 
 
                 {
@@ -545,7 +957,6 @@ export default function CreateAppointment() {
 
 
                         }
-
                     </div>
                 }
 
@@ -593,6 +1004,8 @@ export default function CreateAppointment() {
                         </div>
                     </div>
                 }
+
+                
             </div>
         </main>
     );

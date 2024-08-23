@@ -28,6 +28,23 @@ apiClient.interceptors.response.use(
 );
 
 // Define async thunks
+export const applyNewResidentApi = createAsyncThunk('user/applyNewResident', async (data) => {
+  let params = data
+  console.log(params, "-->")
+  const res = await apiClient.post('/applyNewResident', {
+    ...params.resident, ...{
+      birthday: moment(params.birthday).format("YYYY-MM-DD"),
+      file_upload: params.file_upload
+    }
+  }, {
+    headers: {
+      // 'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }
+  });
+  return res.data;
+});
+
 export const addResidentApi = createAsyncThunk('user/noVerificationRegistration', async (data) => {
   let params = data
 

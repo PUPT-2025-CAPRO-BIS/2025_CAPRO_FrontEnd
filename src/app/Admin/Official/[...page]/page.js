@@ -2,7 +2,7 @@
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
 import { addOfficials, dashboardViewApi, deleteOffialsApi, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
-import { addResidentApi, deleteResidentInformationApi, editResidentApi, loadAllUsers } from "@/redux/reducer/resident";
+import { addResidentApi, approveNewResidentApi, deleteResidentInformationApi, editResidentApi, loadAllUsers } from "@/redux/reducer/resident";
 import { LogOut } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
 import Image from "next/image";
@@ -33,6 +33,9 @@ export default function Official({ params }) {
   const [sample, setSample] = useState([
     1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
   ])
+
+  const [showImage, setShowImage] = useState(false)
+  const [selectedFileForViewing, setSelectedFileForViewing] = useState('')
 
   //get indx 1 in url
   const [currentPage, setCurrentPage] = useState(params.page[1])
@@ -830,19 +833,53 @@ export default function Official({ params }) {
 
   }
 
-  const approveResident = () => {
-    // setResident({
-    //   first_name: '',
-    //   middle_name: '',
-    //   last_name: '',
-    //   email: '',
-    //   pass: '',
-    //   birthday: '',
-    //   cell_number: '',
-    //   civil_status_id: '',
-    //   male_female: '',
-    //   isPendingResident: 0
-    // })
+  const approveResident =  async () => {
+
+    setLoading(true)
+    let merge = {
+      token: token.token,
+      id: resident.id
+    }
+
+
+
+    try {
+      const result = await dispatch(approveNewResidentApi(merge)).unwrap();
+      setLoading(false)
+
+      if(result.success == true){
+
+        setShowAddResident(false)
+        setIsViewing(false)
+        setSuccess(true)
+        SetMessage('Success in approving ' + resident.first_name + " as resident." )
+        setShowSuccess(true)
+        setResident({
+          first_name: '',
+          middle_name: '',
+          last_name: '',
+          email: '',
+          pass: '',
+          birthday: '',
+          cell_number: '',
+          civil_status_id: '',
+          male_female: '',
+          isPendingResident: 0
+        })
+        setCount(count + 1)
+      }
+      else{
+        setSuccess(false)
+        SetMessage('Something went wrong in approving ' + resident.first_name + " as resident." )
+        setShowSuccess(true)
+      }
+
+    } catch (error){
+      setSuccess(false)
+      SetMessage('Something went wrong in approving ' + resident.first_name + " as resident." )
+      setShowSuccess(true)
+    }
+  
   }
 
   return (
@@ -2268,10 +2305,25 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                     <div class="mb-3 d-flex flex-column">
                       <label class="form-label">Supporting documents</label>
 
-                      <img
-                        style={{ position: "relative", height: "300px", width: "100%" }}
-                        // src={resident.base64} 
-                        alt="Base64 Image" />
+                      {/* resident.supporting_files_obj */}
+                      {}
+                          {resident.supporting_files_obj.lenght != 0 &&
+                            resident.supporting_files_obj.map((i, k) => {
+
+                              return(
+                                <span 
+                                  onClick={() => {
+                                    setSelectedFileForViewing({
+                                      fileName: i.file_name,
+                                      base64: i.id
+
+                                    })
+                                    setShowImage(true)
+                                  }}
+                                  className="pointer">{i.file_name}</span>
+                              )
+                            })
+                          }
 
                     </div>
                   }
@@ -2508,6 +2560,30 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                   </div>
                 </div>
               </div>
+            </div>
+          }
+
+          {       
+            showImage &&
+            <div id="statusModal " class="modal fade show d-flex align-items-center justify-content-center">
+                <div className="col-6  d-flex flex-column align-items-center justify-content-center box mt-5">
+                    <div>
+                        <h4>
+                            {selectedFileForViewing.fileName}
+                        </h4>
+                    </div>
+                    <div class="d-flex align-items-center flex-column justify-content-center w-100 p-5" >
+                        <div style={{ height: "700px", width: "100%" }}>
+                            <img
+                                style={{ position: "relative", height: "700px", width: "100%" }}
+                                src={selectedFileForViewing.base64} alt="Base64 Image" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onClick={() => setShowImage(false)}>Close</button>
+
+                        </div>
+                    </div>
+                </div>
             </div>
           }
 

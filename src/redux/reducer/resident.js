@@ -5,7 +5,9 @@ import moment from 'moment';
 
 // Initial state
 const initialState = {
-  list: [],
+  list: {
+    data: []
+  },
   status: 'idle',  // Start with 'idle' instead of 'false'
   token: '',
 };

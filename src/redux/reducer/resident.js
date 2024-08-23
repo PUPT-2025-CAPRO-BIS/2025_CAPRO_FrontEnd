@@ -111,6 +111,37 @@ export const loadAllUsers = createAsyncThunk('user/viewAllUsers', async (data) =
 });
 
 
+export const viewNewResidentRequestsApi = createAsyncThunk('user/viewNewResidentRequests', async (data) => {
+
+  const res = await apiClient.get('/viewNewResidentRequests', {
+    headers: {
+      'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }, params: {
+      search_value: data.searchItemList,
+      page_number: data.currentPage,
+      item_per_page: 10
+    }
+  });
+  return res.data;
+});
+
+
+
+export const approveNewResidentApi = createAsyncThunk('user/approveNewResident', async (data) => {
+
+
+  const res = await apiClient.post('/approveNewResident', {
+      user_id: data.id
+  }, {
+    headers: {
+      'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }
+  });
+  return res.data;
+});
+
 
 export const generateOTPapi = createAsyncThunk('user/generateOTP', async (data) => {
 

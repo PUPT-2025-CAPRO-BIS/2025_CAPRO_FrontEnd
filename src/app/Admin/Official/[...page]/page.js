@@ -52,31 +52,25 @@ export default function Official({ params }) {
       event.preventDefault(); // Optional: Prevents the default action if needed
       let data = {
         token: token.token,
-        currentPage,
+        currentPage: 1,
         searchItemList
       }
-  
-      if (tab == 0) slug = dispatch(loadOfficials(data)).unwrap();
-      if (tab == 3) slug = dispatch(getDocumentTypeApi(data)).unwrap();
 
-      
-      if  (tab == 1) slug = dispatch(loadAllUsers(data)).unwrap();
-      const fetchData = async () => {
-
-        try {
-          const result = await slug
-
-          setTotalPage(result.total_pages)
-
-      
-          // Handle success, e.g., navigate to another page
-        } catch (error) {
-
-          // Handle error, e.g., show an error message
-        }
-      };
-
-      fetchData();
+      if (tab == 0) {
+        router.push('/Admin/Official/Staff/1/'+ searchItemList)
+      }
+      if (tab == 1) {
+        router.push('/Admin/Official/Resident/1/' + searchItemList)
+      }
+      if (tab == 2) {
+        router.push('/Admin/Official/Schedule/1/'+ searchItemList)
+      }
+      if (tab == 3) {
+        router.push('/Admin/Official/Services/1/' + searchItemList)
+      }
+      if (tab == 10) {
+        router.push('/Admin/Official/Dashboard')
+      }
       
       // You can perform any action here, like submitting a form or calling a function
     }
@@ -157,8 +151,7 @@ export default function Official({ params }) {
 
     let getPage = params.page[0]
     let getPageNumber = params.page[1]
-
-    
+    let getSearchItem = params.page[2]
 
 
     if (getPage == "Staff") {
@@ -185,7 +178,7 @@ export default function Official({ params }) {
       setCurrentPage(getPageNumber)
       seTab(10)
     }
-
+    setSearchItemList(getSearchItem)
 
   }, [])
 
@@ -773,10 +766,6 @@ export default function Official({ params }) {
   }
 
 
-  const search = () => {
-
-  }
-
   const changeTab = (v) => {
 
     if (v == 0) {
@@ -806,6 +795,7 @@ export default function Official({ params }) {
 
     if (tab == 0) slug = "Staff"
     if (tab == 3) slug = "Services"
+    if (tab == 1) slug = "Resident"
     
 
     
@@ -838,9 +828,6 @@ export default function Official({ params }) {
 
   }
 
-
-
-  
   return (
     <main className={`container-fluid`}>
       <Auth>
@@ -1359,6 +1346,7 @@ export default function Official({ params }) {
                     <input
                       onKeyDown={handleKeyDown}
                       onChange={(v) => setSearchItemList(v.target.value)}  
+                      value={searchItemList}
                       type="email" className="form-control rounded ms-2" placeholder="Search name" />
                   </div>
 
@@ -1395,6 +1383,9 @@ export default function Official({ params }) {
                     </HeaderItem>
                     <HeaderItem>
                       Voter Status
+                    </HeaderItem>
+                    <HeaderItem>
+                      User Status
                     </HeaderItem>
                     <HeaderItem>
                       Action
@@ -1435,7 +1426,12 @@ export default function Official({ params }) {
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-
+                              {i.voter_status == 0 ? "Voter" : "Non-Voter"}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                              {i.isPendingResident == 0 ? "Pending" : "Registered"}
                               </span>
                             </RowItem>
                             <RowItem>
@@ -1508,6 +1504,7 @@ export default function Official({ params }) {
                     <input
                       onKeyDown={handleKeyDown}
                       onChange={(v) => setSearchItemList(v.target.value)}
+                      value={searchItemList}
                       type="email" className="form-control rounded ms-2" placeholder="Search name" />
                   </div>
 
@@ -1915,6 +1912,7 @@ export default function Official({ params }) {
                     <input
                       id='selctednameadd'
                       // value={selectedItem != null && selectedItem.full_name}
+                      value={searchItemList}
                       onChange={(val) => {
 
                         searchAddOfficial(val.target.value)

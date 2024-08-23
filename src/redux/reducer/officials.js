@@ -4,7 +4,9 @@ import { apiClient } from './user';
 
 // Initial state
 const initialState = {
-  list: [],
+  list: {
+    data: []
+  },
   status: 'idle',  // Start with 'idle' instead of 'false'
   token: '',
   dashboardData:  {

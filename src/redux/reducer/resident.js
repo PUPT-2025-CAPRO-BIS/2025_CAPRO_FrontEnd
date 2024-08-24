@@ -85,7 +85,7 @@ export const deleteResidentInformationApi = createAsyncThunk('user/deleteResiden
   
 
   const res = await apiClient.post('/deleteResidentInformation', {
-      user_id: data.id
+    user_id: data.id
   }, {
     headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token
@@ -134,7 +134,8 @@ export const approveNewResidentApi = createAsyncThunk('user/approveNewResident',
 
 
   const res = await apiClient.post('/approveNewResident', {
-      user_id: data.id
+    user_id: data.id,
+    approve_reject: data.status
   }, {
     headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token
@@ -184,12 +185,43 @@ export const createAppointmentApi = createAsyncThunk('user/createAppointment', a
   const res = await apiClient.post('/createAppointment', {
     document_type_id: data.id,
     schedule_date: data.selectedDate,
-    file_upload : data.file_upload
+    file_upload: data.file_upload
 
   }, {
     headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token
       'Content-Type': 'application/json',
+    }
+  });
+  return res.data;
+});
+
+export const viewAppointmentListApi = createAsyncThunk('user/viewAppointmentListApi', async (data) => {
+
+  const res = await apiClient.get('/viewAppointmentList', {
+    headers: {
+      'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }, params: {
+      search_value: data.searchItemList,
+      page_number: data.currentPage,
+      item_per_page: 10
+    }
+  });
+  return res.data;
+});
+
+
+export const viewAllBlottersApi = createAsyncThunk('user/viewAllBlotters', async (data) => {
+
+  const res = await apiClient.get('/viewAllBlotters', {
+    headers: {
+      'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }, params: {
+      search_value: data.searchItemList,
+      page_number: data.currentPage,
+      item_per_page: 10
     }
   });
   return res.data;
@@ -245,6 +277,33 @@ const usersSlice = createSlice({
 
         state.status = 'failed';
       });
+ 
+    builder
+    .addCase(viewAppointmentListApi.pending, (state) => {
+      state.status = 'loading';
+    })
+    .addCase(viewAppointmentListApi.fulfilled, (state, action) => {
+      state.status = 'succeeded';
+      state.list = action.payload;
+    })
+    .addCase(viewAppointmentListApi.rejected, (state) => {
+
+      state.status = 'failed';
+    });
+
+    builder
+    .addCase(viewAllBlottersApi.pending, (state) => {
+      state.status = 'loading';
+    })
+    .addCase(viewAllBlottersApi.fulfilled, (state, action) => {
+      state.status = 'succeeded';
+      state.list = action.payload;
+    })
+    .addCase(viewAllBlottersApi.rejected, (state) => {
+
+      state.status = 'failed';
+    });
+
   },
 });
 

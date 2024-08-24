@@ -224,7 +224,6 @@ export default function CreateAppointment() {
             }
 
 
-            console.log(merge, "--> BEFORE?")
 
             try {
                 const result = await dispatch(applyNewResidentApi(merge)).unwrap();
@@ -247,6 +246,7 @@ export default function CreateAppointment() {
                         file_upload: ''
                     })
 
+                    setFiles([])
                     setNewResident(null)
 
                 }

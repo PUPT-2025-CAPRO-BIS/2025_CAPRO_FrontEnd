@@ -2,7 +2,7 @@
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
 import { addOfficials, dashboardViewApi, deleteOffialsApi, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
-import { addResidentApi, approveNewResidentApi, deleteResidentInformationApi, editResidentApi, loadAllUsers } from "@/redux/reducer/resident";
+import { addResidentApi, deleteResidentInformationApi, editResidentApi, loadAllUsers, viewAllBlottersApi, viewAppointmentListApi } from "@/redux/reducer/resident";
 import { LogOut } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
 import Image from "next/image";
@@ -70,6 +70,9 @@ export default function Official({ params }) {
       }
       if (tab == 3) {
         router.push('/Admin/Official/Services/1/' + searchItemList)
+      }
+      if (tab == 4) {
+        router.push('/Admin/Official/Blotter/1/' + searchItemList)
       }
       if (tab == 10) {
         router.push('/Admin/Official/Dashboard')
@@ -179,6 +182,11 @@ export default function Official({ params }) {
       seTab(1)
     }
 
+    if (getPage == "Blotter") {
+      setCurrentPage(getPageNumber)
+      seTab(4)
+    }
+
     if(getPage == "Dashboard"){
       setCurrentPage(getPageNumber)
       seTab(10)
@@ -272,6 +280,58 @@ export default function Official({ params }) {
         setLoading(false)
       };
       fetchData();
+    }
+
+    if(tab == 2){
+
+      const fetchData = async () => {
+
+        try {
+          const result = await dispatch(viewAppointmentListApi(data)).unwrap();
+
+          setTotalPage(result.total_pages)
+
+          if (currentPage > result.total_pages) {
+            alert("Invalid url")
+          }
+
+           // Handle success, e.g., navigate to another page
+        } catch (error) {
+
+          // Handle error, e.g., show an error message
+        }
+        setLoading(false)
+      };
+
+      fetchData();
+        
+      setLoading(false)
+    }
+
+    if(tab == 4){
+
+      const fetchData = async () => {
+
+        try {
+          const result = await dispatch(viewAllBlottersApi(data)).unwrap();
+
+          setTotalPage(result.total_pages)
+
+          if (currentPage > result.total_pages) {
+            alert("Invalid url")
+          }
+
+        } catch (error) {
+
+          // Handle error, e.g., show an error message
+        }
+        setLoading(false)
+      };
+
+      fetchData();
+
+      
+      setLoading(false)
     }
 
 
@@ -785,6 +845,9 @@ export default function Official({ params }) {
     if (v == 3) {
       router.push('/Admin/Official/Services/1')
     }
+    if (v == 4) {
+      router.push('/Admin/Official/Blotter/1')
+    }
     if (v == 10) {
       router.push('/Admin/Official/Dashboard')
     }
@@ -838,7 +901,8 @@ export default function Official({ params }) {
     setLoading(true)
     let merge = {
       token: token.token,
-      id: resident.id
+      id: resident.id,
+      status: 0
     }
 
 
@@ -879,6 +943,60 @@ export default function Official({ params }) {
       SetMessage('Something went wrong in approving ' + resident.first_name + " as resident." )
       setShowSuccess(true)
     }
+
+  }
+
+  const rejectResident =  async () => {
+
+    setLoading(true)
+    let merge = {
+      token: token.token,
+      id: resident.id,
+      status: 1
+    }
+
+
+
+    try {
+      const result = await dispatch(approveNewResidentApi(merge)).unwrap();
+      setLoading(false)
+
+      if(result.success == true){
+
+        setShowAddResident(false)
+        setIsViewing(false)
+        setSuccess(true)
+        SetMessage('Success in rejecting ' + resident.first_name + " as resident." )
+        setShowSuccess(true)
+        setResident({
+          first_name: '',
+          middle_name: '',
+          last_name: '',
+          email: '',
+          pass: '',
+          birthday: '',
+          cell_number: '',
+          civil_status_id: '',
+          male_female: '',
+          isPendingResident: 0
+        })
+        setCount(count + 1)
+      }
+      else{
+        setSuccess(false)
+        SetMessage('Something went wrong in rejecting ' + resident.first_name + " as resident." )
+        setShowSuccess(true)
+      }
+
+    } catch (error){
+
+      setSuccess(false)
+      SetMessage('Something went wrong in approving ' + resident.first_name + " as resident." )
+      setShowSuccess(true)
+    }
+
+
+
   
   }
 
@@ -934,7 +1052,7 @@ export default function Official({ params }) {
               </div>
 
 
-              <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded ${tab == 4 ? 'active-nav' : ''} pointer`}>
+              <div onClick={() => changeTab(4)} className={`p-4 w-100 rounded ${tab == 4 ? 'active-nav' : ''} pointer`}>
 
                 <i class="bi bi-person-fill-slash f-white icon"></i>
                 <span className="f-white ms-2 nav-item">
@@ -1628,29 +1746,29 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
                     {
-                      alluser.list.data.map((i, k) => {
+                      alluser.list.length != 0 && alluser.list.data.map((i, k) => {
                         return (
 
                           // Put dynamic className
                           <div className='d-flex col-lg-12 justify-content-around row-item-container'>
                             <RowItem>
                               <span className="f-white">
-                                07/07/2024
+                                {moment(i.schedule_date).format('MM/DD/YYYY')}
                               </span>
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-                                John Doe
+                                {i.full_name}
                               </span>
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-                                Barangay ID
+                                {i.document_type}
                               </span>
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-                                Pending
+                                {i.status}
                               </span>
                             </RowItem>
                             <RowItem>
@@ -1708,6 +1826,8 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
             }
 
             {/* Schedule */}
+
+            
 
             {/* Barangay services */}
 
@@ -1860,6 +1980,169 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
               </div>
             }
 
+            {/* Blotter */}
+
+            {
+              tab == 4 &&
+              <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
+
+                <div className="border-bottom p-2 pb-4 mt-3">
+                  <h2 className="f-white">Blotter</h2>
+                </div>
+
+                <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
+
+                  <div className="d-flex align-items-center">
+                    <span className="f-white">Search:</span>
+                    <input
+                      onKeyDown={handleKeyDown}
+                      value={searchItemList}
+                      onChange={(v) => setSearchItemList(v.target.value)}
+                      type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
+                  </div>
+
+                  <div >
+                    <button
+                      data-bs-toggle="modal" data-bs-target="#addBarangayServices"
+                      className="primary bg-yellow p-2 rounded border-0"
+                    >
+                      <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
+                      <span className="fw-bold">Document Type</span>
+                    </button>
+                  </div>
+                </div>
+
+
+                {/*  */}
+                <div className="border-bottom p-2 pb-4 mt-3">
+
+                  {/* Table header */}
+                  <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{}}>
+                    <HeaderItem>
+                      Complainant
+                    </HeaderItem>
+                    <HeaderItem>
+                      Complainee
+                    </HeaderItem>
+                    <HeaderItem>
+                      Date
+                    </HeaderItem>
+                    <HeaderItem>
+                      Status
+                    </HeaderItem>
+                    <HeaderItem>
+                      Action
+                    </HeaderItem>
+                  </div>
+
+
+
+                  {/* Table body */}
+
+                  <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
+
+                    {
+                      alluser.list.length != 0 && alluser.list.data.map((i, k) => {
+                        return (
+
+                          // Put dynamic className
+                          <div className='d-flex col-lg-12 justify-content-around row-item-container'>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.complainant_name}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.complainee_name}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {moment(i.created_at).format('MM/DD/YYYY')}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.status_resolved}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span id={k + i.service + "action"}
+                                onClick={() => {
+
+                                  document.getElementById(k + i.service + "button").classList.remove('d-none')
+                                  document.getElementById(k + i.service + "action").classList.add('d-none')
+                                }}
+                                className="f-white bg-yellow p-2 rounded">
+                                ACTION
+                              </span>
+                              <div id={k + i.service + "button"} className="d-flex d-none">
+
+                                <button
+                                  data-bs-toggle="modal" data-bs-target="#addBarangayServices"
+                                  onClick={() => {
+
+                                    setDocId(i.id)
+                                    setSSS({
+                                      ...sss, ...{
+                                        service: i.service,
+                                      }
+                                    })
+
+
+                                    setServiceDesc(i.description)
+
+
+
+                                    setIsEdit(true)
+                                    document.getElementById(k + i.service + "button").classList.add('d-none')
+                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
+                                  }}
+                                  type="button" class="btn btn-primary">Edit</button>
+
+                                <button
+                                  onClick={() => {
+
+                                    viewCreatedTemplate(i)
+                                    setSelectedItem(i)
+                                    document.getElementById(k + i.service + "button").classList.add('d-none')
+                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
+                                  }}
+                                  type="button" class="btn btn-warning ms-3">View</button>
+
+                                <button
+                                  data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
+
+                                  onClick={() => {
+                                    setSelectedItem(i)
+                                    document.getElementById(k + i.service + "button").classList.add('d-none')
+                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
+                                  }}
+                                  type="button" class="btn btn-danger ms-3">Delete</button>
+
+                              </div>
+                            </RowItem>
+                          </div>
+
+                        )
+                      })
+                    }
+
+                  </div>
+
+                  {/* Table body */}
+                </div>
+
+
+
+
+              </div>
+            }
+
+            {/* Blotter */}
+
+
             {/* Barangay services */}
 
             {
@@ -1879,7 +2162,7 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                   </div>
 
                   <div className="d-flex align-items-center justify-content-center bg-green f-white ms-2 me-2" style={{ height: "50px", width: "50px", borderRadius: "25px" }}>
-                    1
+                    {currentPage}
                   </div>
 
 
@@ -2315,7 +2598,7 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                                   onClick={() => {
                                     setSelectedFileForViewing({
                                       fileName: i.file_name,
-                                      base64: i.id
+                                      base64: i.base64_file
 
                                     })
                                     setShowImage(true)
@@ -2357,6 +2640,7 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                             }} class="btn btn-primary bg-green">Approve</button>
                             <button type="button" onClick={() => {
                               // addResident()
+                              rejectResident()
                             }} class="btn btn-primary" style={{ backgroundColor: "red" }}>Reject</button>
                           </>
                         }

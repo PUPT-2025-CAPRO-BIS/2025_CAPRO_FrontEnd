@@ -255,6 +255,22 @@ export const importExcelResidentsApi = createAsyncThunk('user/importExcelResiden
   return res.data;
 });
 
+export const approveOrRejectAppointmentApi = createAsyncThunk('user/approveOrRejectAppointment', async (data) => {
+
+
+
+  const res = await apiClient.post('/approveOrRejectAppointment', {
+    appointment_id: data.id,
+    approve_reject: data.status,
+
+  }, {
+    headers: {
+      'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }
+  });
+  return res.data;
+});
 
 // Create slice
 const usersSlice = createSlice({

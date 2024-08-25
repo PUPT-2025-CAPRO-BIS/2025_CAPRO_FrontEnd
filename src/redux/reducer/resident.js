@@ -228,6 +228,37 @@ export const viewAllBlottersApi = createAsyncThunk('user/viewAllBlotters', async
 });
 
 
+export const importExcelResidentsApi = createAsyncThunk('user/importExcelResidents', async (data) => {
+
+
+  const formData = new FormData();
+
+  console.log(data.files, " before")
+  data.files.map((i, k) => {
+    console.log('appending')
+    formData.append('file_upload', i);
+  })
+
+  const formDataObj = {};
+  formData.forEach((value, key) => {
+    formDataObj[key] = value;
+  });
+
+  console.log('FormData contents:', formDataObj);
+
+  const res = await apiClient.post('/importExcelResidents', {
+    file_upload: formData,
+
+  }, {
+    headers: {
+      'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }
+  });
+  return res.data;
+});
+
+
 // Create slice
 const usersSlice = createSlice({
   name: 'user',

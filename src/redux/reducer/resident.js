@@ -246,13 +246,10 @@ export const importExcelResidentsApi = createAsyncThunk('user/importExcelResiden
 
   console.log('FormData contents:', formDataObj);
 
-  const res = await apiClient.post('/importExcelResidents', {
-    file_upload: formData,
-
-  }, {
+  const res = await apiClient.post('/importExcelResidents', formData, {
     headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token
-      'Content-Type': 'application/json',
+      //'Content-Type': 'application/json',
     }
   });
   return res.data;

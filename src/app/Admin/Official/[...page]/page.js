@@ -2,14 +2,14 @@
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
 import { addOfficials, dashboardViewApi, deleteOffialsApi, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
-import { addResidentApi, editResidentApi, loadAllUsers } from "@/redux/reducer/resident";
+import { addResidentApi, approveNewResidentApi, approveOrRejectAppointmentApi, deleteResidentInformationApi, editResidentApi, importExcelResidentsApi, loadAllUsers, viewAllBlottersApi, viewAppointmentListApi } from "@/redux/reducer/resident";
 import { LogOut } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
+import 'react-calendar/dist/Calendar.css';
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -17,11 +17,14 @@ import "react-datepicker/dist/react-datepicker.css";
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from "react-quill";
 import { addDocumentTypeApi, deleteDocumentTypeApi, getDocumentTypeApi, updateDocumentTypesApi } from "@/redux/reducer/document";
+import Calendar from "react-calendar";
+import moment from "moment";
+import { useDropzone } from "react-dropzone";
 
 
 
 export default function Official({ params }) {
-    
+
   const dispatch = useDispatch();
   const router = useRouter()
   const officials = useSelector(state => state)
@@ -32,12 +35,18 @@ export default function Official({ params }) {
   const [sample, setSample] = useState([
     1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
   ])
+  const [showImport, setShowImport] = useState(false)
+
+  const [showImage, setShowImage] = useState(false)
+  const [selectedFileForViewing, setSelectedFileForViewing] = useState('')
 
   //get indx 1 in url
   const [currentPage, setCurrentPage] = useState(params.page[1])
   const [totalPage, setTotalPage] = useState(0)
 
   const [searchItemList, setSearchItemList] = useState('')
+
+  const [showAddResident, setShowAddResident] = useState(false)
 
 
   const handleKeyDown = (event) => {
@@ -48,32 +57,34 @@ export default function Official({ params }) {
 
     if (event.key === 'Enter') {
       event.preventDefault(); // Optional: Prevents the default action if needed
+      // changeTab(tab)
       let data = {
         token: token.token,
-        currentPage,
+        currentPage: 1,
         searchItemList
       }
-  
-      if(tab == 0) slug = dispatch(loadOfficials(data)).unwrap();
-      if(tab == 3) slug = dispatch(getDocumentTypeApi(data)).unwrap();
-      const fetchData = async () => {
 
-        try {
-          const result = await slug
-          
 
-          setTotalPage(result.total_pages)
+      if (tab == 0) {
+        router.push('/Admin/Official/Staff/1/' + searchItemList)
+      }
+      if (tab == 1) {
+        router.push('/Admin/Official/Resident/1/' + searchItemList)
+      }
+      if (tab == 2) {
+        router.push('/Admin/Official/Schedule/1/' + searchItemList)
+      }
+      if (tab == 3) {
+        router.push('/Admin/Official/Services/1/' + searchItemList)
+      }
+      if (tab == 4) {
+        router.push('/Admin/Official/Blotter/1/' + searchItemList)
+      }
+      if (tab == 10) {
+        router.push('/Admin/Official/Dashboard')
+      }
 
-      
-          // Handle success, e.g., navigate to another page
-        } catch (error) {
 
-          // Handle error, e.g., show an error message
-        }
-      };
-
-      fetchData();
-      
       // You can perform any action here, like submitting a form or calling a function
     }
   };
@@ -84,7 +95,7 @@ export default function Official({ params }) {
   const [message, SetMessage] = useState('')
 
   const [isEdit, setIsEdit] = useState(false);
-
+  const [isViewing, setIsViewing] = useState(false);
 
 
   const [selectedItem, setSelectedItem] = useState(null)
@@ -98,8 +109,8 @@ export default function Official({ params }) {
   const [selectedSearchItem, setSelectedSearchItem] = useState('')
   const [count, setCount] = useState(0)
 
-
-
+  const [loading, setLoading] = useState(false)
+  const [files, setFiles] = useState([])
   // Resident
 
   const [startDate, setStartDate] = useState();
@@ -112,7 +123,20 @@ export default function Official({ params }) {
     birthday: '',
     cell_number: '',
     civil_status_id: '',
-    male_female: ''
+    male_female: '',
+    isPendingResident: 0
+  })
+
+  const [selectedSchedule, setSelectedSchedule] = useState({
+    "appointment_id": '',
+    "user_id": '',
+    "full_name": "",
+    "document_type_id": '',
+    "document_type": "",
+    "schedule_date": "",
+    "status": "",
+    "supporting_file_ids": [
+    ]
   })
 
   const [selectedResident, setSelectedResident] = useState({
@@ -124,12 +148,37 @@ export default function Official({ params }) {
     birthday: '',
     cell_number: '',
     civil_status_id: '',
-    male_female: ''
+    male_female: '',
+    isPendingResident: 0
   })
   // male 0 female 1
   // Resident
 
 
+  const onDrop = useCallback((acceptedFiles) => {
+    // Convert files to base64 and update state
+    const fileReaders = acceptedFiles.map(file => {
+      const reader = new FileReader();
+      
+      reader.onloadend = () => {
+        // Process file as base64 here if needed
+        const base64String = reader.result;
+        
+        // Update state with new file
+        setFiles(prevFiles => [...prevFiles, file]);
+      };
+
+      reader.readAsDataURL(file);
+      return reader;
+    });
+  }, []);
+
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop, accept: {
+      // 'image/*': [] // Accept only image files
+    }
+  })
 
   // Barangay services
 
@@ -153,31 +202,48 @@ export default function Official({ params }) {
 
     let getPage = params.page[0]
     let getPageNumber = params.page[1]
+    let getSearchItem = params.page[2]
 
-    
+
 
 
     if (getPage == "Staff") {
       setCurrentPage(getPageNumber)
       seTab(0)
     }
-    if(getPage == "Services"){
+    if (getPage == "Services") {
       setCurrentPage(getPageNumber)
       seTab(3)
     }
 
-    if(getPage == "Dashboard"){
+    if (getPage == "Schedule") {
+      setCurrentPage(getPageNumber)
+      seTab(2)
+    }
+
+    if (getPage == "Resident") {
+      setCurrentPage(getPageNumber)
+      seTab(1)
+    }
+
+    if (getPage == "Blotter") {
+      setCurrentPage(getPageNumber)
+      seTab(4)
+    }
+
+    if (getPage == "Dashboard") {
       setCurrentPage(getPageNumber)
       seTab(10)
     }
 
+    setSearchItemList(getSearchItem)
 
   }, [])
 
-  
+
 
   useEffect(() => {
-
+    setLoading(true)
     let data = {
       token: token.token,
       currentPage,
@@ -195,6 +261,8 @@ export default function Official({ params }) {
 
           // Handle error, e.g., show an error message
         }
+
+        setLoading(false)
       };
 
       fetchData();
@@ -202,25 +270,27 @@ export default function Official({ params }) {
 
     if (tab == 0) {
 
-    
+
 
 
       const fetchData = async () => {
 
         try {
           const result = await dispatch(loadOfficials(data)).unwrap();
-          
+
 
           setTotalPage(result.total_pages)
 
-          if(currentPage > result.total_pages){
-            alert("Invalid url")
+          if (currentPage > result.total_pages) {
+            // alert("Invalid url")
           }
+
           // Handle success, e.g., navigate to another page
         } catch (error) {
 
           // Handle error, e.g., show an error message
         }
+        setLoading(false)
       };
 
       fetchData();
@@ -229,13 +299,18 @@ export default function Official({ params }) {
       const fetchData = async () => {
 
         try {
-          const result = await dispatch(loadAllUsers(token.token)).unwrap();
+          const result = await dispatch(loadAllUsers(data)).unwrap();
+
+          setTotalPage(result.total_pages)
+
 
           // Handle success, e.g., navigate to another page
         } catch (error) {
 
           // Handle error, e.g., show an error message
         }
+
+        setLoading(false)
       };
 
 
@@ -250,23 +325,76 @@ export default function Official({ params }) {
 
         try {
           const result = await dispatch(getDocumentTypeApi(data)).unwrap();
-          
+
           setTotalPage(result.total_pages)
 
-          if(currentPage > result.total_pages){
+          if (currentPage > result.total_pages) {
             alert("Invalid url")
           }
-          
+
           // Handle success, e.g., navigate to another page
         } catch (error) {
 
           // Handle error, e.g., show an error message
         }
+        setLoading(false)
       };
 
       fetchData();
     }
 
+    if (tab == 2) {
+
+      const fetchData = async () => {
+
+        try {
+          const result = await dispatch(viewAppointmentListApi(data)).unwrap();
+
+          setTotalPage(result.total_pages)
+
+          if (currentPage > result.total_pages) {
+            alert("Invalid url")
+          }
+
+          // Handle success, e.g., navigate to another page
+        } catch (error) {
+
+          // Handle error, e.g., show an error message
+        }
+        setLoading(false)
+      };
+
+      fetchData();
+
+      setLoading(false)
+    }
+
+    if (tab == 4) {
+
+
+      const fetchData = async () => {
+
+        try {
+          const result = await dispatch(viewAllBlottersApi(data)).unwrap();
+
+          setTotalPage(result.total_pages)
+
+          if (currentPage > result.total_pages) {
+            alert("Invalid url")
+          }
+
+          // Handle success, e.g., navigate to another page
+        } catch (error) {
+
+          // Handle error, e.g., show an error message
+        }
+        setLoading(false)
+      };
+
+      fetchData();
+
+      setLoading(false)
+    }
 
 
   }, [tab, count]);
@@ -279,7 +407,7 @@ export default function Official({ params }) {
     //v search val
     // officials list
     let tmpArr = []
-    alluser.list.map((i, k) => {
+    alluser.list.data.map((i, k) => {
 
       let fullname = i.first_name + " " + i.middle_name + " " + i.last_name
 
@@ -472,6 +600,7 @@ export default function Official({ params }) {
 
 
 
+
     if (resident.first_name == "") {
       document.getElementById('fnameinput').style.border = '1px solid red'
     }
@@ -486,7 +615,7 @@ export default function Official({ params }) {
     }
 
     if (resident.birthday == "") {
-      document.getElementById('bdayinput').style.border = '1px solid red'
+      // document.getElementById('bdayinput').style.border = '1px solid red'
     }
 
     if (resident.cell_number == "") {
@@ -512,14 +641,114 @@ export default function Official({ params }) {
         token: token.token
       }
 
+      if (isEdit) {
+        try {
+          const result = await dispatch(editResidentApi(merge)).unwrap();
 
-      isEdit ? dispatch(editResidentApi(merge)) : dispatch(addResidentApi(merge))
+          if (result.success == true) {
+            setIsEdit(false)
+            setSuccess(true)
+            setShowSuccess(true)
+            SetMessage(`Resident ${resident.first_name} information has been updated`)
+            setResident({
+              first_name: '',
+              middle_name: '',
+              last_name: '',
+              email: '',
+              pass: '',
+              birthday: '',
+              cell_number: '',
+              civil_status_id: '',
+              male_female: '',
+            })
+            setCount(count + 1)
+            setShowAddResident(false)
+          }
+          else {
+            setSuccess(false)
+            setShowSuccess(true)
+          }
+
+        }
+        catch (error) {
+
+        }
+      }
+      else {
+        try {
+          const result = await dispatch(addResidentApi(merge)).unwrap();
+
+          if (result.success == true) {
+            setIsEdit(false)
+            setSuccess(true)
+            setShowSuccess(true)
+            SetMessage(`Resident ${resident.first_name} information has been added`)
+            setResident({
+              first_name: '',
+              middle_name: '',
+              last_name: '',
+              email: '',
+              pass: '',
+              birthday: '',
+              cell_number: '',
+              civil_status_id: '',
+              male_female: ''
+            })
+            setShowAddResident(false)
+            setCount(count + 1)
+          }
+          else {
+            setSuccess(false)
+            setShowSuccess(true)
+          }
+        }
+        catch (error) {
+
+        }
+      }
+
+
 
 
     }
 
 
   }
+
+  const deleteResident = async () => {
+    // deleteResidentInformationApi
+
+    let merge = {
+      id: resident.id,
+
+      token: token.token
+    }
+
+
+
+    try {
+      const result = await dispatch(deleteResidentInformationApi(merge)).unwrap();
+
+
+      if (result.success == true) {
+
+        setShowSuccess(true)
+        setSuccess(true)
+        SetMessage(`Resident ${resident.first_name} has been deleted.`)
+        setCount(count + 1)
+      }
+      else {
+
+        setShowSuccess(true)
+        SetMessage('Something went wrong!!')
+      }
+    }
+    catch (error) {
+
+    }
+  }
+
+
   const addDocumentType = () => {
 
     let merge = {
@@ -540,7 +769,7 @@ export default function Official({ params }) {
 
 
     setServiceDesc('')
-    
+
     const fetchData = async () => {
 
 
@@ -673,71 +902,181 @@ export default function Official({ params }) {
   }
 
 
-  useEffect(() => {
-
-  }, [])
 
 
-  const search = () => {
-
-  }
 
   const changeTab = (v) => {
-    
 
-    
-    if(v == 0) {
-      router.replace('/Admin/Official/Staff/1')
+
+
+
+    if (v == 0) {
+      router.push('/Admin/Official/Staff/1')
     }
-    if(v == 3){
-      router.replace('/Admin/Official/Services/1')
+    if (v == 1) {
+      router.push('/Admin/Official/Resident/1')
+    }
+    if (v == 2) {
+      router.push('/Admin/Official/Schedule/1')
+    }
+    if (v == 3) {
+      router.push('/Admin/Official/Services/1')
+    }
+    if (v == 4) {
+      router.push('/Admin/Official/Blotter/1')
+    }
+    if (v == 10) {
+      router.push('/Admin/Official/Dashboard')
     }
 
-      seTab(v)
+    // seTab(v)
   }
 
 
-  const paginate = (v, k ) => {
+  const paginate = (v, k) => {
 
     let slug = ''
-    
 
-    if(tab == 0) slug = "Staff"
-    if(tab == 3) slug = "Services"
 
-    
+    if (tab == 0) slug = "Staff"
+    if (tab == 3) slug = "Services"
+    if (tab == 1) slug = "Resident"
 
-    if(k == 1){
+
+    if (k == 1) {
       //next
-      
-      if(currentPage >= totalPage){
+
+      if (currentPage >= totalPage) {
         setCurrentPage(totalPage)
 
       }
-      else{
+      else {
 
         //tab 0
         router.replace(`/Admin/Official/${slug}/` + (parseInt(currentPage) + 1))
       }
-   
+
     }
-    else if(k == 0){
+    else if (k == 0) {
       //previous
-      if(currentPage >= 2)
-      {
-          //tab 0
+      if (currentPage >= 2) {
+        //tab 0
         router.replace(`/Admin/Official/${slug}/` + (parseInt(currentPage) - 1))
       }
-      else{
+      else {
         setCurrentPage(1)
       }
-      
-      
+
+
     }
 
   }
 
 
+  const approveResident = async () => {
+
+    setLoading(true)
+    let merge = {
+      token: token.token,
+      id: resident.id,
+      status: 0
+    }
+
+
+
+    try {
+      const result = await dispatch(approveNewResidentApi(merge)).unwrap();
+      setLoading(false)
+
+      if (result.success == true) {
+
+        setShowAddResident(false)
+        setIsViewing(false)
+        setSuccess(true)
+        SetMessage('Success in approving ' + resident.first_name + " as resident.")
+        setShowSuccess(true)
+        setResident({
+          first_name: '',
+          middle_name: '',
+          last_name: '',
+          email: '',
+          pass: '',
+          birthday: '',
+          cell_number: '',
+          civil_status_id: '',
+          male_female: '',
+          isPendingResident: 0
+        })
+        setCount(count + 1)
+      }
+      else {
+        setSuccess(false)
+        SetMessage('Something went wrong in approving ' + resident.first_name + " as resident.")
+        setShowSuccess(true)
+      }
+
+    } catch (error) {
+      setSuccess(false)
+      SetMessage('Something went wrong in approving ' + resident.first_name + " as resident.")
+      setShowSuccess(true)
+    }
+
+
+
+  }
+
+  const rejectResident = async () => {
+
+    setLoading(true)
+    let merge = {
+      token: token.token,
+      id: resident.id,
+      status: 1
+    }
+
+
+
+    try {
+      const result = await dispatch(approveNewResidentApi(merge)).unwrap();
+      setLoading(false)
+
+      if (result.success == true) {
+
+        setShowAddResident(false)
+        setIsViewing(false)
+        setSuccess(true)
+        SetMessage('Success in rejecting ' + resident.first_name + " as resident.")
+        setShowSuccess(true)
+        setResident({
+          first_name: '',
+          middle_name: '',
+          last_name: '',
+          email: '',
+          pass: '',
+          birthday: '',
+          cell_number: '',
+          civil_status_id: '',
+          male_female: '',
+          isPendingResident: 0
+        })
+        setCount(count + 1)
+      }
+      else {
+        setSuccess(false)
+        SetMessage('Something went wrong in rejecting ' + resident.first_name + " as resident.")
+        setShowSuccess(true)
+      }
+
+    } catch (error) {
+
+      setSuccess(false)
+      SetMessage('Something went wrong in approving ' + resident.first_name + " as resident.")
+      setShowSuccess(true)
+    }
+
+
+
+  }
 
   return (
     <main className={`container-fluid`}>
@@ -791,7 +1130,7 @@ export default function Official({ params }) {
               </div>
 
 
-              <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded ${tab == 2 ? 'active-nav' : ''} pointer`}>
+              <div onClick={() => changeTab(4)} className={`p-4 w-100 rounded ${tab == 4 ? 'active-nav' : ''} pointer`}>
 
                 <i class="bi bi-person-fill-slash f-white icon"></i>
                 <span className="f-white ms-2 nav-item">
@@ -1111,9 +1450,9 @@ export default function Official({ params }) {
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
                     <input
-                    onKeyDown={handleKeyDown}
-                    onChange={(v) => setSearchItemList(v.target.value)}  
-                    type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Offial name" />
+                      onKeyDown={handleKeyDown}
+                      onChange={(v) => setSearchItemList(v.target.value)}
+                      type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Official name" />
                   </div>
 
                   {
@@ -1158,7 +1497,7 @@ export default function Official({ params }) {
 
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
-                    
+
                     {
                       officials.officials.list.length != 0 && officials.officials.list.data.map((i, k) => {
 
@@ -1188,16 +1527,8 @@ export default function Official({ params }) {
                               </span>
                             </RowItem>
                             <RowItem>
-                              <span id={k + i.full_name + "action"}
-                                onClick={() => {
-                                  document.getElementById(k + i.full_name + "button").classList.remove('d-none')
-                                  document.getElementById(k + i.full_name + "action").classList.add('d-none')
-
-                                }}
-                                className="f-white bg-yellow p-2 rounded">
-                                ACTION
-                              </span>
-                              <div id={k + i.full_name + "button"} className="d-flex d-none">
+                            
+                              <div id={k + i.full_name + "button"} className="d-flex">
 
                                 <button
                                   data-bs-toggle="modal" data-bs-target="#exampleModal"
@@ -1206,8 +1537,6 @@ export default function Official({ params }) {
 
                                     setSelectedItem(i)
 
-                                    document.getElementById(k + i.full_name + "button").classList.add('d-none')
-                                    document.getElementById(k + i.full_name + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-primary">Edit</button>
 
@@ -1216,8 +1545,6 @@ export default function Official({ params }) {
 
                                   onClick={() => {
                                     setSelectedItem(i)
-                                    document.getElementById(k + i.full_name + "button").classList.add('d-none')
-                                    document.getElementById(k + i.full_name + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-danger ms-3">Delete</button>
 
@@ -1252,17 +1579,32 @@ export default function Official({ params }) {
 
                 <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
 
-                  <div className="d-flex align-items-center">
+                  <div className="d-flex align-items-center col-6">
                     <span className="f-white">Search:</span>
-                    <input 
-                       onKeyDown={handleKeyDown}
-                       onChange={(v) => setSearchItemList(v.target.value)}  
-                      type="email" className="form-control rounded ms-2" placeholder="Title" />
+                    <input
+                      onKeyDown={handleKeyDown}
+                      value={searchItemList}
+                      onChange={(v) => setSearchItemList(v.target.value)}
+                      type="email" className="form-control rounded ms-2" placeholder="Search name" />
+
+                    <div className="col-6 ms-3">
+                      <button
+                        onClick={() => {
+                          setShowImport(true)
+                        }}
+                        className="primary bg-yellow p-2 rounded" style={{ border: "0px" }}
+                      >
+                        {/* <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i> */}
+                        <span className="fw-bold">Import</span>
+                      </button>
+                    </div>
                   </div>
 
                   <div >
                     <button
-                      data-bs-toggle="modal" data-bs-target="#addResidentModal"
+                      onClick={() => {
+                        setShowAddResident(true)
+                      }}
                       className="primary bg-yellow p-2 rounded" style={{ border: "0px" }}
                     >
                       <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
@@ -1293,6 +1635,9 @@ export default function Official({ params }) {
                       Voter Status
                     </HeaderItem>
                     <HeaderItem>
+                      User Status
+                    </HeaderItem>
+                    <HeaderItem>
                       Action
                     </HeaderItem>
                   </div>
@@ -1303,13 +1648,17 @@ export default function Official({ params }) {
 
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
+
                     {
-                      alluser.list.map((i, k) => {
+                      alluser.list.data.map((i, k) => {
+
                         return (
 
                           // Put dynamic className
                           <div className='d-flex col-lg-12 justify-content-around row-item-container'>
-                            <RowItem>
+                            <RowItem
+
+                            >
                               <span className="f-white">
                                 {i.first_name + " " + i.middle_name + " " + i.last_name}
                               </span>
@@ -1326,34 +1675,37 @@ export default function Official({ params }) {
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-
+                                {i.male_female == 0 ? "Male" : "Female"}
                               </span>
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-
+                                {i.voter_status == 0 ? "Voter" : "Non-Voter"}
+                              </span>
+                            </RowItem>
+                            <RowItem
+                              onClick={() => {
+                                setIsEdit(true)
+                                setIsViewing(true)
+                                setResident(i)
+                                setShowAddResident(true)
+                              }}
+                            >
+                              <span className="f-white pointer" style={{ fontWeight: i.isPendingResident == 1 ? "bold" : "normal", color: i.isPendingResident == 1 ? "yellow" : "#fff" }}>
+                                {i.isPendingResident == 1 ? "Pending" : "Registered"}
                               </span>
                             </RowItem>
                             <RowItem>
-                              <span id={k + i.full_name + "action"}
-                                onClick={() => {
-                                  document.getElementById(k + i.full_name + "button").classList.remove('d-none')
-                                  document.getElementById(k + i.full_name + "action").classList.add('d-none')
-
-                                }}
-                                className="f-white bg-yellow p-2 rounded">
-                                ACTION
-                              </span>
-                              <div id={k + i.full_name + "button"} className="d-flex d-none">
+                            
+                              <div id={k + i.full_name + "button"} className="d-flex ">
 
                                 <button
-                                  data-bs-toggle="modal" data-bs-target="#addResidentModal"
+
                                   onClick={() => {
 
                                     setIsEdit(true)
                                     setResident(i)
-                                    document.getElementById(k + i.full_name + "button").classList.add('d-none')
-                                    document.getElementById(k + i.full_name + "action").classList.remove('d-none')
+                                    setShowAddResident(true)
                                   }}
                                   type="button" class="btn btn-primary">Edit</button>
 
@@ -1362,10 +1714,9 @@ export default function Official({ params }) {
 
                                   onClick={() => {
 
+
                                     setSelectedItem(i)
                                     setResident(i)
-                                    document.getElementById(k + i.full_name + "button").classList.add('d-none')
-                                    document.getElementById(k + i.full_name + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-danger ms-3">Delete</button>
 
@@ -1388,6 +1739,231 @@ export default function Official({ params }) {
 
             {/* MANAGE RESIDENT */}
 
+            {/* Schedule */}
+
+            {
+              tab == 2 &&
+              <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
+
+                <div className="border-bottom p-2 pb-4 mt-3">
+                  <h2 className="f-white">Schedule</h2>
+                </div>
+
+                <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
+
+                  <div className="d-flex align-items-center">
+                    <span className="f-white">Search:</span>
+                    <input
+                      onKeyDown={handleKeyDown}
+                      onChange={(v) => setSearchItemList(v.target.value)}
+                      value={searchItemList}
+                      type="email" className="form-control rounded ms-2" placeholder="Search name" />
+                  </div>
+
+                  {/* <div >
+                    <button
+                      onClick={() => {
+                        setShowAddResident(true)
+                      }}
+                      className="primary bg-yellow p-2 rounded" style={{ border: "0px" }}
+                    >
+                      <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
+                      <span className="fw-bold">Add Resident</span>
+                    </button>
+                  </div> */}
+                </div>
+
+
+                {/*  */}
+                <div className="border-bottom p-2 pb-4 mt-3">
+
+                  {/* Table header */}
+                  <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{}}>
+                    <HeaderItem>
+                      Date
+                    </HeaderItem>
+                    <HeaderItem>
+                      Name
+                    </HeaderItem>
+                    <HeaderItem>
+                      Service
+                    </HeaderItem>
+                    <HeaderItem>
+                      Status
+                    </HeaderItem>
+                    <HeaderItem>
+                      Action
+                    </HeaderItem>
+                  </div>
+
+
+
+                  {/* Table body */}
+
+                  <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
+
+                    {
+                      alluser.list.length != 0 && alluser.list.data.map((i, k) => {
+                        return (
+
+                          // Put dynamic className
+                          <div className='d-flex col-lg-12 justify-content-around row-item-container'>
+                            <RowItem>
+                              <span className="f-white">
+                                {moment(i.schedule_date).format('MM/DD/YYYY')}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.full_name}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.document_type}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.status}
+                              </span>
+                            </RowItem>
+                            {
+                              i.status != "Rejected" ?
+                              <RowItem>
+                              {
+                                i.status == "Pending" ?
+                                  <div id={k + i.full_name + "button"} className="d-flex ">
+
+                                    <button
+
+                                      onClick={() => {
+
+                                        setLoading()
+                                        setSelectedSchedule(i)
+
+                                        let merge = {
+                                          token: token.token,
+                                          id: i.appointment_id,
+                                          status: 0
+                                        }
+                  
+                  
+                  
+                                        const fetchData = async () => {
+                  
+                                          try {
+                                            const result = await dispatch(approveOrRejectAppointmentApi(merge)).unwrap();
+                                            
+
+                                            if(result.success){
+                                              setCount(count + 1)
+                                              setLoading(false)
+                                              setSuccess(true)
+                                              setShowSuccess(true)
+                                              SetMessage("Success in approving appointment.")
+                                            }
+                                            // setCount(count + 1)
+                                            // Handle success, e.g., navigate to another page
+                                          } catch (error) {
+                  
+                                            // Handle error, e.g., show an error message
+                                          }
+                  
+                                          setLoading(false)
+                                        };
+                  
+                                        fetchData();
+
+                                      }}
+                                      type="button" class="btn btn-primary">Approve</button>
+
+                                    <button
+                                      data-bs-toggle="modal"
+
+                                      onClick={() => {
+
+                                        setLoading()
+                                        setSelectedSchedule(i)
+
+                                        let merge = {
+                                          token: token.token,
+                                          id: i.appointment_id,
+                                          status: 1
+                                        }
+                  
+                  
+                  
+                                        const fetchData = async () => {
+                  
+                                          try {
+                                            const result = await dispatch(approveOrRejectAppointmentApi(merge)).unwrap();
+                                            
+
+                                            if(result.success){
+                                              setCount(count + 1)
+                                              setLoading(false)
+                                              setSuccess(true)
+                                              setShowSuccess(true)
+                                              SetMessage("Success in rejecting appointment.")
+                                            }
+                                            // setCount(count + 1)
+                                            // Handle success, e.g., navigate to another page
+                                          } catch (error) {
+                  
+                                            // Handle error, e.g., show an error message
+                                          }
+                  
+                                          setLoading(false)
+                                        };
+                  
+                                        fetchData();
+
+                                      }}
+                                      type="button" class="btn btn-danger ms-3">Reject</button>
+
+                                  </div>
+
+                                  :
+
+                                  <div id={k + i.full_name + "button"} className="d-flex d-none">
+
+                                    <button
+
+                                      onClick={() => {
+                                        window.open(`https://18.141.22.83/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
+                                        
+                                        document.getElementById(k + i.full_name + "button").classList.add('d-none')
+                                        document.getElementById(k + i.full_name + "action").classList.remove('d-none')
+                                      }}
+                                      type="button" class="btn btn-primary">View</button>
+
+                                  </div>
+                              }
+                            </RowItem>
+
+                            :
+                            <RowItem>
+
+                            </RowItem>
+                            }
+
+                          </div>
+
+                        )
+                      })
+                    }
+
+                  </div>
+
+                  {/* Table body */}
+                </div>
+
+              </div>
+            }
+
+            {/* Schedule */}
+
 
 
             {/* Barangay services */}
@@ -1404,9 +1980,9 @@ export default function Official({ params }) {
 
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
-                    <input 
-                        onKeyDown={handleKeyDown}
-                        onChange={(v) => setSearchItemList(v.target.value)}  
+                    <input
+                      onKeyDown={handleKeyDown}
+                      onChange={(v) => setSearchItemList(v.target.value)}
                       type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
                   </div>
 
@@ -1469,16 +2045,8 @@ export default function Official({ params }) {
                               </span>
                             </RowItem>
                             <RowItem>
-                              <span id={k + i.service + "action"}
-                                onClick={() => {
-
-                                  document.getElementById(k + i.service + "button").classList.remove('d-none')
-                                  document.getElementById(k + i.service + "action").classList.add('d-none')
-                                }}
-                                className="f-white bg-yellow p-2 rounded">
-                                ACTION
-                              </span>
-                              <div id={k + i.service + "button"} className="d-flex d-none">
+                             
+                              <div id={k + i.service + "button"} className="d-flex">
 
                                 <button
                                   data-bs-toggle="modal" data-bs-target="#addBarangayServices"
@@ -1497,8 +2065,6 @@ export default function Official({ params }) {
 
 
                                     setIsEdit(true)
-                                    document.getElementById(k + i.service + "button").classList.add('d-none')
-                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-primary">Edit</button>
 
@@ -1507,8 +2073,6 @@ export default function Official({ params }) {
 
                                     viewCreatedTemplate(i)
                                     setSelectedItem(i)
-                                    document.getElementById(k + i.service + "button").classList.add('d-none')
-                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-warning ms-3">View</button>
 
@@ -1517,8 +2081,6 @@ export default function Official({ params }) {
 
                                   onClick={() => {
                                     setSelectedItem(i)
-                                    document.getElementById(k + i.service + "button").classList.add('d-none')
-                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-danger ms-3">Delete</button>
 
@@ -1541,38 +2103,185 @@ export default function Official({ params }) {
               </div>
             }
 
+            {/* Blotter */}
+
+            {
+              tab == 4 &&
+              <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
+
+                <div className="border-bottom p-2 pb-4 mt-3">
+                  <h2 className="f-white">Blotter</h2>
+                </div>
+
+                <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
+
+                  <div className="d-flex align-items-center">
+                    <span className="f-white">Search:</span>
+                    <input
+                      onKeyDown={handleKeyDown}
+                      value={searchItemList}
+                      onChange={(v) => setSearchItemList(v.target.value)}
+                      type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
+                  </div>
+
+                  <div >
+                    <button
+                      data-bs-toggle="modal" data-bs-target="#addBarangayServices"
+                      className="primary bg-yellow p-2 rounded border-0"
+                    >
+                      <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
+                      <span className="fw-bold">Document Type</span>
+                    </button>
+                  </div>
+                </div>
+
+
+                {/*  */}
+                <div className="border-bottom p-2 pb-4 mt-3">
+
+                  {/* Table header */}
+                  <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{}}>
+                    <HeaderItem>
+                      Complainant
+                    </HeaderItem>
+                    <HeaderItem>
+                      Complainee
+                    </HeaderItem>
+                    <HeaderItem>
+                      Date
+                    </HeaderItem>
+                    <HeaderItem>
+                      Status
+                    </HeaderItem>
+                    <HeaderItem>
+                      Action
+                    </HeaderItem>
+                  </div>
+
+
+
+                  {/* Table body */}
+
+                  <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
+
+                    {
+                      alluser.list.length != 0 && alluser.list.data.map((i, k) => {
+                        return (
+
+                          // Put dynamic className
+                          <div className='d-flex col-lg-12 justify-content-around row-item-container'>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.complainant_name}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.complainee_name}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {moment(i.created_at).format('MM/DD/YYYY')}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.status_resolved}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <div id={k + i.service + "button"} className="d-flex">
+
+                                <button
+                                  data-bs-toggle="modal" data-bs-target="#addBarangayServices"
+                                  onClick={() => {
+
+                                    setDocId(i.id)
+                                    setSSS({
+                                      ...sss, ...{
+                                        service: i.service,
+                                      }
+                                    })
+
+
+                                    setServiceDesc(i.description)
+
+
+
+                                    setIsEdit(true)
+                                  }}
+                                  type="button" class="btn btn-primary">Edit</button>
+
+                                <button
+                                  onClick={() => {
+
+                                    viewCreatedTemplate(i)
+                                    setSelectedItem(i)
+                                  }}
+                                  type="button" class="btn btn-warning ms-3">View</button>
+
+                                <button
+                                  data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
+
+                                  onClick={() => {
+                                    setSelectedItem(i)
+                                  }}
+                                  type="button" class="btn btn-danger ms-3">Delete</button>
+
+                              </div>
+                            </RowItem>
+                          </div>
+
+                        )
+                      })
+                    }
+
+                  </div>
+
+                  {/* Table body */}
+                </div>
+
+
+
+
+              </div>
+            }
+
+            {/* Blotter */}
+
             {/* Barangay services */}
 
             {
               tab != 10 &&
               <div className="col-12 d-flex align-items-center justify-content-between mt-5 mb-5">
-              <div>
-                
-                Showing <span className="fw-bold">{currentPage}</span> of <span class="fw-bold">{totalPage}</span>
+                <div>
+
+                  Showing <span className="fw-bold">{currentPage}</span> of <span class="fw-bold">{totalPage}</span>
+                </div>
+
+                <div className="d-flex align-items-center justify-content-center">
+
+                  <div
+                    onClick={() => paginate(null, 0)}
+                    className="bg-yellow rounded p-2 f-white d-flex align-items-center justify-content-center" style={{ width: "70px" }}>
+                    Prev
+                  </div>
+
+                  <div className="d-flex align-items-center justify-content-center bg-green f-white ms-2 me-2" style={{ height: "50px", width: "50px", borderRadius: "25px" }}>
+                    {currentPage}
+                  </div>
+
+
+                  <div
+                    onClick={() => paginate(null, 1)}
+                    className="bg-yellow rounded p-2 f-white d-flex align-items-center justify-content-center" style={{ width: "70px" }}>
+                    Next
+                  </div>
+
+                </div>
+
               </div>
-
-              <div className="d-flex align-items-center justify-content-center">
-
-              <div 
-                onClick={() => paginate(null, 0)}
-                className="bg-yellow rounded p-2 f-white d-flex align-items-center justify-content-center" style={{width: "70px"}}>
-                  Prev
-                </div>
-
-                <div className="d-flex align-items-center justify-content-center bg-green f-white ms-2 me-2" style={{height: "50px", width:"50px", borderRadius: "25px"}}>
-                  1
-                </div>
-
-
-                <div 
-                   onClick={() => paginate(null, 1)}
-                  className="bg-yellow rounded p-2 f-white d-flex align-items-center justify-content-center" style={{width: "70px"}}>
-                  Next
-                </div>
-
-              </div>
-
-            </div>
             }
 
 
@@ -1606,7 +2315,7 @@ export default function Official({ params }) {
                   <div class="mb-3">
                     <label class="form-label">Chairmanship</label>
                     <input
-                      value={selectedItem != null && selectedItem.chairmanship}
+                      value={selectedItem != null ? selectedItem.chairmanship : ''}
                       onChange={(val) => {
                         if (selectedItem != null) {
                           setSelectedItem({
@@ -1620,7 +2329,7 @@ export default function Official({ params }) {
                   <div class="mb-3">
                     <label class="form-label">Position</label>
                     <input
-                      value={selectedItem != null && selectedItem.position}
+                      value={selectedItem != null ? selectedItem.position : ''}
                       onChange={(val) => {
                         if (selectedItem != null) {
                           setSelectedItem({
@@ -1670,6 +2379,7 @@ export default function Official({ params }) {
                     <input
                       id='selctednameadd'
                       // value={selectedItem != null && selectedItem.full_name}
+                      value={searchItemList}
                       onChange={(val) => {
 
                         searchAddOfficial(val.target.value)
@@ -1756,233 +2466,328 @@ export default function Official({ params }) {
 
           { }
 
-          <div class="modal fade" id="addResidentModal" tabindex="-1" aria-labelledby="addResidentModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content" style={{ maxHeight: "720px", overflowY: "scroll" }}>
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="addOfficialModalLabel"> {isEdit ? "Edit Resident" : "Add Resident"}</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <div class="mb-3">
-                    <label class="form-label">First name</label>
-                    <input
-                      id='fnameinput'
-                      value={resident.first_name}
-                      onChange={(val) => {
+          {
+            showAddResident &&
 
-                        if (val.target.value != "") {
-                          document.getElementById('fnameinput').style.border = '1px solid #dee2e6'
-                        }
-                        else {
-                          document.getElementById('fnameinput').style.border = '1px solid red'
-                        }
-
-                        setResident({
-                          ...resident, ...{
-                            first_name: val.target.value
-                          }
-                        })
-
-                      }}
-                      class="form-control" />
-
+            <div class="modal fade show d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)" }} id="addResidentModal" tabindex="-1" aria-labelledby="addResidentModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style={{ maxHeight: "720px", overflowY: "scroll" }}>
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="addOfficialModalLabel"> {isEdit ? (!isViewing ? "Edit Resident" : "View Resident") : "Add Resident"}</h1>
                   </div>
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <label class="form-label">First name</label>
+                      <input
+                        id='fnameinput'
+                        disabled={isViewing}
+                        value={resident.first_name}
+                        onChange={(val) => {
 
-                  <div class="mb-3">
-                    <label class="form-label">Middle name</label>
-                    <input
-                      value={resident.middle_name}
-                      onChange={(val) => {
-
-                        setResident({
-                          ...resident, ...{
-                            middle_name: val.target.value
+                          if (val.target.value != "") {
+                            document.getElementById('fnameinput').style.border = '1px solid #dee2e6'
                           }
-                        })
-
-                      }}
-                      class="form-control" />
-
-                  </div>
-
-                  <div class="mb-3">
-                    <label class="form-label">Last name</label>
-                    <input
-                      id='lnameinput'
-                      value={resident.last_name}
-                      onChange={(val) => {
-
-                        if (val.target.value != "") {
-                          document.getElementById('lnameinput').style.border = '1px solid #dee2e6'
-                        }
-                        else {
-                          document.getElementById('lnameinput').style.border = '1px solid red'
-                        }
-
-                        setResident({
-                          ...resident, ...{
-                            last_name: val.target.value
+                          else {
+                            document.getElementById('fnameinput').style.border = '1px solid red'
                           }
-                        })
 
-                      }}
-                      class="form-control" />
+                          setResident({
+                            ...resident, ...{
+                              first_name: val.target.value
+                            }
+                          })
 
-                  </div>
+                        }}
+                        class="form-control" />
 
-                  <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input
-                      id='emailinput'
-                      value={resident.email || resident.Email}
-                      onChange={(val) => {
-                        if (val.target.value != "") {
-                          document.getElementById('emailinput').style.border = '1px solid #dee2e6'
-                        }
-                        else {
-                          document.getElementById('emailinput').style.border = '1px solid red'
-                        }
-                        setResident({
-                          ...resident, ...{
-                            email: val.target.value
+                    </div>
+
+                    <div class="mb-3">
+                      <label
+                        class="form-label">Middle name</label>
+                      <input
+                        disabled={isViewing}
+                        value={resident.middle_name}
+                        onChange={(val) => {
+
+                          setResident({
+                            ...resident, ...{
+                              middle_name: val.target.value
+                            }
+                          })
+
+                        }}
+                        class="form-control" />
+
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Last name</label>
+                      <input
+                        id='lnameinput'
+                        disabled={isViewing}
+                        value={resident.last_name}
+                        onChange={(val) => {
+
+                          if (val.target.value != "") {
+                            document.getElementById('lnameinput').style.border = '1px solid #dee2e6'
                           }
-                        })
-
-                      }}
-                      class="form-control" />
-
-                  </div>
-
-                  <div class="mb-3 d-flex flex-column">
-                    <label class="form-label">Birthday</label>
-                    <DatePicker
-                      id='bdayinput'
-                      className="w-100 form-control"
-                      onKeyDown={(e) => {
-                        e.preventDefault();
-                      }}
-                      selected={startDate} onChange={(date) => {
-                        document.getElementById('bdayinput').style.border = '1px solid #dee2e6'
-
-
-                        setResident({
-                          ...resident, ...{
-                            birthday: date
+                          else {
+                            document.getElementById('lnameinput').style.border = '1px solid red'
                           }
-                        })
-                        setStartDate(date)
+
+                          setResident({
+                            ...resident, ...{
+                              last_name: val.target.value
+                            }
+                          })
+
+                        }}
+                        class="form-control" />
+
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Email</label>
+                      <input
+                        id='emailinput'
+                        disabled={isViewing}
+                        value={resident.Email == undefined ? resident.email : resident.Email}
+                        onChange={(val) => {
+                          if (val.target.value != "") {
+                            document.getElementById('emailinput').style.border = '1px solid #dee2e6'
+                          }
+                          else {
+                            document.getElementById('emailinput').style.border = '1px solid red'
+                          }
+                          setResident({
+                            ...resident, ...{
+                              email: val.target.value
+                            }
+                          })
+
+                        }}
+                        class="form-control" />
+
+                    </div>
+
+                    <div class="mb-3 d-flex flex-column">
+                      <label class="form-label">Birthday</label>
+                      <span className="fw-bold">{resident.birthday}</span>
+
+                      {!isViewing &&
+                        <Calendar
+                          id='bdayinput'
+                          className="mt-3"
+                          disabled={isViewing}
+                          value={resident.birthday}
+                          onChange={(v) => {
+                            // document.getElementById('bdayinput').style.border = '1px solid #dee2e6'
+
+                            setResident({
+                              ...resident, ...{
+                                birthday: moment(v).format("YYYY-MM-DD")
+                              }
+                            })
+                            setStartDate(moment(v).format("YYYY-MM-DD"))
+                          }}
+                        />
                       }
-                      } />
-                  </div>
 
-                  <div class="mb-3">
-                    <label class="form-label">Phone number</label>
-                    <input
-                      id='phoneinput'
-                      value={resident.cell_number}
-                      onChange={(val) => {
+                    </div>
 
-                        if (val.target.value != "") {
-                          document.getElementById('phoneinput').style.border = '1px solid #dee2e6'
-                        }
-                        else {
-                          document.getElementById('phoneinput').style.border = '1px solid red'
-                        }
-
-                        setResident({
-                          ...resident, ...{
-                            cell_number: val.target.value
-                          }
-                        })
-
-                      }}
-                      class="form-control" />
-
-                  </div>
-
-
-
-                  <div id='genderinput' class="mb-3">
-                    <label class="form-label">Gender</label>
-                    <div class="form-check">
+                    <div class="mb-3">
+                      <label class="form-label">Phone number</label>
                       <input
-                        checked={resident.male_female == 0}
-                        onChange={() => {
+                        id='phoneinput'
+                        disabled={isViewing}
+                        value={resident.cell_number}
+                        onChange={(val) => {
 
-
-                          document.getElementById('genderinput').style.border = '0px solid #dee2e6'
-
+                          if (val.target.value != "") {
+                            document.getElementById('phoneinput').style.border = '1px solid #dee2e6'
+                          }
+                          else {
+                            document.getElementById('phoneinput').style.border = '1px solid red'
+                          }
 
                           setResident({
                             ...resident, ...{
-                              male_female: 0
+                              cell_number: val.target.value
                             }
                           })
+
                         }}
-                        class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
-                      <label class="form-check-label" for="flexRadioDefault2">
-                        Male
-                      </label>
+                        class="form-control" />
+
                     </div>
 
-                    <div class="form-check">
-                      <input
-                        checked={resident.male_female == 1}
-                        onChange={() => {
 
 
-                          document.getElementById('genderinput').style.border = '0px solid #dee2e6'
+                    <div id='genderinput' class="mb-3">
+                      <label class="form-label">Gender</label>
+                      <div class="form-check">
+                        <input
+                          disabled={isViewing}
+                          checked={resident.male_female === 0 ? true : false}
+                          onChange={() => {
 
+
+                            document.getElementById('genderinput').style.border = '0px solid #dee2e6'
+
+
+                            setResident({
+                              ...resident, ...{
+                                male_female: 0
+                              }
+                            })
+                          }}
+                          class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          Male
+                        </label>
+                      </div>
+                      { }
+                      <div class="form-check">
+                        <input
+                          disabled={isViewing}
+                          checked={resident.male_female === 1 ? true : false}
+                          onChange={() => {
+
+
+                            document.getElementById('genderinput').style.border = '0px solid #dee2e6'
+
+                            setResident({
+                              ...resident, ...{
+                                male_female: 1
+                              }
+                            })
+                          }}
+                          class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          Female
+                        </label>
+                      </div>
+
+                    </div>
+
+
+                    <div class="mb-3">
+                      <label class="form-label">Civil Status</label>
+                      <select
+                        disabled={isViewing}
+                        value={resident.civil_status_id}
+                        id='civilinput'
+                        onChange={(v) => {
+                          document.getElementById('civilinput').style.border = '1px solid #dee2e6'
                           setResident({
                             ...resident, ...{
-                              male_female: 1
+                              civil_status_id: v.target.value
                             }
                           })
                         }}
-                        class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
-                      <label class="form-check-label" for="flexRadioDefault2">
-                        Female
-                      </label>
+                        class="form-select" aria-label="Default select example">
+                        <option value="null">Civil Status</option>
+                        <option value={1}>Single</option>
+                        <option value={2}>Married</option>
+                        <option value={3}>Widowed</option>
+                        <option value={4}>Legally Separated</option>
+                      </select>
+
                     </div>
 
+                    {
+                      isViewing &&
+
+                      <div class="mb-3 d-flex flex-column">
+                        <label class="form-label">Supporting documents</label>
+
+                        {/* resident.supporting_files_obj */}
+                        { }
+                        {resident.supporting_files_obj.lenght != 0 &&
+                          resident.supporting_files_obj.map((i, k) => {
+
+                            return (
+                              <span
+                                onClick={() => {
+                                  setSelectedFileForViewing({
+                                    fileName: i.file_name,
+                                    base64: i.base64_file
+
+                                  })
+                                  setShowImage(true)
+                                }}
+                                className="pointer">{i.file_name}</span>
+                            )
+                          })
+                        }
+
+                      </div>
+                    }
+
+
+
                   </div>
+                  {
+                    isViewing ?
+                      <div class="modal-footer">
+                        <button type="button" onClick={() => {
+                          setResident({
+                            first_name: '',
+                            middle_name: '',
+                            last_name: '',
+                            email: '',
+                            pass: '',
+                            birthday: '',
+                            cell_number: '',
+                            civil_status_id: '',
+                            male_female: '',
+                            isPendingResident: 0
+                          })
+                          setShowAddResident(false)
 
+                        }} class="btn btn-secondary">Close</button>
 
-                  <div class="mb-3">
-                    <label class="form-label">Civil Status</label>
+                        {
+                          resident.isPendingResident == 1 &&
+                          <>
+                            <button type="button" onClick={() => {
+                              // addResident()
+                              approveResident()
+                            }} class="btn btn-primary bg-green">Approve</button>
+                            <button type="button" onClick={() => {
+                              // addResident()
+                              rejectResident()
+                            }} class="btn btn-primary" style={{ backgroundColor: "red" }}>Reject</button>
+                          </>
+                        }
+                      </div>
+                      :
+                      <div class="modal-footer">
+                        <button type="button" onClick={() => {
+                          setResident({
+                            first_name: '',
+                            middle_name: '',
+                            last_name: '',
+                            email: '',
+                            pass: '',
+                            birthday: '',
+                            cell_number: '',
+                            civil_status_id: '',
+                            male_female: ''
+                          })
+                          setShowAddResident(false)
 
-                    <select
-                      value={resident.civil_status_id}
-                      id='civilinput'
-                      onChange={(v) => {
-                        document.getElementById('civilinput').style.border = '0px solid #dee2e6'
-                        setResident({
-                          ...resident, ...{
-                            civil_status_id: v.target.value
-                          }
-                        })
-                      }}
-                      class="form-select" aria-label="Default select example">
-                      <option selected>Civil status</option>
-                      <option value="0">Single</option>
-                      <option value="1">Married</option>
-                      <option value="2">Widowed</option>
-                      <option value="3">Legally Separated</option>
-                    </select>
-
-                  </div>
-
-
-
-                </div>
-                <div class="modal-footer">
-                  <button type="button" onClick={() => { }} class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" onClick={() => addResident()} class="btn btn-primary bg-green">Save changes</button>
+                        }} class="btn btn-secondary">Close</button>
+                        <button type="button" onClick={() => {
+                          addResident()
+                        }} class="btn btn-primary bg-green">Save changes</button>
+                      </div>
+                  }
                 </div>
               </div>
             </div>
-          </div>
+          }
 
           {/* Add Resident */}
 
@@ -2060,6 +2865,13 @@ export default function Official({ params }) {
 
                     <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{first_name}'} as placeholder</span>
 
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{middle_name}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{last_name}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{cell_number}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{civil_status}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{birthday}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{gender}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{current_address}'} as placeholder</span>
 
                   </div>
 
@@ -2112,6 +2924,7 @@ export default function Official({ params }) {
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                   <button data-bs-dismiss="modal" onClick={() => {
 
+                    tab == 1 && deleteResident()
                     tab == 0 && deleteOffials()
                     tab == 3 && deleteDocumentType()
                   }} type="button" class="btn btn-primary bg-green">Yes</button>
@@ -2136,6 +2949,144 @@ export default function Official({ params }) {
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onClick={() => setShowSuccess(false)}>Close</button>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+
+          {
+            loading &&
+            <div id="statusModal " class="modal fade show d-block">
+              <div class="d-flex align-items-center justify-content-center" style={{ height: "100vh", backgroundColor: "rgba(0,0,0,0.4)" }}>
+                <div class="modal-content d-flex align-items-center" style={{ backgroundColor: "transparent " }}>
+                  <div class="">
+                    <h2 className="f-white">
+                      Loading .....
+                    </h2>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+
+
+            {
+              showImage &&
+              <div id="statusModal " class="modal fade show d-flex align-items-center justify-content-center">
+                <div className="col-6  d-flex flex-column align-items-center justify-content-center box mt-5">
+                  <div>
+                    <h4>
+                      {selectedFileForViewing.fileName}
+                    </h4>
+                  </div>
+                  <div class="d-flex align-items-center flex-column justify-content-center w-100 p-5" >
+                    <div style={{ height: "700px", width: "100%" }}>
+                      <img
+                        style={{ position: "relative", height: "700px", width: "100%" }}
+                        src={selectedFileForViewing.base64} alt="Base64 Image" />
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" onClick={() => setShowImage(false)}>Close</button>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+
+          {
+            showImport &&
+            <div id="statusModal " class="modal fade show d-flex align-items-center justify-content-center">
+              <div className="col-6  d-flex flex-column align-items-center justify-content-center box mt-5">
+                <div className="mt-5">
+                  <h4>
+                    Import xlsx file
+                  </h4>
+                </div>
+                <div class="d-flex align-items-center flex-column justify-content-center w-100 p-5" >
+                  <div style={{ width: "100%" }}>
+                    <div {...getRootProps()} style={{ borderStyle: "dotted" }}>
+                      <input {...getInputProps()} />
+                      {
+                        isDragActive ?
+                          <p>Drop the files here ...</p> :
+                          <p>Drag 'n' drop some files here, or click to select files</p>
+                      }
+
+
+                    </div>
+                    {
+                      files.length != 0 && files.map((i, k) => {
+                        return (
+                          <div
+                            className="d-flex align-items-center justify-content-between mt-2"
+                          >
+                            <span
+                              className="pointer"
+                              onClick={() => {
+
+                                // setSelectedFileForViewing(i)
+                                // setShowImage(true)
+                              }}
+                            >{i.name}</span>
+
+                            <div className="pointer"
+
+                              onClick={() => {
+                                let tmpArr = files
+                                tmpArr.splice(k, 1);
+
+
+                                setFiles([...tmpArr])
+                              }}
+
+                            >
+                              <i class="bi bi-trash" style={{ fontSize: "30px", color: "red" }}></i>
+                            </div>
+
+                          </div>
+                        )
+                      })
+                    }
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-primary bg-green" onClick={async () => {
+
+                      let merge = {
+                        token: token.token,
+                        files
+                      }
+
+                      setShowImport(false)
+
+                      const fetchData = async () => {
+
+                        try {
+                          const result = await dispatch(importExcelResidentsApi(merge)).unwrap();
+                         
+                          setShowSuccess(true)
+                          setSuccess(true)
+                          SetMessage('Success in importing resident information list.')
+                        
+                          // Handle success, e.g., navigate to another page
+                        } catch (error) {
+                          
+                          setShowSuccess(true)
+                          setSuccess(false)
+                         
+                          // Handle error, e.g., show an error message
+                        }
+                        setFiles([])
+                        setLoading(false)
+                        setCount(count + 1)
+                      };
+
+                      fetchData();
+
+                    }}>Submit</button>
+                    <button type="button" class="btn btn-secondary" onClick={() => setShowImport(false)}>Close</button>
 
                   </div>
                 </div>

@@ -35,7 +35,8 @@ export const addDocumentTypeApi = createAsyncThunk('user/addDocumentType', async
   const res = await apiClient.post('/addDocumentType', {
     service: data.data.service,
     description: data.data.description,
-    isCertificate: data.data.isCertificate
+    isCertificate: data.data.isCertificate,
+    price: data.data.cost
     // status: data.selectedSearchItem.status
   }, {
     headers:{
@@ -69,7 +70,8 @@ export const updateDocumentTypesApi = createAsyncThunk('user/updateDocumentTypes
     doc_id: data.data.doc_id,
     service: data.data.service,
     description: data.data.description,
-    isCertificate: data.data.isCertificate
+    isCertificate: data.data.isCertificate,
+    price: data.data.cost
     // status: data.selectedSearchItem.status
   }, {
     headers:{

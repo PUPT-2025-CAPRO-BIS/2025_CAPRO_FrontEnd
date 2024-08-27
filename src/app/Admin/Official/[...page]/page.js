@@ -186,6 +186,7 @@ export default function Official({ params }) {
   const [sss, setSSS] = useState({
     service: '',
   })
+  const [cost, setCost] = useState(0)
   const [isCert, setIsCert] = useState(1)
   const [docId, setDocId] = useState('')
 
@@ -756,7 +757,8 @@ export default function Official({ params }) {
         description: serviceDesc,
         service: sss.service,
         isCertificate: isCert,
-        doc_id: docId
+        doc_id: docId,
+        cost: cost
       },
       token: token.token
     }
@@ -2058,7 +2060,8 @@ export default function Official({ params }) {
                                         service: i.service,
                                       }
                                     })
-
+                                    
+                                    setCost(i.price)
 
                                     setServiceDesc(i.description)
 
@@ -2853,6 +2856,19 @@ export default function Official({ params }) {
                             service: val.target.value
                           }
                         })
+
+                      }}
+                      class="form-control" />
+
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Cost</label>
+                    <input
+                      id='serviceinput'
+                      value={cost}
+                      onChange={(val) => {
+                       setCost(val.target.value)
 
                       }}
                       class="form-control" />

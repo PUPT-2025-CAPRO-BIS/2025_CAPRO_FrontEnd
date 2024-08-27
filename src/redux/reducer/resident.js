@@ -82,7 +82,7 @@ export const editResidentApi = createAsyncThunk('user/changeResidentInformation'
 // deleteResidentInformation
 
 export const deleteResidentInformationApi = createAsyncThunk('user/deleteResidentInformation', async (data) => {
-  
+
 
   const res = await apiClient.post('/deleteResidentInformation', {
     user_id: data.id
@@ -180,12 +180,14 @@ export const otpLoginApi = createAsyncThunk('user/otpLogin', async (data) => {
 
 export const createAppointmentApi = createAsyncThunk('user/createAppointment', async (data) => {
 
-  
+
 
   const res = await apiClient.post('/createAppointment', {
     document_type_id: data.id,
     schedule_date: data.selectedDate,
-    file_upload: data.file_upload
+    file_upload: data.file_upload,
+    purpose: data.purpose
+
 
   }, {
     headers: {
@@ -227,12 +229,11 @@ export const viewAllBlottersApi = createAsyncThunk('user/viewAllBlotters', async
   return res.data;
 });
 
-
 export const importExcelResidentsApi = createAsyncThunk('user/importExcelResidents', async (data) => {
 
 
   const formData = new FormData();
-
+ 
   console.log(data.files, " before")
   data.files.map((i, k) => {
     console.log('appending')
@@ -243,9 +244,8 @@ export const importExcelResidentsApi = createAsyncThunk('user/importExcelResiden
   formData.forEach((value, key) => {
     formDataObj[key] = value;
   });
-
+  
   console.log('FormData contents:', formDataObj);
-
   const res = await apiClient.post('/importExcelResidents', formData, {
     headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token
@@ -271,6 +271,7 @@ export const approveOrRejectAppointmentApi = createAsyncThunk('user/approveOrRej
   });
   return res.data;
 });
+
 
 // Create slice
 const usersSlice = createSlice({
@@ -321,32 +322,32 @@ const usersSlice = createSlice({
 
         state.status = 'failed';
       });
- 
-    builder
-    .addCase(viewAppointmentListApi.pending, (state) => {
-      state.status = 'loading';
-    })
-    .addCase(viewAppointmentListApi.fulfilled, (state, action) => {
-      state.status = 'succeeded';
-      state.list = action.payload;
-    })
-    .addCase(viewAppointmentListApi.rejected, (state) => {
-
-      state.status = 'failed';
-    });
 
     builder
-    .addCase(viewAllBlottersApi.pending, (state) => {
-      state.status = 'loading';
-    })
-    .addCase(viewAllBlottersApi.fulfilled, (state, action) => {
-      state.status = 'succeeded';
-      state.list = action.payload;
-    })
-    .addCase(viewAllBlottersApi.rejected, (state) => {
+      .addCase(viewAppointmentListApi.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(viewAppointmentListApi.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.list = action.payload;
+      })
+      .addCase(viewAppointmentListApi.rejected, (state) => {
 
-      state.status = 'failed';
-    });
+        state.status = 'failed';
+      });
+
+      builder
+      .addCase(viewAllBlottersApi.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(viewAllBlottersApi.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.list = action.payload;
+      })
+      .addCase(viewAllBlottersApi.rejected, (state) => {
+
+        state.status = 'failed';
+      });
 
   },
 });

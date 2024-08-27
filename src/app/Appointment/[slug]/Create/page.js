@@ -26,7 +26,7 @@ export default function CreateAppointment() {
 
     const [birthday, setBirthday] = useState('')
     const [email, setEmail] = useState('')
-
+    const [purpose, setPurpose] = useState('')
     const [otp, setOTP] = useState('')
     const [success, setSuccess] = useState(null)
     const [successOTP, setSuccessOTP] = useState(false)
@@ -46,6 +46,8 @@ export default function CreateAppointment() {
 
     const [newResident, setNewResident] = useState(null)
 
+
+
     const [startDate, setStartDate] = useState();
     const [resident, setResident] = useState({
         first_name: '',
@@ -61,6 +63,8 @@ export default function CreateAppointment() {
         voter_status: '',
         file_upload: ''
     })
+
+
 
 
     const onDrop = useCallback((acceptedFiles) => {
@@ -84,6 +88,9 @@ export default function CreateAppointment() {
             .then(filesWithBase64 => {
                 // Update state with new files
                 setFiles(prevFiles => [...prevFiles, ...filesWithBase64]);
+
+                
+
             })
             .catch(error => {
                 // Handle error
@@ -130,7 +137,7 @@ export default function CreateAppointment() {
 
 
     const submit = () => {
-        
+
         let merge = {
             email,
             birthday
@@ -161,6 +168,11 @@ export default function CreateAppointment() {
     }
 
     const addResident = async () => {
+
+
+
+
+
 
         if (resident.first_name == "") {
             document.getElementById('fnameinput').style.border = '1px solid red'
@@ -204,8 +216,9 @@ export default function CreateAppointment() {
         ) {
 
             let base64List = []
-
+            
             files.map((i, k) => {
+
                 base64List.push(JSON.stringify({
                     data: i.base64,
                     file_name: i.fileName
@@ -216,6 +229,7 @@ export default function CreateAppointment() {
 
             }
 
+
             let merge = {
                 resident,
                 birthday: startDate,
@@ -223,10 +237,11 @@ export default function CreateAppointment() {
                 // token: token.token
             }
 
-
+            
 
             try {
                 const result = await dispatch(applyNewResidentApi(merge)).unwrap();
+
                 if (result.success == true) {
                     setSuccess(true)
                     setShowSuccess(true)
@@ -245,10 +260,8 @@ export default function CreateAppointment() {
                         voter_status: 0,
                         file_upload: ''
                     })
-
                     setFiles([])
                     setNewResident(null)
-
                 }
                 else {
                     setSuccess(false)
@@ -260,10 +273,14 @@ export default function CreateAppointment() {
             }
 
 
+
+
+
         }
 
 
     }
+
 
     useEffect(() => {
 
@@ -286,10 +303,10 @@ export default function CreateAppointment() {
 
                 const result = await dispatch(otpLoginApi(merge)).unwrap();
 
-                
+
                 // Handle success, e.g., navigate to another page
 
-                if(result.success){
+                if (result.success) {
                     setSuccessOTP(result.success)
                     setAccessToken(result.access_token)
                     setIsButtonDisabled(true)
@@ -299,7 +316,7 @@ export default function CreateAppointment() {
                     setMessage(result.error_msg)
                     setIsButtonDisabled(true)
                 }
-               
+
 
             } catch (error) {
 
@@ -322,7 +339,8 @@ export default function CreateAppointment() {
             id: selectedDoc,
             selectedDate: moment(selectedDate).format('YYYY-MM-DD'),
             file_upload: base64List,
-            token: accessToken
+            token: accessToken,
+            purpose: purpose
         }
 
 
@@ -332,7 +350,7 @@ export default function CreateAppointment() {
             const result = await dispatch(createAppointmentApi(data)).unwrap();
 
 
-            
+
 
             if (result.success) {
                 setIsButtonDisabled(false)
@@ -365,21 +383,21 @@ export default function CreateAppointment() {
     useEffect(() => {
         //rotp
         // 
-        
+
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 
         let momentDate = moment(birthday, 'YYYY-MM-DD', true).isValid();
 
-        
+
         if (emailRegex.test(email) && momentDate) {
-            
+
 
             setIsButtonDisabled(false)
         }
         else {
-            
+
             setIsButtonDisabled(true)
         }
 
@@ -390,26 +408,24 @@ export default function CreateAppointment() {
         //rotp
 
 
-        
+
         if (selectedDate != "" && selectedDoc != "" && files.length != 0) {
-            
+
 
             setIsButtonDisabled(false)
         }
         else {
-            
+
             setIsButtonDisabled(true)
         }
 
     }, [selectedDate, selectedDoc, files.length])
-    
-
 
 
 
     return (
         <main >
-            <div className="d-flex bg-3 bg-white align-items-center flex-column" style={{ overflow: "scroll" }}>
+            <div className="d-flex bg-3 bg-white  align-items-center flex-column" style={{ overflow: "scroll" }}>
                 <div>
                     <Image
                         className='logo-size'
@@ -436,7 +452,7 @@ export default function CreateAppointment() {
                     </span>
                 </div>
 
-                
+
                 {
                     newResident == null &&
                     <>
@@ -464,8 +480,11 @@ export default function CreateAppointment() {
                         </div>
                     </>
                 }
-                                  
-                                  {
+
+
+
+
+                {
                     newResident == true &&
 
                     <div className=" schedule-form p-4 col-6 rounded" style={{}}>
@@ -754,7 +773,7 @@ export default function CreateAppointment() {
 
 
                         <div className="mt-5 mb-5" >
-                            <label class="form-label">Supporting Documents: <span className="fw-bold" style={{color:"red"}}>Valid ID</span></label>
+                            <label class="form-label">Supporting Documents: <span className="fw-bold" style={{ color: "red" }}>Valid ID</span></label>
                             <div {...getRootProps()} style={{ borderStyle: "dotted" }}>
                                 <input {...getInputProps()} />
                                 {
@@ -763,9 +782,10 @@ export default function CreateAppointment() {
                                         <p>Drag 'n' drop some files here, or click to select files</p>
                                 }
 
-                                </div>
 
-                                <div className="mt-3">
+                            </div>
+
+                            <div className="mt-3">
                                 {
                                     files.length != 0 && files.map((i, k) => {
                                         return (
@@ -808,21 +828,21 @@ export default function CreateAppointment() {
 
 
                     </div>
-                }  
+                }
+
 
 
                 {
                     newResident == false &&
 
                     <div className="schedule-form p-4 col-6 rounded">
-
                         <h4>
                             Scheduling Form
                         </h4>
 
                         {
                             !success &&
-                            
+
                             <div>
                                 <div className="d-flex flex-column mt-5">
                                     <span className="">Email address</span>
@@ -841,8 +861,8 @@ export default function CreateAppointment() {
                                         onChange={(v) => setBirthday(v.target.value)}
                                         className="form-control rounded mt-3" placeholder="YYYY-MM-DD" />
                                 </div>
-                          
-                                </div>
+
+                            </div>
                         }
                         {
                             success && !successOTP &&
@@ -870,59 +890,67 @@ export default function CreateAppointment() {
 
                         {
                             success && successOTP &&
-                            <div>               
+                            <div>
 
 
-                            
-                            <div className="d-flex flex-column" >
+
+                                <div className="d-flex flex-column" >
+
+                                    <label>Select date</label>
+                                    <label className="fw-bold mt-3">{selectedDate}</label>
+                                    <Calendar
+                                        className="mt-3"
+                                        onChange={(v) => {
+
+                                            setSelectedDate(moment(v).format("YYYY-MM-DD"))
+
+                                        }}
+                                    />
+                                </div>
                                 
-                            <label>Select date</label>
-                            <label className="fw-bold mt-3">{selectedDate}</label>
-                            <Calendar
-                                className="mt-3"
-                                onChange={(v) => {
-
-                                setSelectedDate(moment(v).format("YYYY-MM-DD"))
-
-                                }}
-                            />
-                        </div>
-
-                            
-
-                        <div className="mt-3">
+                                <div className="d-flex flex-column mt-3">
+                                    <span className="">Purpose</span>
+                                    <input
+                                        // onKeyDown={handleKeyDown}
+                                        onChange={(v) => setPurpose(v.target.value)}
+                                        value={purpose}
+                                        className="form-control rounded mt-3" placeholder="Enter your purpose" />
+                                </div>
 
 
-                            <label>Select service</label>
-
-                            <select
-
-                                onChange={(v) => {
-                                    setSelectedDoc(v.target.value)
-                                }}
-                                class="form-select" aria-label="Default select example">
-
-                                {documentList.map((i, k) => {
-
-                                    return (
-                                        <option value={i.id} key={k}>{i.service}</option>
-                                    )
-
-                                })}
-                            </select>
-                        </div>
+                                <div className="mt-3">
 
 
-                        <div {...getRootProps()} className="mt-5" style={{ borderStyle: "dotted" }}>
-                            <input {...getInputProps()} />
-                            {
-                                isDragActive ?
-                                    <p>Drop the files here ...</p> :
-                                    <p>Drag 'n' drop some files here, or click to select files</p>
-                            }
-                            
+                                    <label>Select service</label>
 
-                            </div>
+                                    <select
+
+                                        onChange={(v) => {
+                                            setSelectedDoc(v.target.value)
+                                        }}
+                                        class="form-select" aria-label="Default select example">
+
+                                        {documentList.map((i, k) => {
+
+                                            return (
+                                                <option value={i.id} key={k}>{i.service}</option>
+                                            )
+
+                                        })}
+                                    </select>
+                                </div>
+
+
+                                <div {...getRootProps()} className="mt-5" style={{ borderStyle: "dotted" }}>
+                                    <input {...getInputProps()} />
+                                    {
+                                        isDragActive ?
+                                            <p>Drop the files here ...</p> :
+                                            <p>Drag 'n' drop some files here, or click to select files</p>
+                                    }
+
+
+                                </div>
 
                                 <div className="mt-3">
                                     {
@@ -931,7 +959,7 @@ export default function CreateAppointment() {
                                                 <div
                                                     className="d-flex align-items-center justify-content-between mt-2"
                                                 >
-                                                <span
+                                                    <span
                                                         className="pointer"
                                                         onClick={() => {
 
@@ -948,9 +976,9 @@ export default function CreateAppointment() {
 
 
                                                             setFiles([...tmpArr])
-                                                        }}  
+                                                        }}
 
-                                                        >
+                                                    >
                                                         <i class="bi bi-trash" style={{ fontSize: "30px", color: "red" }}></i>
                                                     </div>
 
@@ -1045,7 +1073,7 @@ export default function CreateAppointment() {
                     </div>
                 }
 
-                
+
             </div>
         </main>
     );

@@ -22,8 +22,9 @@ import moment from "moment";
 import { useDropzone } from "react-dropzone";
 
 
+
 export default function Official({ params }) {
-    
+
   const dispatch = useDispatch();
   const router = useRouter()
   const officials = useSelector(state => state)
@@ -47,6 +48,7 @@ export default function Official({ params }) {
 
   const [showAddResident, setShowAddResident] = useState(false)
 
+
   const handleKeyDown = (event) => {
 
 
@@ -55,11 +57,13 @@ export default function Official({ params }) {
 
     if (event.key === 'Enter') {
       event.preventDefault(); // Optional: Prevents the default action if needed
+      // changeTab(tab)
       let data = {
         token: token.token,
         currentPage: 1,
         searchItemList
       }
+
 
       if (tab == 0) {
         router.push('/Admin/Official/Staff/1/' + searchItemList)
@@ -79,7 +83,8 @@ export default function Official({ params }) {
       if (tab == 10) {
         router.push('/Admin/Official/Dashboard')
       }
-      
+
+
       // You can perform any action here, like submitting a form or calling a function
     }
   };
@@ -90,8 +95,8 @@ export default function Official({ params }) {
   const [message, SetMessage] = useState('')
 
   const [isEdit, setIsEdit] = useState(false);
-
   const [isViewing, setIsViewing] = useState(false);
+
 
   const [selectedItem, setSelectedItem] = useState(null)
 
@@ -105,10 +110,7 @@ export default function Official({ params }) {
   const [count, setCount] = useState(0)
 
   const [loading, setLoading] = useState(false)
-
   const [files, setFiles] = useState([])
-
-
   // Resident
 
   const [startDate, setStartDate] = useState();
@@ -152,14 +154,16 @@ export default function Official({ params }) {
   // male 0 female 1
   // Resident
 
+
   const onDrop = useCallback((acceptedFiles) => {
     // Convert files to base64 and update state
     const fileReaders = acceptedFiles.map(file => {
       const reader = new FileReader();
+      
       reader.onloadend = () => {
         // Process file as base64 here if needed
         const base64String = reader.result;
-
+        
         // Update state with new file
         setFiles(prevFiles => [...prevFiles, file]);
       };
@@ -167,8 +171,6 @@ export default function Official({ params }) {
       reader.readAsDataURL(file);
       return reader;
     });
-
-
   }, []);
 
 
@@ -203,11 +205,12 @@ export default function Official({ params }) {
     let getSearchItem = params.page[2]
 
 
+
+
     if (getPage == "Staff") {
       setCurrentPage(getPageNumber)
       seTab(0)
     }
-
     if (getPage == "Services") {
       setCurrentPage(getPageNumber)
       seTab(3)
@@ -228,18 +231,18 @@ export default function Official({ params }) {
       seTab(4)
     }
 
-    if(getPage == "Dashboard"){
+    if (getPage == "Dashboard") {
       setCurrentPage(getPageNumber)
       seTab(10)
     }
+
     setSearchItemList(getSearchItem)
 
   }, [])
 
-  
+
 
   useEffect(() => {
-
     setLoading(true)
     let data = {
       token: token.token,
@@ -258,22 +261,30 @@ export default function Official({ params }) {
 
           // Handle error, e.g., show an error message
         }
+
         setLoading(false)
       };
+
       fetchData();
     }
 
     if (tab == 0) {
+
+
+
+
       const fetchData = async () => {
 
         try {
           const result = await dispatch(loadOfficials(data)).unwrap();
-          
+
+
           setTotalPage(result.total_pages)
 
           if (currentPage > result.total_pages) {
-            //alert("Invalid url")
+            // alert("Invalid url")
           }
+
           // Handle success, e.g., navigate to another page
         } catch (error) {
 
@@ -281,9 +292,9 @@ export default function Official({ params }) {
         }
         setLoading(false)
       };
+
       fetchData();
     }
-
     if (tab == 1 || tab == 0) {
       const fetchData = async () => {
 
@@ -292,27 +303,35 @@ export default function Official({ params }) {
 
           setTotalPage(result.total_pages)
 
+
           // Handle success, e.g., navigate to another page
         } catch (error) {
 
           // Handle error, e.g., show an error message
         }
+
+        setLoading(false)
       };
+
+
       fetchData();
     }
 
+
+
     if (tab == 3) {
+
       const fetchData = async () => {
 
         try {
           const result = await dispatch(getDocumentTypeApi(data)).unwrap();
-          
+
           setTotalPage(result.total_pages)
 
           if (currentPage > result.total_pages) {
             alert("Invalid url")
           }
-          
+
           // Handle success, e.g., navigate to another page
         } catch (error) {
 
@@ -320,10 +339,11 @@ export default function Official({ params }) {
         }
         setLoading(false)
       };
+
       fetchData();
     }
 
-    if  (tab == 2)  {
+    if (tab == 2) {
 
       const fetchData = async () => {
 
@@ -336,7 +356,7 @@ export default function Official({ params }) {
             alert("Invalid url")
           }
 
-           // Handle success, e.g., navigate to another page
+          // Handle success, e.g., navigate to another page
         } catch (error) {
 
           // Handle error, e.g., show an error message
@@ -345,11 +365,12 @@ export default function Official({ params }) {
       };
 
       fetchData();
-        
+
       setLoading(false)
     }
 
-    if  (tab == 4)  {
+    if (tab == 4) {
+
 
       const fetchData = async () => {
 
@@ -362,6 +383,7 @@ export default function Official({ params }) {
             alert("Invalid url")
           }
 
+          // Handle success, e.g., navigate to another page
         } catch (error) {
 
           // Handle error, e.g., show an error message
@@ -371,10 +393,8 @@ export default function Official({ params }) {
 
       fetchData();
 
-      
       setLoading(false)
     }
-
 
 
   }, [tab, count]);
@@ -576,6 +596,11 @@ export default function Official({ params }) {
 
   const addResident = async () => {
 
+
+
+
+
+
     if (resident.first_name == "") {
       document.getElementById('fnameinput').style.border = '1px solid red'
     }
@@ -590,7 +615,7 @@ export default function Official({ params }) {
     }
 
     if (resident.birthday == "") {
-      //document.getElementById('bdayinput').style.border = '1px solid red'
+      // document.getElementById('bdayinput').style.border = '1px solid red'
     }
 
     if (resident.cell_number == "") {
@@ -643,6 +668,7 @@ export default function Official({ params }) {
             setSuccess(false)
             setShowSuccess(true)
           }
+
         }
         catch (error) {
 
@@ -651,7 +677,7 @@ export default function Official({ params }) {
       else {
         try {
           const result = await dispatch(addResidentApi(merge)).unwrap();
-          console.log("RESULT: ", result)
+
           if (result.success == true) {
             setIsEdit(false)
             setSuccess(true)
@@ -681,11 +707,14 @@ export default function Official({ params }) {
         }
       }
 
+
+
+
     }
 
 
   }
-  
+
   const deleteResident = async () => {
     // deleteResidentInformationApi
 
@@ -695,13 +724,14 @@ export default function Official({ params }) {
       token: token.token
     }
 
-    console.log('di pumasok??', merge)
+
 
     try {
       const result = await dispatch(deleteResidentInformationApi(merge)).unwrap();
-      
+
 
       if (result.success == true) {
+
         setShowSuccess(true)
         setSuccess(true)
         SetMessage(`Resident ${resident.first_name} has been deleted.`)
@@ -739,7 +769,7 @@ export default function Official({ params }) {
 
 
     setServiceDesc('')
-    
+
     const fetchData = async () => {
 
 
@@ -872,12 +902,18 @@ export default function Official({ params }) {
   }
 
 
+
+
+
   const changeTab = (v) => {
+
+
+
 
     if (v == 0) {
       router.push('/Admin/Official/Staff/1')
     }
-    if(v == 1){
+    if (v == 1) {
       router.push('/Admin/Official/Resident/1')
     }
     if (v == 2) {
@@ -893,24 +929,23 @@ export default function Official({ params }) {
       router.push('/Admin/Official/Dashboard')
     }
 
-    //seTab(v)
+    // seTab(v)
   }
 
 
   const paginate = (v, k) => {
 
     let slug = ''
-    
+
 
     if (tab == 0) slug = "Staff"
     if (tab == 3) slug = "Services"
     if (tab == 1) slug = "Resident"
-    
 
-    
+
     if (k == 1) {
       //next
-      
+
       if (currentPage >= totalPage) {
         setCurrentPage(totalPage)
 
@@ -920,7 +955,7 @@ export default function Official({ params }) {
         //tab 0
         router.replace(`/Admin/Official/${slug}/` + (parseInt(currentPage) + 1))
       }
-   
+
     }
     else if (k == 0) {
       //previous
@@ -931,11 +966,12 @@ export default function Official({ params }) {
       else {
         setCurrentPage(1)
       }
-      
-      
+
+
     }
 
   }
+
 
   const approveResident = async () => {
 
@@ -945,6 +981,7 @@ export default function Official({ params }) {
       id: resident.id,
       status: 0
     }
+
 
 
     try {
@@ -984,9 +1021,11 @@ export default function Official({ params }) {
       setShowSuccess(true)
     }
 
+
+
   }
 
-  const rejectResident =  async () => {
+  const rejectResident = async () => {
 
     setLoading(true)
     let merge = {
@@ -1001,12 +1040,12 @@ export default function Official({ params }) {
       const result = await dispatch(approveNewResidentApi(merge)).unwrap();
       setLoading(false)
 
-      if(result.success == true){
+      if (result.success == true) {
 
         setShowAddResident(false)
         setIsViewing(false)
         setSuccess(true)
-        SetMessage('Success in rejecting ' + resident.first_name + " as resident." )
+        SetMessage('Success in rejecting ' + resident.first_name + " as resident.")
         setShowSuccess(true)
         setResident({
           first_name: '',
@@ -1022,22 +1061,21 @@ export default function Official({ params }) {
         })
         setCount(count + 1)
       }
-      else{
+      else {
         setSuccess(false)
-        SetMessage('Something went wrong in rejecting ' + resident.first_name + " as resident." )
+        SetMessage('Something went wrong in rejecting ' + resident.first_name + " as resident.")
         setShowSuccess(true)
       }
 
-    } catch (error){
+    } catch (error) {
 
       setSuccess(false)
-      SetMessage('Something went wrong in approving ' + resident.first_name + " as resident." )
+      SetMessage('Something went wrong in approving ' + resident.first_name + " as resident.")
       setShowSuccess(true)
     }
 
 
 
-  
   }
 
   return (
@@ -1459,7 +1497,7 @@ export default function Official({ params }) {
 
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
-                    
+
                     {
                       officials.officials.list.length != 0 && officials.officials.list.data.map((i, k) => {
 
@@ -1489,130 +1527,28 @@ export default function Official({ params }) {
                               </span>
                             </RowItem>
                             <RowItem>
-                              <span id={k + i.full_name + "action"}
-                                onClick={() => {
-                                  document.getElementById(k + i.full_name + "button").classList.remove('d-none')
-                                  document.getElementById(k + i.full_name + "action").classList.add('d-none')
+                            
+                              <div id={k + i.full_name + "button"} className="d-flex">
 
-                                }}
-                                className="f-white bg-yellow p-2 rounded">
-                                ACTION
-                              </span>
-                              {
-                                i.status == "Pending" ?
-                                  <div id={k + i.full_name + "button"} className="d-flex d-none">
-
-                                    <button
-
-                                      onClick={() => {
-
-                                        setLoading()
-                                        setSelectedSchedule(i)
-
-                                        let merge = {
-                                          token: token.token,
-                                          id: i.appointment_id,
-                                          status: 0
-                                        }
+                                <button
+                                  data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                  onClick={() => {
 
 
+                                    setSelectedItem(i)
 
-                                        const fetchData = async () => {
+                                  }}
+                                  type="button" class="btn btn-primary">Edit</button>
 
-                                          try {
-                                            const result = await dispatch(approveOrRejectAppointmentApi(merge)).unwrap();
+                                <button
+                                  data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
 
+                                  onClick={() => {
+                                    setSelectedItem(i)
+                                  }}
+                                  type="button" class="btn btn-danger ms-3">Delete</button>
 
-                                            if(result.success){
-                                              setCount(count + 1)
-                                              setLoading(false)
-                                              setSuccess(true)
-                                              setShowSuccess(true)
-                                              SetMessage("Success in approving appointment.")
-                                            }
-                                            // setCount(count + 1)
-                                            // Handle success, e.g., navigate to another page
-                                          } catch (error) {
-
-                                            // Handle error, e.g., show an error message
-                                          }
-
-                                          setLoading(false)
-                                        };
-
-                                        fetchData();
-
-                                        document.getElementById(k + i.full_name + "button").classList.add('d-none')
-                                        document.getElementById(k + i.full_name + "action").classList.remove('d-none')
-                                      }}
-                                      type="button" class="btn btn-primary">Approve</button>
-
-                                    <button
-                                      data-bs-toggle="modal"
-
-                                      onClick={() => {
-
-                                        setLoading()
-                                        setSelectedSchedule(i)
-
-                                        let merge = {
-                                          token: token.token,
-                                          id: i.appointment_id,
-                                          status: 1
-                                        }
-
-
-
-                                        const fetchData = async () => {
-
-                                          try {
-                                            const result = await dispatch(approveOrRejectAppointmentApi(merge)).unwrap();
-
-
-                                            if(result.success){
-                                              setCount(count + 1)
-                                              setLoading(false)
-                                              setSuccess(true)
-                                              setShowSuccess(true)
-                                              SetMessage("Success in rejecting appointment.")
-                                            }
-                                            // setCount(count + 1)
-                                            // Handle success, e.g., navigate to another page
-                                          } catch (error) {
-
-                                            // Handle error, e.g., show an error message
-                                          }
-
-                                          setLoading(false)
-                                        };
-
-                                        fetchData();
-
-                                        document.getElementById(k + i.full_name + "button").classList.add('d-none')
-                                        document.getElementById(k + i.full_name + "action").classList.remove('d-none')
-                                      }}
-                                      type="button" class="btn btn-danger ms-3">Reject</button>
-
-                                  </div>
-
-                                  :
-
-                                  <div id={k + i.full_name + "button"} className="d-flex d-none">
-
-                                    <button
-
-                                      onClick={() => {
-
-                                        setIsEdit(true)
-                                        setResident(i)
-                                        setShowAddResident(true)
-                                        document.getElementById(k + i.full_name + "button").classList.add('d-none')
-                                        document.getElementById(k + i.full_name + "action").classList.remove('d-none')
-                                      }}
-                                      type="button" class="btn btn-primary">View</button>
-
-                                  </div>
-                              }
+                              </div>
                             </RowItem>
                           </div>
 
@@ -1647,8 +1583,8 @@ export default function Official({ params }) {
                     <span className="f-white">Search:</span>
                     <input
                       onKeyDown={handleKeyDown}
-                      onChange={(v) => setSearchItemList(v.target.value)}  
                       value={searchItemList}
+                      onChange={(v) => setSearchItemList(v.target.value)}
                       type="email" className="form-control rounded ms-2" placeholder="Search name" />
 
                     <div className="col-6 ms-3">
@@ -1712,6 +1648,7 @@ export default function Official({ params }) {
 
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
+
                     {
                       alluser.list.data.map((i, k) => {
 
@@ -1754,29 +1691,21 @@ export default function Official({ params }) {
                                 setShowAddResident(true)
                               }}
                             >
-                              <span className="f-white pointer" style={{ fontWeight: i.isPendingResident == 1 ? "bold" : "normal", color: 
-i.isPendingResident == 1 ? "yellow" : "#fff" }}>
+                              <span className="f-white pointer" style={{ fontWeight: i.isPendingResident == 1 ? "bold" : "normal", color: i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                                 {i.isPendingResident == 1 ? "Pending" : "Registered"}
                               </span>
                             </RowItem>
                             <RowItem>
-                              <span id={k + i.full_name + "action"}
-                                onClick={() => {
-                                  document.getElementById(k + i.full_name + "button").classList.remove('d-none')
-                                  document.getElementById(k + i.full_name + "action").classList.add('d-none')
-
-                                }}
-                                className="f-white bg-yellow p-2 rounded">
-                                ACTION
-                              </span>
-                              <div id={k + i.full_name + "button"} className="d-flex d-none">
+                            
+                              <div id={k + i.full_name + "button"} className="d-flex ">
 
                                 <button
+
                                   onClick={() => {
+
                                     setIsEdit(true)
                                     setResident(i)
-                                    document.getElementById(k + i.full_name + "button").classList.add('d-none')
-                                    document.getElementById(k + i.full_name + "action").classList.remove('d-none')
+                                    setShowAddResident(true)
                                   }}
                                   type="button" class="btn btn-primary">Edit</button>
 
@@ -1785,11 +1714,9 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
 
                                   onClick={() => {
 
-                                    
+
                                     setSelectedItem(i)
                                     setResident(i)
-                                    document.getElementById(k + i.full_name + "button").classList.add('d-none')
-                                    document.getElementById(k + i.full_name + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-danger ms-3">Delete</button>
 
@@ -1874,9 +1801,11 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                   {/* Table body */}
 
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
+
                     {
                       alluser.list.length != 0 && alluser.list.data.map((i, k) => {
                         return (
+
                           // Put dynamic className
                           <div className='d-flex col-lg-12 justify-content-around row-item-container'>
                             <RowItem>
@@ -1902,21 +1831,17 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                             {
                               i.status != "Rejected" ?
                               <RowItem>
-                              <span id={k + i.full_name + "action"}
-                                onClick={() => {
-                                  document.getElementById(k + i.full_name + "button").classList.remove('d-none')
-                                  document.getElementById(k + i.full_name + "action").classList.add('d-none')
-                                }}
-                                className="f-white bg-yellow p-2 rounded">
-                                ACTION
-                              </span>
                               {
                                 i.status == "Pending" ?
-                                  <div id={k + i.full_name + "button"} className="d-flex d-none">
+                                  <div id={k + i.full_name + "button"} className="d-flex ">
+
                                     <button
+
                                       onClick={() => {
+
                                         setLoading()
                                         setSelectedSchedule(i)
+
                                         let merge = {
                                           token: token.token,
                                           id: i.appointment_id,
@@ -1930,6 +1855,7 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                                           try {
                                             const result = await dispatch(approveOrRejectAppointmentApi(merge)).unwrap();
                                             
+
                                             if(result.success){
                                               setCount(count + 1)
                                               setLoading(false)
@@ -1948,15 +1874,18 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                                         };
                   
                                         fetchData();
-                                        document.getElementById(k + i.full_name + "button").classList.add('d-none')
-                                        document.getElementById(k + i.full_name + "action").classList.remove('d-none')
+
                                       }}
                                       type="button" class="btn btn-primary">Approve</button>
+
                                     <button
                                       data-bs-toggle="modal"
+
                                       onClick={() => {
+
                                         setLoading()
                                         setSelectedSchedule(i)
+
                                         let merge = {
                                           token: token.token,
                                           id: i.appointment_id,
@@ -1970,6 +1899,7 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                                           try {
                                             const result = await dispatch(approveOrRejectAppointmentApi(merge)).unwrap();
                                             
+
                                             if(result.success){
                                               setCount(count + 1)
                                               setLoading(false)
@@ -1988,22 +1918,26 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                                         };
                   
                                         fetchData();
-                                        document.getElementById(k + i.full_name + "button").classList.add('d-none')
-                                        document.getElementById(k + i.full_name + "action").classList.remove('d-none')
+
                                       }}
                                       type="button" class="btn btn-danger ms-3">Reject</button>
+
                                   </div>
+
                                   :
+
                                   <div id={k + i.full_name + "button"} className="d-flex d-none">
+
                                     <button
 
                                       onClick={() => {
                                         window.open(`https://18.141.22.83/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
-
+                                        
                                         document.getElementById(k + i.full_name + "button").classList.add('d-none')
                                         document.getElementById(k + i.full_name + "action").classList.remove('d-none')
                                       }}
                                       type="button" class="btn btn-primary">View</button>
+
                                   </div>
                               }
                             </RowItem>
@@ -2019,6 +1953,7 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                         )
                       })
                     }
+
                   </div>
 
                   {/* Table body */}
@@ -2029,7 +1964,7 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
 
             {/* Schedule */}
 
-            
+
 
             {/* Barangay services */}
 
@@ -2047,7 +1982,7 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                     <span className="f-white">Search:</span>
                     <input
                       onKeyDown={handleKeyDown}
-                      onChange={(v) => setSearchItemList(v.target.value)} 
+                      onChange={(v) => setSearchItemList(v.target.value)}
                       type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
                   </div>
 
@@ -2110,16 +2045,8 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                               </span>
                             </RowItem>
                             <RowItem>
-                              <span id={k + i.service + "action"}
-                                onClick={() => {
-
-                                  document.getElementById(k + i.service + "button").classList.remove('d-none')
-                                  document.getElementById(k + i.service + "action").classList.add('d-none')
-                                }}
-                                className="f-white bg-yellow p-2 rounded">
-                                ACTION
-                              </span>
-                              <div id={k + i.service + "button"} className="d-flex d-none">
+                             
+                              <div id={k + i.service + "button"} className="d-flex">
 
                                 <button
                                   data-bs-toggle="modal" data-bs-target="#addBarangayServices"
@@ -2138,8 +2065,6 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
 
 
                                     setIsEdit(true)
-                                    document.getElementById(k + i.service + "button").classList.add('d-none')
-                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-primary">Edit</button>
 
@@ -2148,8 +2073,6 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
 
                                     viewCreatedTemplate(i)
                                     setSelectedItem(i)
-                                    document.getElementById(k + i.service + "button").classList.add('d-none')
-                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-warning ms-3">View</button>
 
@@ -2158,8 +2081,6 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
 
                                   onClick={() => {
                                     setSelectedItem(i)
-                                    document.getElementById(k + i.service + "button").classList.add('d-none')
-                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-danger ms-3">Delete</button>
 
@@ -2270,16 +2191,7 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                               </span>
                             </RowItem>
                             <RowItem>
-                              <span id={k + i.service + "action"}
-                                onClick={() => {
-
-                                  document.getElementById(k + i.service + "button").classList.remove('d-none')
-                                  document.getElementById(k + i.service + "action").classList.add('d-none')
-                                }}
-                                className="f-white bg-yellow p-2 rounded">
-                                ACTION
-                              </span>
-                              <div id={k + i.service + "button"} className="d-flex d-none">
+                              <div id={k + i.service + "button"} className="d-flex">
 
                                 <button
                                   data-bs-toggle="modal" data-bs-target="#addBarangayServices"
@@ -2298,8 +2210,6 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
 
 
                                     setIsEdit(true)
-                                    document.getElementById(k + i.service + "button").classList.add('d-none')
-                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-primary">Edit</button>
 
@@ -2308,8 +2218,6 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
 
                                     viewCreatedTemplate(i)
                                     setSelectedItem(i)
-                                    document.getElementById(k + i.service + "button").classList.add('d-none')
-                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-warning ms-3">View</button>
 
@@ -2318,8 +2226,6 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
 
                                   onClick={() => {
                                     setSelectedItem(i)
-                                    document.getElementById(k + i.service + "button").classList.add('d-none')
-                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-danger ms-3">Delete</button>
 
@@ -2343,7 +2249,6 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
             }
 
             {/* Blotter */}
-
 
             {/* Barangay services */}
 
@@ -2410,7 +2315,7 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                   <div class="mb-3">
                     <label class="form-label">Chairmanship</label>
                     <input
-                      value={selectedItem != null ? selectedItem.chairmanship: ''}
+                      value={selectedItem != null ? selectedItem.chairmanship : ''}
                       onChange={(val) => {
                         if (selectedItem != null) {
                           setSelectedItem({
@@ -2424,7 +2329,7 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                   <div class="mb-3">
                     <label class="form-label">Position</label>
                     <input
-                      value={selectedItem != null ? selectedItem.position: ''}
+                      value={selectedItem != null ? selectedItem.position : ''}
                       onChange={(val) => {
                         if (selectedItem != null) {
                           setSelectedItem({
@@ -2562,59 +2467,61 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
           { }
 
           {
+            showAddResident &&
 
-          showAddResident &&
-
-          <div class="modal fade show d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)" }} 
-              id="addResidentModal" tabindex="-1" 
-                aria-labelledby="addResidentModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style={{ maxHeight: "720px", overflowY: "scroll" }}>
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="addOfficialModalLabel"> {isEdit ? (!isViewing ? "Edit Resident" : "View Resident") : "Add Resident"}</h1>
-              </div>
-              <div class="modal-body">
-                <div class="mb-3">
-                  <label class="form-label">First name</label>
-                  <input
-                    id='fnameinput'
-                    disabled={isViewing}
-                    value={resident.first_name}
-                    onChange={(val) => {
-                      if (val.target.value != "") {
-                        document.getElementById('fnameinput').style.border = '1px solid #dee2e6'
-                      }
-                      else {
-                        document.getElementById('fnameinput').style.border = '1px solid red'
-                      }
-                      setResident({
-                        ...resident, ...{
-                          first_name: val.target.value
-                        }
-                      })
-                      
-                    }}
-                    class="form-control" />
-
+            <div class="modal fade show d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)" }} id="addResidentModal" tabindex="-1" aria-labelledby="addResidentModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style={{ maxHeight: "720px", overflowY: "scroll" }}>
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="addOfficialModalLabel"> {isEdit ? (!isViewing ? "Edit Resident" : "View Resident") : "Add Resident"}</h1>
                   </div>
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <label class="form-label">First name</label>
+                      <input
+                        id='fnameinput'
+                        disabled={isViewing}
+                        value={resident.first_name}
+                        onChange={(val) => {
 
-                  <div class="mb-3">
-                    <label
+                          if (val.target.value != "") {
+                            document.getElementById('fnameinput').style.border = '1px solid #dee2e6'
+                          }
+                          else {
+                            document.getElementById('fnameinput').style.border = '1px solid red'
+                          }
+
+                          setResident({
+                            ...resident, ...{
+                              first_name: val.target.value
+                            }
+                          })
+
+                        }}
+                        class="form-control" />
+
+                    </div>
+
+                    <div class="mb-3">
+                      <label
                         class="form-label">Middle name</label>
                       <input
+                        disabled={isViewing}
                         value={resident.middle_name}
                         onChange={(val) => {
+
                           setResident({
-                          ...resident, ...{
-                            middle_name: val.target.value
-                          }
-                        })
-                      }}
-                      class="form-control" />
+                            ...resident, ...{
+                              middle_name: val.target.value
+                            }
+                          })
 
-                  </div>
+                        }}
+                        class="form-control" />
 
-                  <div class="mb-3">
+                    </div>
+
+                    <div class="mb-3">
                       <label class="form-label">Last name</label>
                       <input
                         id='lnameinput'
@@ -2622,10 +2529,10 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                         value={resident.last_name}
                         onChange={(val) => {
 
-                        if (val.target.value != "") {
+                          if (val.target.value != "") {
                             document.getElementById('lnameinput').style.border = '1px solid #dee2e6'
                           }
-                        else {
+                          else {
                             document.getElementById('lnameinput').style.border = '1px solid red'
                           }
 
@@ -2635,12 +2542,12 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                             }
                           })
 
-                          }}
-                            class="form-control" />
+                        }}
+                        class="form-control" />
 
-                        </div>
+                    </div>
 
-                        <div class="mb-3">
+                    <div class="mb-3">
                       <label class="form-label">Email</label>
                       <input
                         id='emailinput'
@@ -2658,6 +2565,7 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                               email: val.target.value
                             }
                           })
+
                         }}
                         class="form-control" />
 
@@ -2666,6 +2574,7 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                     <div class="mb-3 d-flex flex-column">
                       <label class="form-label">Birthday</label>
                       <span className="fw-bold">{resident.birthday}</span>
+
                       {!isViewing &&
                         <Calendar
                           id='bdayinput'
@@ -2674,6 +2583,7 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                           value={resident.birthday}
                           onChange={(v) => {
                             // document.getElementById('bdayinput').style.border = '1px solid #dee2e6'
+
                             setResident({
                               ...resident, ...{
                                 birthday: moment(v).format("YYYY-MM-DD")
@@ -2693,12 +2603,14 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                         disabled={isViewing}
                         value={resident.cell_number}
                         onChange={(val) => {
+
                           if (val.target.value != "") {
                             document.getElementById('phoneinput').style.border = '1px solid #dee2e6'
                           }
                           else {
                             document.getElementById('phoneinput').style.border = '1px solid red'
                           }
+
                           setResident({
                             ...resident, ...{
                               cell_number: val.target.value
@@ -2706,9 +2618,11 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                           })
 
                         }}
-                        class="form-control"/>
+                        class="form-control" />
 
                     </div>
+
+
 
                     <div id='genderinput' class="mb-3">
                       <label class="form-label">Gender</label>
@@ -2766,7 +2680,6 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                         id='civilinput'
                         onChange={(v) => {
                           document.getElementById('civilinput').style.border = '1px solid #dee2e6'
-
                           setResident({
                             ...resident, ...{
                               civil_status_id: v.target.value
@@ -2780,23 +2693,22 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                         <option value={3}>Widowed</option>
                         <option value={4}>Legally Separated</option>
                       </select>
+
                     </div>
 
-                  </div>
+                    {
+                      isViewing &&
 
-                  {
-                    isViewing &&
+                      <div class="mb-3 d-flex flex-column">
+                        <label class="form-label">Supporting documents</label>
 
-                    <div class="mb-3 d-flex flex-column">
-                      <label class="form-label">Supporting documents</label>
-
-                      {/* resident.supporting_files_obj */}
-                      { }
+                        {/* resident.supporting_files_obj */}
+                        { }
                         {resident.supporting_files_obj.lenght != 0 &&
                           resident.supporting_files_obj.map((i, k) => {
 
-                            return(
-                              <span 
+                            return (
+                              <span
                                 onClick={() => {
                                   setSelectedFileForViewing({
                                     fileName: i.file_name,
@@ -2810,9 +2722,12 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                           })
                         }
 
-                    </div>
-                  }
-                  
+                      </div>
+                    }
+
+
+
+                  </div>
                   {
                     isViewing ?
                       <div class="modal-footer">
@@ -2949,6 +2864,7 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                     <label class="form-label">Legend</label>
 
                     <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{first_name}'} as placeholder</span>
+
                     <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{middle_name}'} as placeholder</span>
                     <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{last_name}'} as placeholder</span>
                     <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{cell_number}'} as placeholder</span>
@@ -3044,7 +2960,7 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
             loading &&
             <div id="statusModal " class="modal fade show d-block">
               <div class="d-flex align-items-center justify-content-center" style={{ height: "100vh", backgroundColor: "rgba(0,0,0,0.4)" }}>
-              <div class="modal-content d-flex align-items-center" style={{ backgroundColor: "transparent " }}>
+                <div class="modal-content d-flex align-items-center" style={{ backgroundColor: "transparent " }}>
                   <div class="">
                     <h2 className="f-white">
                       Loading .....
@@ -3055,28 +2971,30 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
             </div>
           }
 
-          {
-            showImage &&
-            <div id="statusModal " class="modal fade show d-flex align-items-center justify-content-center">
-              <div className="col-6  d-flex flex-column align-items-center justify-content-center box mt-5">
-                <div>
-                  <h4>
-                    {selectedFileForViewing.fileName}
-                  </h4>
-                </div>
-                <div class="d-flex align-items-center flex-column justify-content-center w-100 p-5" >
-                  <div style={{ height: "700px", width: "100%" }}>
-                    <img
-                      style={{ position: "relative", height: "700px", width: "100%" }}
-                      src={selectedFileForViewing.base64} alt="Base64 Image" />
+
+            {
+              showImage &&
+              <div id="statusModal " class="modal fade show d-flex align-items-center justify-content-center">
+                <div className="col-6  d-flex flex-column align-items-center justify-content-center box mt-5">
+                  <div>
+                    <h4>
+                      {selectedFileForViewing.fileName}
+                    </h4>
                   </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onClick={() => setShowImage(false)}>Close</button>
+                  <div class="d-flex align-items-center flex-column justify-content-center w-100 p-5" >
+                    <div style={{ height: "700px", width: "100%" }}>
+                      <img
+                        style={{ position: "relative", height: "700px", width: "100%" }}
+                        src={selectedFileForViewing.base64} alt="Base64 Image" />
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" onClick={() => setShowImage(false)}>Close</button>
+
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          }
+            }
 
           {
             showImport &&
@@ -3096,19 +3014,21 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                           <p>Drop the files here ...</p> :
                           <p>Drag 'n' drop some files here, or click to select files</p>
                       }
-            </div>
-            {
+
+
+                    </div>
+                    {
                       files.length != 0 && files.map((i, k) => {
                         return (
                           <div
-                          className="d-flex align-items-center justify-content-between mt-2"
+                            className="d-flex align-items-center justify-content-between mt-2"
                           >
                             <span
                               className="pointer"
                               onClick={() => {
 
-                                  // setSelectedFileForViewing(i)
-                                  // setShowImage(true)
+                                // setSelectedFileForViewing(i)
+                                // setShowImage(true)
                               }}
                             >{i.name}</span>
 
@@ -3126,38 +3046,36 @@ i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                               <i class="bi bi-trash" style={{ fontSize: "30px", color: "red" }}></i>
                             </div>
 
-                        </div>
+                          </div>
                         )
                       })
                     }
                   </div>
                   <div class="modal-footer">
-                  <button type="button" class="btn btn-primary bg-green" onClick={async () => {
+                    <button type="button" class="btn btn-primary bg-green" onClick={async () => {
 
-                    let merge = {
-                      token: token.token,
-                      files
-                    }
+                      let merge = {
+                        token: token.token,
+                        files
+                      }
 
-
-
-                    setShowImport(false)
+                      setShowImport(false)
 
                       const fetchData = async () => {
 
                         try {
                           const result = await dispatch(importExcelResidentsApi(merge)).unwrap();
-
+                         
                           setShowSuccess(true)
                           setSuccess(true)
                           SetMessage('Success in importing resident information list.')
-
+                        
                           // Handle success, e.g., navigate to another page
                         } catch (error) {
-
+                          
                           setShowSuccess(true)
                           setSuccess(false)
-
+                         
                           // Handle error, e.g., show an error message
                         }
                         setFiles([])

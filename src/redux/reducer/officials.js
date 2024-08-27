@@ -4,7 +4,9 @@ import { apiClient } from './user';
 
 // Initial state
 const initialState = {
-  list: [],
+  list: {
+    data: []
+  },
   status: 'idle',  // Start with 'idle' instead of 'false'
   token: '',
   dashboardData:  {
@@ -39,7 +41,7 @@ apiClient.interceptors.response.use(
 
 // Define async thunks
 export const loadOfficials = createAsyncThunk('user/getofficial', async (data) => {
-  console.log(data, "--> DAMN")
+
   const res = await apiClient.get('/viewBarangayOfficials', {
     headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token

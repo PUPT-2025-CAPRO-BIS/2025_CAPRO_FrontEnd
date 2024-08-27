@@ -4,7 +4,9 @@ import { apiClient } from './user';
 
 // Initial state
 const initialState = {
-  list: [],
+  list: {
+    data: []
+  },
   status: 'idle',  // Start with 'idle' instead of 'false'
   token: '',
 };
@@ -55,7 +57,7 @@ headers:{
 }, params:{
   search_value: data.searchItemList,
       page_number: data.currentPage,
-      item_per_page: 10
+      item_per_page: 100
 }
 });
 return res.data;

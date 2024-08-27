@@ -21,8 +21,8 @@ import Calendar from "react-calendar";
 import moment from "moment";
 import { useDropzone } from "react-dropzone";
 
-
-
+const timeCount = 3000
+let timerVariable = '';
 export default function Official({ params }) {
 
   const dispatch = useDispatch();
@@ -49,44 +49,81 @@ export default function Official({ params }) {
   const [showAddResident, setShowAddResident] = useState(false)
 
 
-  const handleKeyDown = (event) => {
+  
+
+  // const handleKeyDown = (event) => {
 
 
-    let slug = ''
+  //   let slug = ''
 
 
-    if (event.key === 'Enter') {
-      event.preventDefault(); // Optional: Prevents the default action if needed
-      // changeTab(tab)
-      let data = {
-        token: token.token,
-        currentPage: 1,
-        searchItemList
-      }
+  //   if (event.key === 'Enter') {
+  //     event.preventDefault(); // Optional: Prevents the default action if needed
+  //     // changeTab(tab)
+  //     let data = {
+  //       token: token.token,
+  //       currentPage: 1,
+  //       searchItemList
+  //     }
 
 
-      if (tab == 0) {
-        router.push('/Admin/Official/Staff/1/' + searchItemList)
-      }
-      if (tab == 1) {
-        router.push('/Admin/Official/Resident/1/' + searchItemList)
-      }
-      if (tab == 2) {
-        router.push('/Admin/Official/Schedule/1/' + searchItemList)
-      }
-      if (tab == 3) {
-        router.push('/Admin/Official/Services/1/' + searchItemList)
-      }
-      if (tab == 4) {
-        router.push('/Admin/Official/Blotter/1/' + searchItemList)
-      }
-      if (tab == 10) {
-        router.push('/Admin/Official/Dashboard')
-      }
+  //     if (tab == 0) {
+  //       router.push('/Admin/Official/Staff/1/' + searchItemList)
+  //     }
+  //     if (tab == 1) {
+  //       router.push('/Admin/Official/Resident/1/' + searchItemList)
+  //     }
+  //     if (tab == 2) {
+  //       router.push('/Admin/Official/Schedule/1/' + searchItemList)
+  //     }
+  //     if (tab == 3) {
+  //       router.push('/Admin/Official/Services/1/' + searchItemList)
+  //     }
+  //     if (tab == 4) {
+  //       router.push('/Admin/Official/Blotter/1/' + searchItemList)
+  //     }
+  //     if (tab == 10) {
+  //       router.push('/Admin/Official/Dashboard')
+  //     }
 
 
-      // You can perform any action here, like submitting a form or calling a function
+  //     // You can perform any action here, like submitting a form or calling a function
+  //   }
+  // };
+
+
+  const typingTimeoutRef = useRef(null);
+
+  // Function to handle navigation
+  const handleNavigation = (searchItem) => {
+    const paths = [
+      '/Admin/Official/Staff/1/',
+      '/Admin/Official/Resident/1/',
+      '/Admin/Official/Schedule/1/',
+      '/Admin/Official/Services/1/',
+      '/Admin/Official/Blotter/1/',
+      '/Admin/Official/Dashboard'
+    ];
+
+    const path = tab < paths.length ? paths[tab] + searchItem : paths[paths.length - 1];
+    router.push(path);
+  };
+
+  // Handle input change
+  const handleKeyDown = (val) => {
+    console.log(val, "--> TANGINA")
+    const value = val;
+    setSearchItemList(value);
+
+    // Clear the previous timeout
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
     }
+
+    // Set a new timeout to handle navigation after user stops typing
+    typingTimeoutRef.current = setTimeout(() => {
+      handleNavigation(value);
+    }, 300); // Adjust delay as needed
   };
 
 
@@ -330,7 +367,7 @@ export default function Official({ params }) {
           setTotalPage(result.total_pages)
 
           if (currentPage > result.total_pages) {
-            alert("Invalid url")
+            
           }
 
           // Handle success, e.g., navigate to another page
@@ -354,7 +391,7 @@ export default function Official({ params }) {
           setTotalPage(result.total_pages)
 
           if (currentPage > result.total_pages) {
-            alert("Invalid url")
+            // alert("Invalid url")
           }
 
           // Handle success, e.g., navigate to another page
@@ -381,7 +418,7 @@ export default function Official({ params }) {
           setTotalPage(result.total_pages)
 
           if (currentPage > result.total_pages) {
-            alert("Invalid url")
+            // alert("Invalid url")
           }
 
           // Handle success, e.g., navigate to another page
@@ -1452,8 +1489,11 @@ export default function Official({ params }) {
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
                     <input
-                      onKeyDown={handleKeyDown}
-                      onChange={(v) => setSearchItemList(v.target.value)}
+                      // onKeyDown={handleKeyDown}
+                      onChange={(v) => {
+                        setSearchItemList(v.target.value)
+                        handleKeyDown(v.target.value)
+                      }}
                       type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Official name" />
                   </div>
 
@@ -1584,9 +1624,12 @@ export default function Official({ params }) {
                   <div className="d-flex align-items-center col-6">
                     <span className="f-white">Search:</span>
                     <input
-                      onKeyDown={handleKeyDown}
+                      // onKeyDown={handleKeyDown}
                       value={searchItemList}
-                      onChange={(v) => setSearchItemList(v.target.value)}
+                      onChange={(v) => {
+                        setSearchItemList(v.target.value)
+                        handleKeyDown(v.target.value)
+                      }}
                       type="email" className="form-control rounded ms-2" placeholder="Search name" />
 
                     <div className="col-6 ms-3">
@@ -1757,8 +1800,11 @@ export default function Official({ params }) {
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
                     <input
-                      onKeyDown={handleKeyDown}
-                      onChange={(v) => setSearchItemList(v.target.value)}
+                      // onKeyDown={handleKeyDown}
+                      onChange={(v) => {
+                        setSearchItemList(v.target.value)
+                        handleKeyDown(v.target.value)
+                      }}
                       value={searchItemList}
                       className="form-control rounded ms-2" placeholder="Search name" />
 
@@ -1992,8 +2038,12 @@ export default function Official({ params }) {
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
                     <input
-                      onKeyDown={handleKeyDown}
-                      onChange={(v) => setSearchItemList(v.target.value)}
+                      // onKeyDown={handleKeyDown}
+                      onChange={(v) => {
+                        setSearchItemList(v.target.value)
+                        handleKeyDown(v.target.value)
+                      }}
+                      value={searchItemList}
                       type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
                   </div>
 
@@ -2130,9 +2180,12 @@ export default function Official({ params }) {
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
                     <input
-                      onKeyDown={handleKeyDown}
+                      // onKeyDown={handleKeyDown}
                       value={searchItemList}
-                      onChange={(v) => setSearchItemList(v.target.value)}
+                      onChange={(v) => {
+                        setSearchItemList(v.target.value)
+                        handleKeyDown(v.target.value)
+                      }}
                       type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
                   </div>
 

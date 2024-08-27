@@ -26,7 +26,7 @@ export default function CreateAppointment() {
 
     const [birthday, setBirthday] = useState('')
     const [email, setEmail] = useState('')
-    const [purpose, setPurpose] = useState('')
+
     const [otp, setOTP] = useState('')
     const [success, setSuccess] = useState(null)
     const [successOTP, setSuccessOTP] = useState(false)
@@ -332,15 +332,19 @@ export default function CreateAppointment() {
         let base64List = []
 
         files.map((i, k) => {
-            base64List.push(i.base64)
+            let item = {
+                data: i.base64,
+                file_name: i.fileName
+            };
+            let encoded = JSON.stringify(item);
+            base64List.push(encoded);
         })
 
         let data = {
             id: selectedDoc,
             selectedDate: moment(selectedDate).format('YYYY-MM-DD'),
             file_upload: base64List,
-            token: accessToken,
-            purpose: purpose
+            token: accessToken
         }
 
 
@@ -907,15 +911,7 @@ export default function CreateAppointment() {
                                         }}
                                     />
                                 </div>
-                                
-                                <div className="d-flex flex-column mt-3">
-                                    <span className="">Purpose</span>
-                                    <input
-                                        // onKeyDown={handleKeyDown}
-                                        onChange={(v) => setPurpose(v.target.value)}
-                                        value={purpose}
-                                        className="form-control rounded mt-3" placeholder="Enter your purpose" />
-                                </div>
+
 
 
                                 <div className="mt-3">

@@ -26,7 +26,7 @@ export default function CreateAppointment() {
 
     const [birthday, setBirthday] = useState('')
     const [email, setEmail] = useState('')
-
+    const [purpose, setPurpose] = useState('')
     const [otp, setOTP] = useState('')
     const [success, setSuccess] = useState(null)
     const [successOTP, setSuccessOTP] = useState(false)
@@ -65,6 +65,13 @@ export default function CreateAppointment() {
     })
 
 
+
+    useEffect(() => {
+
+        if (accessToken != "") {
+            getDocumentList()
+        }
+    }, [accessToken])
 
 
     const onDrop = useCallback((acceptedFiles) => {
@@ -282,13 +289,7 @@ export default function CreateAppointment() {
     }
 
 
-    useEffect(() => {
-
-        if (accessToken != "") {
-            getDocumentList()
-        }
-    }, [accessToken])
-
+  
 
     const submitOTP = () => {
 
@@ -344,7 +345,8 @@ export default function CreateAppointment() {
             id: selectedDoc,
             selectedDate: moment(selectedDate).format('YYYY-MM-DD'),
             file_upload: base64List,
-            token: accessToken
+            token: accessToken,
+            purpose: purpose
         }
 
 
@@ -353,19 +355,19 @@ export default function CreateAppointment() {
 
             const result = await dispatch(createAppointmentApi(data)).unwrap();
 
+            console.log(result.success, "--> nani")
 
 
-
-            if (result.success) {
+            if (result.success = true) {
+                setSuccess(true)
                 setIsButtonDisabled(false)
                 setMessage("Successfully created an appointment please check your email for more details")
                 setShowSuccess(true)
-                setSuccess(false)
                 setSuccessOTP(false)
                 setAccessToken('')
                 setOTP('')
                 setFiles([])
-                setMessage('')
+                setPurpose('')
 
             }
             else {
@@ -911,7 +913,15 @@ export default function CreateAppointment() {
                                         }}
                                     />
                                 </div>
-
+                                
+                                <div className="d-flex flex-column mt-3">
+                                    <span className="">Purpose</span>
+                                    <input
+                                        // onKeyDown={handleKeyDown}
+                                        onChange={(v) => setPurpose(v.target.value)}
+                                        value={purpose}
+                                        className="form-control rounded mt-3" placeholder="Enter your purpose" />
+                                </div>
 
 
                                 <div className="mt-3">

@@ -49,7 +49,7 @@ export default function Official({ params }) {
   const [showAddResident, setShowAddResident] = useState(false)
 
 
-  
+
 
   // const handleKeyDown = (event) => {
 
@@ -191,6 +191,8 @@ export default function Official({ params }) {
   // male 0 female 1
   // Resident
 
+
+  const [showBlotter, setShowBlotter] = useState(false)
 
   const onDrop = useCallback((acceptedFiles) => {
     // Convert files to base64 and update state
@@ -367,7 +369,7 @@ export default function Official({ params }) {
           setTotalPage(result.total_pages)
 
           if (currentPage > result.total_pages) {
-            
+
           }
 
           // Handle success, e.g., navigate to another page
@@ -1640,7 +1642,7 @@ export default function Official({ params }) {
                         className="primary bg-yellow p-2 rounded d-flex align-items-center justify-content-center" style={{ border: "0px" }}
                       >
                         {/* <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i> */}
-                        <i class="bi bi-cloud-upload f-white" style={{fontSize:"20px"}}></i>
+                        <i class="bi bi-cloud-upload f-white" style={{ fontSize: "20px" }}></i>
                         <span className="fw-bold f-white ms-2">Import</span>
                       </button>
                     </div>
@@ -1749,6 +1751,7 @@ export default function Official({ params }) {
 
                                   onClick={() => {
 
+                                    setIsViewing(false)
                                     setIsEdit(true)
                                     setResident(i)
                                     setShowAddResident(true)
@@ -1812,7 +1815,7 @@ export default function Official({ params }) {
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "300px" }}>
 
-                      <i class="bi bi-file-earmark-excel-fill" style={{ fontSize: "28px", color:"green" }}></i>
+                      <i class="bi bi-file-earmark-excel-fill" style={{ fontSize: "28px", color: "green" }}></i>
                       Download</button>
 
                   </div>
@@ -1991,7 +1994,7 @@ export default function Official({ params }) {
                                           onClick={() => {
                                             window.open(`https://18.141.22.83/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
 
-                                           
+
                                           }}
                                           type="button" class="btn btn-primary">View</button>
 
@@ -2001,7 +2004,7 @@ export default function Official({ params }) {
 
                                 :
                                 <RowItem>
-                                  
+
                                 </RowItem>
                             }
 
@@ -2191,11 +2194,10 @@ export default function Official({ params }) {
 
                   <div >
                     <button
-                      data-bs-toggle="modal" data-bs-target="#addBarangayServices"
                       className="primary bg-yellow p-2 rounded border-0"
                     >
                       <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
-                      <span className="fw-bold">Document Type</span>
+                      <span className="fw-bold">Create Blotter</span>
                     </button>
                   </div>
                 </div>
@@ -2262,27 +2264,14 @@ export default function Official({ params }) {
                                   data-bs-toggle="modal" data-bs-target="#addBarangayServices"
                                   onClick={() => {
 
-                                    setDocId(i.id)
-                                    setSSS({
-                                      ...sss, ...{
-                                        service: i.service,
-                                      }
-                                    })
 
-
-                                    setServiceDesc(i.description)
-
-
-
-                                    setIsEdit(true)
                                   }}
                                   type="button" class="btn btn-primary">Edit</button>
 
                                 <button
                                   onClick={() => {
 
-                                    viewCreatedTemplate(i)
-                                    setSelectedItem(i)
+
                                   }}
                                   type="button" class="btn btn-warning ms-3">View</button>
 
@@ -2290,7 +2279,7 @@ export default function Official({ params }) {
                                   data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
 
                                   onClick={() => {
-                                    setSelectedItem(i)
+
                                   }}
                                   type="button" class="btn btn-danger ms-3">Delete</button>
 
@@ -3172,6 +3161,60 @@ export default function Official({ params }) {
             </div>
           }
 
+
+          {
+            showBlotter &&
+            <div id="statusModal " class="modal fade show d-flex align-items-center justify-content-center">
+              <div className="col-6  d-flex flex-column align-items-center justify-content-center box mt-5">
+                <div className="mt-5">
+                  <h4>
+                    File a blotter report
+                  </h4>
+                </div>
+                <div class="d-flex align-items-center flex-column justify-content-center w-100 p-5" >
+
+                  <div class="mb-3 w-100">
+                    <label class="form-label">Complainant</label>
+                    <input
+                      id='serviceinput'
+                      // value={cost}
+                      onChange={(val) => {
+                     
+
+                      }}
+                      class="form-control" />
+
+                  </div>
+
+                  <div class="mb-3 w-100">
+                    <label class="form-label">Complainee</label>
+                    <input
+                      id='serviceinput'
+                      // value={cost}
+                      onChange={(val) => {
+                     
+
+                      }}
+                      class="form-control" />
+
+                  </div>
+
+                  <div class="mb-3 w-100">
+                    <label class="form-label">Narration</label>
+                    <textarea
+                      id='serviceinput'
+                      // value={cost}
+                      onChange={(val) => {
+                        
+                      }}
+                      class="form-control" />
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          }
 
           {/* Modal */}
         </div>

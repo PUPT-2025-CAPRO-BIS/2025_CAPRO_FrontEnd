@@ -41,7 +41,7 @@ apiClient.interceptors.response.use(
 
 // Define async thunks
 export const loadOfficials = createAsyncThunk('user/getofficial', async (data) => {
-
+  
   const res = await apiClient.get('/viewBarangayOfficials', {
     headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token
@@ -128,6 +128,7 @@ const officialsSlice = createSlice({
     builder
       .addCase(loadOfficials.pending, (state) => {
         state.status = 'loading';
+        state.list.data = []
       })
       .addCase(loadOfficials.fulfilled, (state, action) => {
 
@@ -135,7 +136,7 @@ const officialsSlice = createSlice({
         state.list = action.payload;
       })
       .addCase(loadOfficials.rejected, (state) => {
-
+        state.list.data = []
         state.status = 'failed';
       });
 

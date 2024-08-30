@@ -116,6 +116,7 @@ const officialsSlice = createSlice({
     builder
       .addCase(getDocumentTypeApi.pending, (state) => {
         state.status = 'loading';
+        state.list.data = []
       })
       .addCase(getDocumentTypeApi.fulfilled, (state, action) => {
         
@@ -124,7 +125,7 @@ const officialsSlice = createSlice({
 
       })
       .addCase(getDocumentTypeApi.rejected, (state) => {
-        
+        state.list.data = []
         state.status = 'failed';
       });
 

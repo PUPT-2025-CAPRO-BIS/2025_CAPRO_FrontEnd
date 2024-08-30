@@ -32,7 +32,7 @@ apiClient.interceptors.response.use(
 // Define async thunks
 export const applyNewResidentApi = createAsyncThunk('user/applyNewResident', async (data) => {
   let params = data
-  console.log(params, "-->")
+  
   const res = await apiClient.post('/applyNewResident', {
     ...params.resident, ...{
       birthday: moment(params.birthday).format("YYYY-MM-DD"),
@@ -234,9 +234,9 @@ export const importExcelResidentsApi = createAsyncThunk('user/importExcelResiden
 
   const formData = new FormData();
  
-  console.log(data.files, " before")
+  
   data.files.map((i, k) => {
-    console.log('appending')
+    
     formData.append('file_upload', i);
   })
 
@@ -245,7 +245,7 @@ export const importExcelResidentsApi = createAsyncThunk('user/importExcelResiden
     formDataObj[key] = value;
   });
   
-  console.log('FormData contents:', formDataObj);
+  
   const res = await apiClient.post('/importExcelResidents', formData, {
     headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token
@@ -287,13 +287,14 @@ const usersSlice = createSlice({
     builder
       .addCase(loadAllUsers.pending, (state) => {
         state.status = 'loading';
+        state.list.data = []
       })
       .addCase(loadAllUsers.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.list = action.payload;
       })
       .addCase(loadAllUsers.rejected, (state) => {
-
+        state.list.data = []
         state.status = 'failed';
       });
 
@@ -326,26 +327,28 @@ const usersSlice = createSlice({
     builder
       .addCase(viewAppointmentListApi.pending, (state) => {
         state.status = 'loading';
+        state.list.data = []
       })
       .addCase(viewAppointmentListApi.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.list = action.payload;
       })
       .addCase(viewAppointmentListApi.rejected, (state) => {
-
+        state.list.data = []
         state.status = 'failed';
       });
 
       builder
       .addCase(viewAllBlottersApi.pending, (state) => {
         state.status = 'loading';
+        state.list.data = []
       })
       .addCase(viewAllBlottersApi.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.list = action.payload;
       })
       .addCase(viewAllBlottersApi.rejected, (state) => {
-
+        state.list.data = []
         state.status = 'failed';
       });
 

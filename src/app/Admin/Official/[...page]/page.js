@@ -937,8 +937,8 @@ export default function Official({ params }) {
   const viewCreatedTemplate = (val) => {
 
 
-    window.open(`https://18.141.22.83/api/generatePdf?doc_id=${val.id}&download=0`)
-    // https://18.141.22.83/api/generatePdf?doc_id=14&download=0
+    window.open(`https://bis-nine.vercel.app/api/api/generatePdf?doc_id=${val.id}&download=0`)
+    // https://bis-nine.vercel.app/api/api/generatePdf?doc_id=14&download=0
 
   }
 
@@ -1811,7 +1811,7 @@ export default function Official({ params }) {
                       value={searchItemList}
                       className="form-control rounded ms-2" placeholder="Search name" />
 
-                    <button onClick={() => window.open('https://18.141.22.83/api/downloadAppointments')} type="button"
+                    <button onClick={() => window.open('https://bis-nine.vercel.app/api/api/downloadAppointments')} type="button"
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "300px" }}>
 
@@ -1992,7 +1992,7 @@ export default function Official({ params }) {
                                         <button
 
                                           onClick={() => {
-                                            window.open(`https://18.141.22.83/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
+                                            window.open(`https://bis-nine.vercel.app/api/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
 
 
                                           }}
@@ -2194,6 +2194,9 @@ export default function Official({ params }) {
 
                   <div >
                     <button
+                      onClick={() => {
+                        setShowBlotter(true)
+                      }}
                       className="primary bg-yellow p-2 rounded border-0"
                     >
                       <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
@@ -3210,6 +3213,29 @@ export default function Official({ params }) {
                       class="form-control" />
 
                   </div>
+
+
+                  <div class="mb-3 w-100">
+                      <label class="form-label">Status</label>
+                      <select
+                        
+                        value={resident.civil_status_id}
+                        id='statusblotter'
+                        onChange={(v) => {
+                        
+                          setResident({
+                            ...resident, ...{
+                              civil_status_id: v.target.value
+                            }
+                          })
+                        }}
+                        class="form-select" aria-label="Default select example">
+                        <option value="null">Case status</option>
+                        <option value={0}>Ongoing</option>
+                        <option value={1}>Settled</option>
+                      </select>
+
+                    </div>
 
                 </div>
               </div>

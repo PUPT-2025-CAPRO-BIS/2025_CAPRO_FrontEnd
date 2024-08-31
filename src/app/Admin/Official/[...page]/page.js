@@ -2,7 +2,7 @@
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
 import { addOfficials, dashboardViewApi, deleteOffialsApi, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
-import { addResidentApi, approveNewResidentApi, approveOrRejectAppointmentApi, deleteResidentInformationApi, editResidentApi, importExcelResidentsApi, loadAllUsers, viewAllBlottersApi, viewAppointmentListApi } from "@/redux/reducer/resident";
+import { addResidentApi, approveNewResidentApi, approveOrRejectAppointmentApi, deleteResidentInformationApi, editBlotterReportApi, editResidentApi, fileBlotterReportApi, importExcelResidentsApi, loadAllUsers, viewAllBlottersApi, viewAppointmentListApi } from "@/redux/reducer/resident";
 import { LogOut } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
 import Image from "next/image";
@@ -111,7 +111,7 @@ export default function Official({ params }) {
 
   // Handle input change
   const handleKeyDown = (val) => {
-    console.log(val, "--> TANGINA")
+
     const value = val;
     setSearchItemList(value);
 
@@ -190,6 +190,16 @@ export default function Official({ params }) {
   })
   // male 0 female 1
   // Resident
+
+
+  const [blotter, setBlotter] = useState({
+    complainee_name: '',
+    complainant_name: '',
+    status_resolved: '',
+    complaint_remarks: ''
+  })
+
+  //0 ongoing 1 solve
 
 
   const [showBlotter, setShowBlotter] = useState(false)
@@ -284,6 +294,7 @@ export default function Official({ params }) {
 
   useEffect(() => {
     setLoading(true)
+
     let data = {
       token: token.token,
       currentPage,
@@ -406,7 +417,6 @@ export default function Official({ params }) {
 
       fetchData();
 
-      setLoading(false)
     }
 
     if (tab == 4) {
@@ -433,7 +443,7 @@ export default function Official({ params }) {
 
       fetchData();
 
-      setLoading(false)
+
     }
 
 
@@ -937,8 +947,8 @@ export default function Official({ params }) {
   const viewCreatedTemplate = (val) => {
 
 
-    window.open(`https://bis-nine.vercel.app/api/api/generatePdf?doc_id=${val.id}&download=0`)
-    // https://bis-nine.vercel.app/api/api/generatePdf?doc_id=14&download=0
+    window.open(`http://18.141.22.83/api/generatePdf?doc_id=${val.id}&download=0`)
+    // http://18.141.22.83/api/generatePdf?doc_id=14&download=0
 
   }
 
@@ -982,7 +992,7 @@ export default function Official({ params }) {
     if (tab == 0) slug = "Staff"
     if (tab == 3) slug = "Services"
     if (tab == 1) slug = "Resident"
-
+    if (tab == 4) slug = "Blotter"
 
     if (k == 1) {
       //next
@@ -1634,6 +1644,8 @@ export default function Official({ params }) {
                       }}
                       type="email" className="form-control rounded ms-2" placeholder="Search name" />
 
+                    
+                    
                     <div className="col-6 ms-3">
                       <button
                         onClick={() => {
@@ -1648,12 +1660,19 @@ export default function Official({ params }) {
                     </div>
                   </div>
 
-                  <div >
+                  <div  className="d-flex">
+                  <button onClick={() => window.open('https://18.141.22.83/api/downloadUsers')} type="button"
+                      class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
+                      style={{ width: "200px" }}>
+
+                      <i class="bi bi-file-earmark-excel-fill" style={{ fontSize: "28px", color: "green" }}></i>
+                      Download</button>
+
                     <button
                       onClick={() => {
                         setShowAddResident(true)
                       }}
-                      className="primary bg-yellow p-2 rounded" style={{ border: "0px" }}
+                      className="primary bg-yellow p-2 rounded ms-3" style={{ border: "0px" }}
                     >
                       <i className="bi bi-plus fw-bold f-white" style={{ fontSize: "20px" }}></i>
                       <span className="fw-bold f-white">Add Resident</span>
@@ -1811,7 +1830,7 @@ export default function Official({ params }) {
                       value={searchItemList}
                       className="form-control rounded ms-2" placeholder="Search name" />
 
-                    <button onClick={() => window.open('https://bis-nine.vercel.app/api/api/downloadAppointments')} type="button"
+                    <button onClick={() => window.open('http://18.141.22.83/api/downloadAppointments')} type="button"
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "300px" }}>
 
@@ -1888,7 +1907,7 @@ export default function Official({ params }) {
                                 {i.status}
                               </span>
                             </RowItem>
-                            {console.log(i.status)}
+                            { }
                             {
                               i.status != "Rejected" ?
                                 <RowItem>
@@ -1992,7 +2011,7 @@ export default function Official({ params }) {
                                         <button
 
                                           onClick={() => {
-                                            window.open(`https://bis-nine.vercel.app/api/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
+                                            window.open(`http://18.141.22.83/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
 
 
                                           }}
@@ -2190,6 +2209,15 @@ export default function Official({ params }) {
                         handleKeyDown(v.target.value)
                       }}
                       type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
+                 
+                      
+                 <button onClick={() => window.open('https://18.141.22.83/api/downloadBlotters')} type="button"
+                      class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
+                      style={{ width: "300px" }}>
+
+                      <i class="bi bi-file-earmark-excel-fill" style={{ fontSize: "28px", color: "green" }}></i>
+                      Download</button>
+
                   </div>
 
                   <div >
@@ -2257,34 +2285,36 @@ export default function Official({ params }) {
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-                                {i.status_resolved}
+                                {i.status_resolved == 0 ? "Ongoing" : "Settled"}
                               </span>
                             </RowItem>
                             <RowItem>
                               <div id={k + i.service + "button"} className="d-flex">
 
-                                <button
+                                {/* <button
                                   data-bs-toggle="modal" data-bs-target="#addBarangayServices"
                                   onClick={() => {
 
 
                                   }}
-                                  type="button" class="btn btn-primary">Edit</button>
+                                  type="button" class="btn btn-primary">Edit</button> */}
 
                                 <button
                                   onClick={() => {
-
-
+                                    console.log(i, '--> check')
+                                    setIsViewing(true)
+                                    setShowBlotter(true)
+                                    setBlotter(i)
                                   }}
                                   type="button" class="btn btn-warning ms-3">View</button>
 
-                                <button
+                                {/* <button
                                   data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
 
                                   onClick={() => {
 
                                   }}
-                                  type="button" class="btn btn-danger ms-3">Delete</button>
+                                  type="button" class="btn btn-danger ms-3">Delete</button> */}
 
                               </div>
                             </RowItem>
@@ -3179,10 +3209,16 @@ export default function Official({ params }) {
                   <div class="mb-3 w-100">
                     <label class="form-label">Complainant</label>
                     <input
-                      id='serviceinput'
+                      id='complainantinput'
                       // value={cost}
+                      value={blotter.complainant_name}
                       onChange={(val) => {
-                     
+
+                        setBlotter({
+                          ...blotter, ...{
+                            complainant_name: val.target.value
+                          }
+                        })
 
                       }}
                       class="form-control" />
@@ -3192,10 +3228,15 @@ export default function Official({ params }) {
                   <div class="mb-3 w-100">
                     <label class="form-label">Complainee</label>
                     <input
-                      id='serviceinput'
+                      id='complaineeinput'
                       // value={cost}
+                      value={blotter.complainee_name}
                       onChange={(val) => {
-                     
+                        setBlotter({
+                          ...blotter, ...{
+                            complainee_name: val.target.value
+                          }
+                        })
 
                       }}
                       class="form-control" />
@@ -3205,10 +3246,15 @@ export default function Official({ params }) {
                   <div class="mb-3 w-100">
                     <label class="form-label">Narration</label>
                     <textarea
-                      id='serviceinput'
+                      id='narrationinput'
                       // value={cost}
+                      value={blotter.complaint_remarks}
                       onChange={(val) => {
-                        
+                        setBlotter({
+                          ...blotter, ...{
+                            complaint_remarks: val.target.value
+                          }
+                        })
                       }}
                       class="form-control" />
 
@@ -3216,26 +3262,88 @@ export default function Official({ params }) {
 
 
                   <div class="mb-3 w-100">
-                      <label class="form-label">Status</label>
-                      <select
-                        
-                        value={resident.civil_status_id}
-                        id='statusblotter'
-                        onChange={(v) => {
-                        
-                          setResident({
-                            ...resident, ...{
-                              civil_status_id: v.target.value
-                            }
-                          })
-                        }}
-                        class="form-select" aria-label="Default select example">
-                        <option value="null">Case status</option>
-                        <option value={0}>Ongoing</option>
-                        <option value={1}>Settled</option>
-                      </select>
+                    <label class="form-label">Status</label>
+                    <select
 
-                    </div>
+                      value={blotter.status_resolved}
+                      id='statusblotter'
+                      onChange={(v) => {
+                        console.log(v.target.value, "--> WHAT")
+                        setBlotter({
+                          ...blotter, ...{
+                            status_resolved: v.target.value
+                          }
+                        })
+                      }}
+                      class="form-select" aria-label="Default select example">
+                      <option value="null">Case status</option>
+                      <option value={0}>Ongoing</option>
+                      <option value={1}>Settled</option>
+                    </select>
+
+                  </div>
+
+                  <div >
+                    <button
+                      onClick={async () => {
+                        // setShowBlotter(true)
+                        setLoading(true)
+
+                        let merge = {
+                          token: token.token,
+                          ...blotter
+                        }
+
+                        console.log(merge, ' --> before')
+                        try {
+                          let result;
+
+                          result = !isViewing ? await dispatch(fileBlotterReportApi(merge)).unwrap() : await dispatch(editBlotterReportApi(merge)).unwrap();
+                          console.log(result, "--> output", isViewing)
+
+                          setShowBlotter(false)
+                          setSuccess(true)
+                          setShowSuccess(true)
+                          SetMessage( !isViewing ?  'Blotter successfully created' : "Blotter successfully updated")
+                          setCount(count + 1)
+                          setBlotter({
+                            complainee_name: '',
+                            complainant_name: '',
+                            status_resolved: '',
+                            complaint_remarks: ''
+                          })
+                          setLoading(false)
+                          // Handle success, e.g., navigate to another page
+                        } catch (error) {
+                          setLoading(false)
+                          setSuccess(false)
+                          setShowSuccess(true)
+                          setShowBlotter(false)
+                          // Handle error, e.g., show an error message
+                        }
+
+
+                      }}
+                      className="primary bg-yellow p-2 rounded border-0"
+                    >
+                      <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
+                      <span className="fw-bold">{isViewing ? "Update Blotter" : "Create Blotter"}</span>
+                    </button>
+                  </div>
+
+                  <div >
+                    <button
+                      onClick={() => {
+                        setShowBlotter(false)
+                        setSuccess(false)
+                        setShowSuccess(false)
+                        SetMessage('')
+                      }}
+                      className="primary p-2 rounded border-0 mt-3"
+                    >
+                      <span className="fw-bold">Close</span>
+                    </button>
+                  </div>
 
                 </div>
               </div>

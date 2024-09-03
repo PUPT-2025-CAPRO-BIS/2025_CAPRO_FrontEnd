@@ -123,7 +123,7 @@ export default function Official({ params }) {
     // Set a new timeout to handle navigation after user stops typing
     typingTimeoutRef.current = setTimeout(() => {
       handleNavigation(value);
-    }, 300); // Adjust delay as needed
+    }, 1000); // Adjust delay as needed
   };
 
 

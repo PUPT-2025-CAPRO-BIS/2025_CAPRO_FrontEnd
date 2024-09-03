@@ -2285,7 +2285,10 @@ export default function Official({ params }) {
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-                                {i.status_resolved == 0 ? "Ongoing" : "Settled"}
+                                {i.status_resolved == 0 && "Ongoing"}
+                                {i.status_resolved == 1 && "Settled"}
+                                {i.status_resolved == 2 && "Unresolved"}
+                                {i.status_resolved == 3 && "Dismissed"}
                               </span>
                             </RowItem>
                             <RowItem>
@@ -3279,6 +3282,8 @@ export default function Official({ params }) {
                       <option value="null">Case status</option>
                       <option value={0}>Ongoing</option>
                       <option value={1}>Settled</option>
+                      <option value={2}>Unresolved</option>
+                      <option value={3}>Dismissed</option>
                     </select>
 
                   </div>

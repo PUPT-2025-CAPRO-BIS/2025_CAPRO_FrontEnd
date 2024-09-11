@@ -49,7 +49,7 @@ export default function Official({ params }) {
   const [showAddResident, setShowAddResident] = useState(false)
 
 
-
+  const [isPending, setIsPending] = useState(0)
 
   // const handleKeyDown = (event) => {
 
@@ -298,7 +298,8 @@ export default function Official({ params }) {
     let data = {
       token: token.token,
       currentPage,
-      searchItemList
+      searchItemList,
+      isPending
     }
 
     if (tab == 10) {
@@ -1134,7 +1135,7 @@ export default function Official({ params }) {
       <Auth>
         <div className="row vh-100" style={{ backgroundColor: "white" }}>
 
-          <div className="col-lg-4 p-5 d-flex flex-column bg-green side-bg">
+          <div className="col-lg-3 p-5 d-flex flex-column bg-green side-bg">
 
             <div className="d-flex flex-column align-items-center logo-bg col-lg-12" style={{ height: "100px" }}>
 
@@ -1203,7 +1204,7 @@ export default function Official({ params }) {
 
           </div>
 
-          <div className="col-lg-8 d-flex flex-column align-items-center justify-content-center mt-5" style={{}}>
+          <div className="col-lg-9 d-flex flex-column align-items-center justify-content-center mt-5" style={{}}>
 
 
 
@@ -1646,7 +1647,7 @@ export default function Official({ params }) {
 
                     
                     
-                    <div className="col-6 ms-3">
+                    <div className="col-6 ms-3 d-flex">
                       <button
                         onClick={() => {
                           setShowImport(true)
@@ -1657,10 +1658,42 @@ export default function Official({ params }) {
                         <i class="bi bi-cloud-upload f-white" style={{ fontSize: "20px" }}></i>
                         <span className="fw-bold f-white ms-2">Import</span>
                       </button>
+
+                      <button
+                        onClick={() => {
+                         
+
+                          setIsPending(isPending == 0 ? 1 : 0)
+
+                          setCount(count + 1)
+                        }}
+                        className="ms-3 primary bg-yellow p-2 rounded d-flex align-items-center justify-content-center" style={{ border: "0px" }}
+                      >
+                        {/* <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i> */}
+                        {/* <i class="bi bi-cloud-upload f-white" style={{ fontSize: "20px" }}></i> */}
+
+                        {
+                          isPending == 1 ? 
+                          <i class="bi bi-person-check-fill" style={{ fontSize: "40px" }}></i>
+                          :
+                          <i class="bi bi-person-exclamation" style={{ fontSize: "40px" }}></i>
+                        }
+                        
+                       
+                        <span className="fw-bold f-white ms-2"
+                          style={{
+                            // color: isPending == 1 ? "#057350" : "white"
+                          }}
+                        >{isPending == 0 ? "View Pending Resident" : "View Registered Resident"}</span>
+                      </button>
+
+                      
                     </div>
+                    
                   </div>
 
                   <div  className="d-flex">
+
                   <button onClick={() => window.open('https://18.141.22.83/api/downloadUsers')} type="button"
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "200px" }}>
@@ -1703,6 +1736,10 @@ export default function Official({ params }) {
                     </HeaderItem>
                     <HeaderItem>
                       User Status
+                    </HeaderItem>
+
+                    <HeaderItem>
+                      Appointments
                     </HeaderItem>
                     <HeaderItem>
                       Action
@@ -1750,6 +1787,7 @@ export default function Official({ params }) {
                                 {i.voter_status == 0 ? "Voter" : "Non-Voter"}
                               </span>
                             </RowItem>
+                            
                             <RowItem
                               onClick={() => {
                                 setIsEdit(true)
@@ -1760,6 +1798,12 @@ export default function Official({ params }) {
                             >
                               <span className="f-white pointer" style={{ fontWeight: i.isPendingResident == 1 ? "bold" : "normal", color: i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                                 {i.isPendingResident == 1 ? "Pending" : "Registered"}
+                              </span>
+                            </RowItem>
+
+                            <RowItem>
+                              <span className="f-white">
+                                {i.appointments_made}
                               </span>
                             </RowItem>
                             <RowItem>
@@ -1858,6 +1902,10 @@ export default function Official({ params }) {
 
                   {/* Table header */}
                   <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{}}>
+                    
+                  <HeaderItem>
+                      Queing
+                    </HeaderItem>
                     <HeaderItem>
                       Date
                     </HeaderItem>
@@ -1887,6 +1935,11 @@ export default function Official({ params }) {
 
                           // Put dynamic className
                           <div className='d-flex col-lg-12 justify-content-around row-item-container'>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.appointment_id}
+                              </span>
+                            </RowItem>
                             <RowItem>
                               <span className="f-white">
                                 {moment(i.schedule_date).format('MM/DD/YYYY')}
@@ -2566,6 +2619,37 @@ export default function Official({ params }) {
                     <h1 class="modal-title fs-5" id="addOfficialModalLabel"> {isEdit ? (!isViewing ? "Edit Resident" : "View Resident") : "Add Resident"}</h1>
                   </div>
                   <div class="modal-body">
+
+                  {
+                    isViewing && 
+
+                    <div class="mb-3">
+                    <label class="form-label">Appointment made</label>
+                    <input
+                      id='fnameinput'
+                      disabled={isViewing}
+                      value={resident.appointments_made}
+                      onChange={(val) => {
+
+                        if (val.target.value != "") {
+                          document.getElementById('fnameinput').style.border = '1px solid #dee2e6'
+                        }
+                        else {
+                          document.getElementById('fnameinput').style.border = '1px solid red'
+                        }
+
+                        setResident({
+                          ...resident, ...{
+                            first_name: val.target.value
+                          }
+                        })
+
+                      }}
+                      class="form-control" />
+
+                  </div>
+                  }
+
                     <div class="mb-3">
                       <label class="form-label">First name</label>
                       <input

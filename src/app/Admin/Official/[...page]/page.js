@@ -3,7 +3,7 @@ import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
 import { addOfficials, dashboardViewApi, deleteOffialsApi, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
 import { addResidentApi, approveNewResidentApi, approveOrRejectAppointmentApi, deleteResidentInformationApi, editBlotterReportApi, editResidentApi, fileBlotterReportApi, importExcelResidentsApi, loadAllUsers, viewAllBlottersApi, viewAppointmentListApi } from "@/redux/reducer/resident";
-import { LogOut } from "@/redux/reducer/user";
+import { LogOut, viewAdminLogsApi } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -286,6 +286,11 @@ export default function Official({ params }) {
       seTab(10)
     }
 
+    if (getPage == "Logs") {
+      setCurrentPage(getPageNumber)
+      seTab(7)
+    }
+
     setSearchItemList(getSearchItem)
 
   }, [])
@@ -301,6 +306,7 @@ export default function Official({ params }) {
       searchItemList,
       isPending
     }
+
 
     if (tab == 10) {
       const fetchData = async () => {
@@ -369,6 +375,29 @@ export default function Official({ params }) {
       fetchData();
     }
 
+    if(tab == 7){
+      const fetchData = async () => {
+
+        try {
+          const result = await dispatch(viewAdminLogsApi(data)).unwrap();
+
+          console.log("RESULT: ", result)
+          setTotalPage(result.total_pages)
+
+          if (currentPage > result.total_pages) {
+
+          }
+
+          // Handle success, e.g., navigate to another page
+        } catch (error) {
+
+          // Handle error, e.g., show an error message
+        }
+        setLoading(false)
+      };
+
+      fetchData();
+    }
 
 
     if (tab == 3) {
@@ -980,6 +1009,9 @@ export default function Official({ params }) {
     if (v == 10) {
       router.push('/Admin/Official/Dashboard')
     }
+    if(v == 7){
+      router.push('/Admin/Official/Logs')
+    }
 
     // seTab(v)
   }
@@ -1194,6 +1226,14 @@ export default function Official({ params }) {
                 <i class="bi bi-file-earmark-diff-fill f-white icon" ></i>
                 <span className="f-white nav-item ms-2">
                   Services
+                </span>
+              </div>
+
+
+              <div onClick={() => changeTab(7)} className={`p-4 w-100 rounded ${tab == 7 ? 'active-nav' : ''} pointer`}>
+              <i class="bi bi-activity f-white icon"></i>
+                <span className="f-white nav-item ms-2">
+                  Logs
                 </span>
               </div>
 
@@ -2394,6 +2434,100 @@ export default function Official({ params }) {
             {/* Blotter */}
 
             {/* Barangay services */}
+
+            {
+              tab == 7 &&
+              <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
+
+                <div className="border-bottom p-2 pb-4 mt-3">
+                  <h2 className="f-white">Activity logs</h2>
+                </div>
+
+                {/* <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
+
+                  <div className="d-flex align-items-center">
+                    <span className="f-white">Search:</span>
+                    <input
+                      // onKeyDown={handleKeyDown}
+                      onChange={(v) => {
+                        setSearchItemList(v.target.value)
+                        handleKeyDown(v.target.value)
+                      }}
+                      value={searchItemList}
+                      type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
+                  </div>
+
+                  <div >
+                    <button
+                      data-bs-toggle="modal" data-bs-target="#addBarangayServices"
+                      className="primary bg-yellow p-2 rounded border-0"
+                    >
+                      <i className="bi bi-plus fw-bold f-white" style={{ fontSize: "20px" }}></i>
+                      <span className="fw-bold f-white">Document Type</span>
+                    </button>
+                  </div>
+                </div> */}
+
+
+                {/*  */}
+                <div className="border-bottom p-2 pb-4 mt-3">
+
+                  {/* Table header */}
+                  <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{}}>
+                    <HeaderItem>
+                      No.
+                    </HeaderItem>
+                    <HeaderItem>
+                      Service
+                    </HeaderItem>
+                    <HeaderItem>
+                      Description
+                    </HeaderItem>
+                  </div>
+
+
+
+                  {/* Table body */}
+
+                  <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
+
+                    {
+                      documentList.list.length != 0 && documentList.list.data.map((i, k) => {
+                        return (
+
+                          // Put dynamic className
+                          <div className='d-flex col-lg-12 justify-content-around row-item-container'>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.id}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.service}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.service}
+                              </span>
+                            </RowItem>
+                          </div>
+
+                        )
+                      })
+                    }
+
+                  </div>
+
+                  {/* Table body */}
+                </div>
+
+
+
+
+              </div>
+            }
 
             {
               tab != 10 &&

@@ -46,6 +46,19 @@ export const validateUser = createAsyncThunk('user/validateUser', async () => {
   return res.data;
 });
 
+export const viewAdminLogsApi = createAsyncThunk('user/viewAdminLogs', async (data) => {
+  const res = await apiClient.get('/viewAdminLogs', {
+    headers:{
+      'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }
+  });
+  return res.data;
+});
+
+
+
+
 // Create slice
 const userSlice = createSlice({
   name: 'user',

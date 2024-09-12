@@ -7,6 +7,7 @@ const initialState = {
   signedIn: false,
   status: 'idle',  // Start with 'idle' instead of 'false'
   token: '',
+  list:''
 };
 
 // Create axios instance
@@ -20,7 +21,7 @@ apiClient.interceptors.response.use(
   response => response,
   error => {
     if (error.response && error.response.status === 401) {
-      console.log('Unauthorized - 401');
+      
       // Handle unauthorized access, e.g., redirect to login
     }
     return Promise.reject(error);
@@ -47,10 +48,16 @@ export const validateUser = createAsyncThunk('user/validateUser', async () => {
 });
 
 export const viewAdminLogsApi = createAsyncThunk('user/viewAdminLogs', async (data) => {
+  
+  
   const res = await apiClient.get('/viewAdminLogs', {
     headers:{
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token
       'Content-Type': 'application/json',
+    }, params:{
+      search_value: data.searchItemList,
+      page_number: data.currentPage,
+      item_per_page: 10,
     }
   });
   return res.data;
@@ -87,10 +94,25 @@ const userSlice = createSlice({
         state.signedIn = true;  // Update signedIn status
       })
       .addCase(loginUser.rejected, (state) => {
-        console.log('pumasok ka sa fail')
+        
         state.status = 'failed';
         state.signedIn = false;  // Update signedIn status
-      });
+      });   
+  },
+  extraReducers: builder => {
+    builder
+      .addCase(viewAdminLogsApi.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(viewAdminLogsApi.fulfilled, (state, action) => {
+        
+        state.status = 'succeeded';
+        state.list = action.payload.data;
+      })
+      .addCase(viewAdminLogsApi.rejected, (state) => {
+        
+        state.status = 'failed';
+      });   
   },
 });
 

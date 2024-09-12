@@ -29,9 +29,13 @@ export default function Official({ params }) {
   const router = useRouter()
   const officials = useSelector(state => state)
   const alluser = useSelector(state => state.alluser)
+
   const documentList = useSelector(state => state.document)
   const dashboard = useSelector(state => state.officials.dashboardData)
   const token = useSelector(state => state.user)
+  const logs = useSelector(state => state.user.list)
+
+
   const [sample, setSample] = useState([
     1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
   ])
@@ -102,7 +106,8 @@ export default function Official({ params }) {
       '/Admin/Official/Schedule/1/',
       '/Admin/Official/Services/1/',
       '/Admin/Official/Blotter/1/',
-      '/Admin/Official/Dashboard'
+      '/Admin/Official/Dashboard',
+      '/Admin/Official/Logs/1/'
     ];
 
     const path = tab < paths.length ? paths[tab] + searchItem : paths[paths.length - 1];
@@ -381,7 +386,7 @@ export default function Official({ params }) {
         try {
           const result = await dispatch(viewAdminLogsApi(data)).unwrap();
 
-          console.log("RESULT: ", result)
+          
           setTotalPage(result.total_pages)
 
           if (currentPage > result.total_pages) {
@@ -1010,7 +1015,7 @@ export default function Official({ params }) {
       router.push('/Admin/Official/Dashboard')
     }
     if(v == 7){
-      router.push('/Admin/Official/Logs')
+      router.push('/Admin/Official/Logs/1')
     }
 
     // seTab(v)
@@ -1026,7 +1031,9 @@ export default function Official({ params }) {
     if (tab == 3) slug = "Services"
     if (tab == 1) slug = "Resident"
     if (tab == 4) slug = "Blotter"
+    if (tab == 7) slug = "Logs"
 
+    
     if (k == 1) {
       //next
 
@@ -2397,7 +2404,7 @@ export default function Official({ params }) {
 
                                 <button
                                   onClick={() => {
-                                    console.log(i, '--> check')
+                                    
                                     setIsViewing(true)
                                     setShowBlotter(true)
                                     setBlotter(i)
@@ -2440,10 +2447,10 @@ export default function Official({ params }) {
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
                 <div className="border-bottom p-2 pb-4 mt-3">
-                  <h2 className="f-white">Activity logs</h2>
+                  <h2 className="f-white">Admin logs</h2>
                 </div>
 
-                {/* <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
+                <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
 
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
@@ -2466,7 +2473,7 @@ export default function Official({ params }) {
                       <span className="fw-bold f-white">Document Type</span>
                     </button>
                   </div>
-                </div> */}
+                </div>
 
 
                 {/*  */}
@@ -2478,38 +2485,47 @@ export default function Official({ params }) {
                       No.
                     </HeaderItem>
                     <HeaderItem>
-                      Service
+                      Action type
                     </HeaderItem>
                     <HeaderItem>
                       Description
+                    </HeaderItem>
+                    <HeaderItem>
+                      Action taker
                     </HeaderItem>
                   </div>
 
 
 
                   {/* Table body */}
+                  {}
 
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
                     {
-                      documentList.list.length != 0 && documentList.list.data.map((i, k) => {
+                      logs.length != 0 && logs.map((i, k) => {
                         return (
 
                           // Put dynamic className
                           <div className='d-flex col-lg-12 justify-content-around row-item-container'>
                             <RowItem>
                               <span className="f-white">
-                                {i.id}
+                                {i.action_taker_id}
                               </span>
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-                                {i.service}
+                                {i.action_type}
                               </span>
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-                                {i.service}
+                                {i.log_details}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.admin_name}
                               </span>
                             </RowItem>
                           </div>
@@ -3489,7 +3505,7 @@ export default function Official({ params }) {
                       value={blotter.status_resolved}
                       id='statusblotter'
                       onChange={(v) => {
-                        console.log(v.target.value, "--> WHAT")
+                        
                         setBlotter({
                           ...blotter, ...{
                             status_resolved: v.target.value
@@ -3517,12 +3533,12 @@ export default function Official({ params }) {
                           ...blotter
                         }
 
-                        console.log(merge, ' --> before')
+                        
                         try {
                           let result;
 
                           result = !isViewing ? await dispatch(fileBlotterReportApi(merge)).unwrap() : await dispatch(editBlotterReportApi(merge)).unwrap();
-                          console.log(result, "--> output", isViewing)
+                          
 
                           setShowBlotter(false)
                           setSuccess(true)

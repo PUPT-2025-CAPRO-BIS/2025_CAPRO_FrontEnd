@@ -1172,17 +1172,28 @@ export default function Official({ params }) {
   }
 
   return (
-    <main className={`container-fluid`}>
+    <main className={``}>
       <Auth>
-        <div className=" vh-100 w-100" style={{ backgroundColor: "white" }}>
+        <div className="vh-100 w-100" style={{ backgroundColor: "white", display: "flex" }}>
 
-          <div className="sidebar">
+          <div id='sidebar' className="sidebar">
             {/* asan */}
 
             <div className="col-lg-12 p-5 d-flex flex-column bg-green side-bg">
 
-              <div className="d-flex flex-column align-items-center logo-bg col-lg-12" style={{ height: "100px" }}>
+              <div 
+                className="d-flex align-items-center justify-content-center pointer"
+                style={{position:"absolute", top: 20, right: 30}}
+                onClick={() => {
+                  document.getElementById("sidebar").style.width = "0%";
+                }}
+              >
+              <i class="bi bi-arrow-bar-left f-white" style={{fontSize:"36px"}}></i>
+              <span className="f-white" style={{fontSize:"24px"}}>Close</span>
+              </div>
 
+              <div className="d-flex flex-column align-items-center logo-bg col-lg-12 mt-5" style={{ height: "100px" }}>
+              
               </div>
 
 
@@ -1190,6 +1201,8 @@ export default function Official({ params }) {
               {/* Navigation */}
 
               <div className="flex-column mt-5">
+
+                
 
                 <div onClick={() => changeTab(10)} className={`p-4 w-100 rounded ${tab == 10 ? 'active-nav' : ''} pointer`}>
                   <i class="bi bi-person f-white icon"></i>
@@ -1263,23 +1276,34 @@ export default function Official({ params }) {
 
             <div class="dropdown d-flex align-items-center justify-content-between w-100 " >
 
-              <h4>
-                {
-                  tab == 10 && "Dashboard"
-                }
-                {
-                  tab == 0 && "Barangay Officials"
-                }
 
-                {
-                  tab == 1 && "Barangay Officials"
-                }
+              <div className="d-flex align-items-center justify-content-center">
+                <div 
+                  onClick={() => {
+                    document.getElementById("sidebar").style.width = "30%";
+                  }}
+                  className="pointer">
+                  <i class="bi bi-list" style={{ fontSize: "32px" }}></i>
+                </div>
+                <h4 className="ms-5">
+                  {
+                    tab == 10 && "Dashboard"
+                  }
+                  {
+                    tab == 0 && "Barangay Officials"
+                  }
 
-                {
-                  tab == 3 && "Barangay Services"
-                }
+                  {
+                    tab == 1 && "Barangay Officials"
+                  }
 
-              </h4>
+                  {
+                    tab == 3 && "Barangay Services"
+                  }
+
+                </h4>
+              </div>
+
               <div style={{ position: "relative" }}>
                 <div
                   className="d-flex align-items-center justify-content-center"
@@ -2582,6 +2606,7 @@ export default function Official({ params }) {
 
               </div>
             }
+
 
 
           </div>

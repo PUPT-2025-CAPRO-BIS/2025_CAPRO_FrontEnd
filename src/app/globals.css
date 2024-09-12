@@ -275,7 +275,7 @@ a {
 
 .sidebar {
   height: 100%;
-  width: 0;
+  width: 0%;
   position: fixed;
   z-index: 1;
   top: 0;
@@ -288,4 +288,5 @@ a {
 
 .mainpage{
   width: 100%;
+  padding: 20px;
 }

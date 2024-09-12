@@ -104,7 +104,7 @@ export const deleteOffialsApi = createAsyncThunk('user/deleteofficial', async (d
 
 
 export const dashboardViewApi = createAsyncThunk('user/dashboardView', async (token) => {
-
+  console.log('wala:', token)
   const res = await apiClient.get('/dashboardView',  {
     headers: {
       'Authorization': `Bearer ${token}`, // Replace with your actual token

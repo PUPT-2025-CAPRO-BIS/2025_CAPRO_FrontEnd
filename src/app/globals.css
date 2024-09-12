@@ -270,3 +270,22 @@ a {
 .schedule-form{
   background-color: white;
 }
+
+
+
+.sidebar {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  /* background-color: #111; */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  transition: 0.5s;
+}
+
+.mainpage{
+  width: 100%;
+}

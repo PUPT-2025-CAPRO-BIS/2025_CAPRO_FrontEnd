@@ -35,7 +35,7 @@ apiClient.interceptors.response.use(
 // Define async thunks
 export const applyNewResidentApi = createAsyncThunk('user/applyNewResident', async (data) => {
   let params = data
-  
+
   const res = await apiClient.post('/applyNewResident', {
     ...params.resident, ...{
       birthday: moment(params.birthday).format("YYYY-MM-DD"),
@@ -239,10 +239,11 @@ export const fileBlotterReportApi = createAsyncThunk('user/fileBlotterReport', a
 
   const res = await apiClient.post('/fileBlotterReport', {
     complainee_name: data.complainee_id == "" ? data.complainee_name : '',
-      complainant_name: data.complainant_name,
+    complainant_name: data.complainant_id == "" ? data.complainant_name : '',
     status_resolved: data.status_resolved,
-     complaint_remarks: data.complaint_remarks,
+    complaint_remarks: data.complaint_remarks,
     complainee_id: data.complainee_id,
+    complainant_id: data.complainant_id,
     officer_on_duty: data.officer_on_duty
 
   }, {
@@ -282,10 +283,10 @@ export const importExcelResidentsApi = createAsyncThunk('user/importExcelResiden
 
 
   const formData = new FormData();
- 
-  
+
+
   data.files.map((i, k) => {
-    
+
     formData.append('file_upload', i);
   })
 
@@ -293,8 +294,8 @@ export const importExcelResidentsApi = createAsyncThunk('user/importExcelResiden
   formData.forEach((value, key) => {
     formDataObj[key] = value;
   });
-  
-  
+
+
   const res = await apiClient.post('/importExcelResidents', formData, {
     headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token
@@ -388,7 +389,7 @@ const usersSlice = createSlice({
         state.status = 'failed';
       });
 
-      builder
+    builder
       .addCase(viewAllBlottersApi.pending, (state) => {
         state.status = 'loading';
         state.list.data = []

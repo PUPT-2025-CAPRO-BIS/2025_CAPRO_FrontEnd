@@ -208,8 +208,11 @@ export default function Official({ params }) {
     status_resolved: '',
     complaint_remarks: '',
     is_resident: null,
+    is_resident_complainant: null,
     complainee_id: '',
+    complainant_id:'',
     search: '',
+    searchFirst: '',
     officer_on_duty: ''
   })
 
@@ -3549,7 +3552,47 @@ export default function Official({ params }) {
                 </div>
                 <div class="d-flex align-items-center flex-column justify-content-center w-100 p-5" >
 
-                  <div class="mb-3 w-100">
+
+                {
+                        !isViewing && 
+
+                        <div className="d-flex align-items-center w-100 mb-3">
+                        <div class="form-check">
+                          <input 
+                            
+                            onChange={() => {
+    
+                              setBlotter({
+                                ...blotter, ...{
+                                  is_resident_complainant: true
+                                }
+                              })
+                            }}   
+                            class="form-check-input" type="radio" name="flexRadioDefault2" id="flexRadioDefault3" />
+                          <label class="form-check-label" for="flexRadioDefault3">
+                            Resident
+                          </label>
+                        </div>
+                        <div class="form-check ms-3">
+                          <input 
+                             onChange={() => {
+    
+                              setBlotter({
+                                ...blotter, ...{
+                                  is_resident_complainant: false
+                                }
+                              })
+                            }}
+                          class="form-check-input" type="radio" name="flexRadioDefaul2" id="flexRadioDefault4" />
+                          <label class="form-check-label" for="flexRadioDefault4">
+                            Non-resident
+                          </label>
+                        </div>
+                      </div>
+                      }
+
+
+                  <div class="mb-3 w-100" style={{position:"relative"}}>
                     <label class="form-label">Complainant</label>
                     <input
                       disabled={isViewing ? true : false}
@@ -3560,12 +3603,45 @@ export default function Official({ params }) {
 
                         setBlotter({
                           ...blotter, ...{
-                            complainant_name: val.target.value
+                            complainant_name: val.target.value,
+                            complainee_id: '',
+                            searchFirst: val.target.value
                           }
                         })
 
+                        searchUser(val.target.value)
+
                       }}
                       class="form-control" />
+
+            {
+                        blotter.searchFirst != "" && blotter.is_resident_complainant &&
+                      <div className="box position-absolute w-100" style={{ maxHeight: "300px", overflow: "scroll", width: "500px", zIndex: 999999 }}>
+                        {
+                          searchUserList.map((i, k) => {
+                            return (
+                              <div
+                                onClick={() => {
+                                  
+                                  setBlotter({
+                                    ...blotter, ...{
+                                      complainant_id: i.id,
+                                      complainant_name: i.full_name,
+                                      searchFirst: ''
+                                    }
+                                  })
+                                  console.log(i)
+                                }}
+                                className="search-item pointer">
+                                <span>
+                                  {i.first_name + " " + i.middle_name + " " + i.last_name}
+                                </span>
+                              </div>
+                            )
+                          })
+                        }
+                      </div>
+                    }
 
                   </div>
 
@@ -3735,7 +3811,7 @@ export default function Official({ params }) {
 
                           result = !isViewing ? await dispatch(fileBlotterReportApi(merge)).unwrap() : await dispatch(editBlotterReportApi(merge)).unwrap();
 
-
+                          setIsViewing(false)
                           setShowBlotter(false)
                           setSuccess(true)
                           setShowSuccess(true)
@@ -3750,7 +3826,7 @@ export default function Official({ params }) {
                             complainee_id: '',
                             search: ''
                           })
-                          setIsViewing(false)
+                         
                           setLoading(false)
                           // Handle success, e.g., navigate to another page
                         } catch (error) {

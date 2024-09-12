@@ -30,6 +30,7 @@ apiClient.interceptors.response.use(
 
 // Define async thunks
 export const loginUser = createAsyncThunk('user/loginUser', async (params) => {
+  console.log('before:', params)
   const res = await apiClient.post('/adminLogin', {
     email: params.email,
     pass: params.pass,
@@ -91,6 +92,7 @@ const userSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.token = action.payload.access_token;
+        state.user = action.payload
         state.signedIn = true;  // Update signedIn status
       })
       .addCase(loginUser.rejected, (state) => {
@@ -98,22 +100,22 @@ const userSlice = createSlice({
         state.status = 'failed';
         state.signedIn = false;  // Update signedIn status
       });   
-  },
-  extraReducers: builder => {
-    builder
+
+      builder
       .addCase(viewAdminLogsApi.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(viewAdminLogsApi.fulfilled, (state, action) => {
         
         state.status = 'succeeded';
-        state.list = action.payload.data;
+        state.list = action.payload;
       })
       .addCase(viewAdminLogsApi.rejected, (state) => {
         
         state.status = 'failed';
       });   
   },
+
 });
 
 // Export actions and reducer

@@ -33,6 +33,8 @@ export default function Official({ params }) {
   const documentList = useSelector(state => state.document)
   const dashboard = useSelector(state => state.officials.dashboardData)
   const token = useSelector(state => state.user)
+
+
   const logs = useSelector(state => state.user.list)
 
 
@@ -380,13 +382,13 @@ export default function Official({ params }) {
       fetchData();
     }
 
-    if(tab == 7){
+    if (tab == 7) {
       const fetchData = async () => {
 
         try {
           const result = await dispatch(viewAdminLogsApi(data)).unwrap();
 
-          
+
           setTotalPage(result.total_pages)
 
           if (currentPage > result.total_pages) {
@@ -1014,7 +1016,7 @@ export default function Official({ params }) {
     if (v == 10) {
       router.push('/Admin/Official/Dashboard')
     }
-    if(v == 7){
+    if (v == 7) {
       router.push('/Admin/Official/Logs/1')
     }
 
@@ -1033,7 +1035,7 @@ export default function Official({ params }) {
     if (tab == 4) slug = "Blotter"
     if (tab == 7) slug = "Logs"
 
-    
+
     if (k == 1) {
       //next
 
@@ -1172,90 +1174,94 @@ export default function Official({ params }) {
   return (
     <main className={`container-fluid`}>
       <Auth>
-        <div className="row vh-100" style={{ backgroundColor: "white" }}>
+        <div className=" vh-100 w-100" style={{ backgroundColor: "white" }}>
 
-          <div className="col-lg-3 p-5 d-flex flex-column bg-green side-bg">
+          <div className="sidebar">
+            {/* asan */}
 
-            <div className="d-flex flex-column align-items-center logo-bg col-lg-12" style={{ height: "100px" }}>
+            <div className="col-lg-12 p-5 d-flex flex-column bg-green side-bg">
+
+              <div className="d-flex flex-column align-items-center logo-bg col-lg-12" style={{ height: "100px" }}>
+
+              </div>
+
+
+
+              {/* Navigation */}
+
+              <div className="flex-column mt-5">
+
+                <div onClick={() => changeTab(10)} className={`p-4 w-100 rounded ${tab == 10 ? 'active-nav' : ''} pointer`}>
+                  <i class="bi bi-person f-white icon"></i>
+                  <span className="f-white ms-2 nav-item">
+                    Dashboard
+                  </span>
+                </div>
+
+
+
+                <div onClick={() => changeTab(0)} className={`p-4 w-100 rounded ${tab == 0 ? 'active-nav' : ''} pointer`}>
+                  <i class="bi bi-person f-white icon"></i>
+                  <span className="f-white ms-2 nav-item">
+                    Barangay Officials
+                  </span>
+                </div>
+
+
+                <div onClick={() => changeTab(1)} className={`p-4 w-100 rounded ${tab == 1 ? 'active-nav' : ''} pointer`}>
+
+                  <i class="bi bi-people-fill f-white icon"></i>
+                  <span className="f-white ms-2 nav-item">
+                    Manage Residents
+                  </span>
+                </div>
+
+
+                <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded ${tab == 2 ? 'active-nav' : ''} pointer`}>
+
+                  <i class="bi bi-calendar-date f-white icon"></i>
+                  <span className="f-white ms-2 nav-item">
+                    Schedules
+                  </span>
+                </div>
+
+
+                <div onClick={() => changeTab(4)} className={`p-4 w-100 rounded ${tab == 4 ? 'active-nav' : ''} pointer`}>
+
+                  <i class="bi bi-person-fill-slash f-white icon"></i>
+                  <span className="f-white ms-2 nav-item">
+                    Blotter
+                  </span>
+                </div>
+
+                <div onClick={() => changeTab(3)} className={`p-4 w-100 rounded ${tab == 3 ? 'active-nav' : ''} pointer`}>
+                  <i class="bi bi-file-earmark-diff-fill f-white icon" ></i>
+                  <span className="f-white nav-item ms-2">
+                    Services
+                  </span>
+                </div>
+
+
+                <div onClick={() => changeTab(7)} className={`p-4 w-100 rounded ${tab == 7 ? 'active-nav' : ''} pointer`}>
+                  <i class="bi bi-activity f-white icon"></i>
+                  <span className="f-white nav-item ms-2">
+                    Logs
+                  </span>
+                </div>
+
+
+
+              </div>
+              {/* Navigation */}
 
             </div>
-
-
-
-            {/* Navigation */}
-
-            <div className="flex-column mt-5">
-
-              <div onClick={() => changeTab(10)} className={`p-4 w-100 rounded ${tab == 10 ? 'active-nav' : ''} pointer`}>
-                <i class="bi bi-person f-white icon"></i>
-                <span className="f-white ms-2 nav-item">
-                  Dashboard
-                </span>
-              </div>
-
-
-
-              <div onClick={() => changeTab(0)} className={`p-4 w-100 rounded ${tab == 0 ? 'active-nav' : ''} pointer`}>
-                <i class="bi bi-person f-white icon"></i>
-                <span className="f-white ms-2 nav-item">
-                  Barangay Officials
-                </span>
-              </div>
-
-
-              <div onClick={() => changeTab(1)} className={`p-4 w-100 rounded ${tab == 1 ? 'active-nav' : ''} pointer`}>
-
-                <i class="bi bi-people-fill f-white icon"></i>
-                <span className="f-white ms-2 nav-item">
-                  Manage Residents
-                </span>
-              </div>
-
-
-              <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded ${tab == 2 ? 'active-nav' : ''} pointer`}>
-
-                <i class="bi bi-calendar-date f-white icon"></i>
-                <span className="f-white ms-2 nav-item">
-                  Schedules
-                </span>
-              </div>
-
-
-              <div onClick={() => changeTab(4)} className={`p-4 w-100 rounded ${tab == 4 ? 'active-nav' : ''} pointer`}>
-
-                <i class="bi bi-person-fill-slash f-white icon"></i>
-                <span className="f-white ms-2 nav-item">
-                  Blotter
-                </span>
-              </div>
-
-              <div onClick={() => changeTab(3)} className={`p-4 w-100 rounded ${tab == 3 ? 'active-nav' : ''} pointer`}>
-                <i class="bi bi-file-earmark-diff-fill f-white icon" ></i>
-                <span className="f-white nav-item ms-2">
-                  Services
-                </span>
-              </div>
-
-
-              <div onClick={() => changeTab(7)} className={`p-4 w-100 rounded ${tab == 7 ? 'active-nav' : ''} pointer`}>
-              <i class="bi bi-activity f-white icon"></i>
-                <span className="f-white nav-item ms-2">
-                  Logs
-                </span>
-              </div>
-
-
-
-            </div>
-            {/* Navigation */}
-
           </div>
 
-          <div className="col-lg-9 d-flex flex-column align-items-center justify-content-center mt-5" style={{}}>
+          <div className="mainpage d-flex flex-column align-items-center justify-content-center mt-5" style={{}}>
 
 
 
-            <div class="dropdown d-flex align-items-center justify-content-between w-100" >
+            <div class="dropdown d-flex align-items-center justify-content-between w-100 " >
 
               <h4>
                 {
@@ -1692,8 +1698,8 @@ export default function Official({ params }) {
                       }}
                       type="email" className="form-control rounded ms-2" placeholder="Search name" />
 
-                    
-                    
+
+
                     <div className="col-6 ms-3 d-flex">
                       <button
                         onClick={() => {
@@ -1708,7 +1714,7 @@ export default function Official({ params }) {
 
                       <button
                         onClick={() => {
-                         
+
 
                           setIsPending(isPending == 0 ? 1 : 0)
 
@@ -1720,13 +1726,13 @@ export default function Official({ params }) {
                         {/* <i class="bi bi-cloud-upload f-white" style={{ fontSize: "20px" }}></i> */}
 
                         {
-                          isPending == 1 ? 
-                          <i class="bi bi-person-check-fill" style={{ fontSize: "40px" }}></i>
-                          :
-                          <i class="bi bi-person-exclamation" style={{ fontSize: "40px" }}></i>
+                          isPending == 1 ?
+                            <i class="bi bi-person-check-fill" style={{ fontSize: "40px" }}></i>
+                            :
+                            <i class="bi bi-person-exclamation" style={{ fontSize: "40px" }}></i>
                         }
-                        
-                       
+
+
                         <span className="fw-bold f-white ms-2"
                           style={{
                             // color: isPending == 1 ? "#057350" : "white"
@@ -1734,14 +1740,14 @@ export default function Official({ params }) {
                         >{isPending == 0 ? "View Pending Resident" : "View Registered Resident"}</span>
                       </button>
 
-                      
+
                     </div>
-                    
+
                   </div>
 
-                  <div  className="d-flex">
+                  <div className="d-flex">
 
-                  <button onClick={() => window.open('https://18.141.22.83/api/downloadUsers')} type="button"
+                    <button onClick={() => window.open('https://18.141.22.83/api/downloadUsers')} type="button"
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "200px" }}>
 
@@ -1834,7 +1840,7 @@ export default function Official({ params }) {
                                 {i.voter_status == 0 ? "Voter" : "Non-Voter"}
                               </span>
                             </RowItem>
-                            
+
                             <RowItem
                               onClick={() => {
                                 setIsEdit(true)
@@ -1949,8 +1955,8 @@ export default function Official({ params }) {
 
                   {/* Table header */}
                   <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{}}>
-                    
-                  <HeaderItem>
+
+                    <HeaderItem>
                       Queing
                     </HeaderItem>
                     <HeaderItem>
@@ -2309,9 +2315,9 @@ export default function Official({ params }) {
                         handleKeyDown(v.target.value)
                       }}
                       type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
-                 
-                      
-                 <button onClick={() => window.open('https://18.141.22.83/api/downloadBlotters')} type="button"
+
+
+                    <button onClick={() => window.open('https://18.141.22.83/api/downloadBlotters')} type="button"
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "300px" }}>
 
@@ -2404,7 +2410,7 @@ export default function Official({ params }) {
 
                                 <button
                                   onClick={() => {
-                                    
+
                                     setIsViewing(true)
                                     setShowBlotter(true)
                                     setBlotter(i)
@@ -2498,7 +2504,7 @@ export default function Official({ params }) {
 
 
                   {/* Table body */}
-                  {}
+                  { }
 
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
@@ -2770,35 +2776,35 @@ export default function Official({ params }) {
                   </div>
                   <div class="modal-body">
 
-                  {
-                    isViewing && 
+                    {
+                      isViewing &&
 
-                    <div class="mb-3">
-                    <label class="form-label">Appointment made</label>
-                    <input
-                      id='fnameinput'
-                      disabled={isViewing}
-                      value={resident.appointments_made}
-                      onChange={(val) => {
+                      <div class="mb-3">
+                        <label class="form-label">Appointment made</label>
+                        <input
+                          id='fnameinput'
+                          disabled={isViewing}
+                          value={resident.appointments_made}
+                          onChange={(val) => {
 
-                        if (val.target.value != "") {
-                          document.getElementById('fnameinput').style.border = '1px solid #dee2e6'
-                        }
-                        else {
-                          document.getElementById('fnameinput').style.border = '1px solid red'
-                        }
+                            if (val.target.value != "") {
+                              document.getElementById('fnameinput').style.border = '1px solid #dee2e6'
+                            }
+                            else {
+                              document.getElementById('fnameinput').style.border = '1px solid red'
+                            }
 
-                        setResident({
-                          ...resident, ...{
-                            first_name: val.target.value
-                          }
-                        })
+                            setResident({
+                              ...resident, ...{
+                                first_name: val.target.value
+                              }
+                            })
 
-                      }}
-                      class="form-control" />
+                          }}
+                          class="form-control" />
 
-                  </div>
-                  }
+                      </div>
+                    }
 
                     <div class="mb-3">
                       <label class="form-label">First name</label>
@@ -3505,7 +3511,7 @@ export default function Official({ params }) {
                       value={blotter.status_resolved}
                       id='statusblotter'
                       onChange={(v) => {
-                        
+
                         setBlotter({
                           ...blotter, ...{
                             status_resolved: v.target.value
@@ -3533,17 +3539,17 @@ export default function Official({ params }) {
                           ...blotter
                         }
 
-                        
+
                         try {
                           let result;
 
                           result = !isViewing ? await dispatch(fileBlotterReportApi(merge)).unwrap() : await dispatch(editBlotterReportApi(merge)).unwrap();
-                          
+
 
                           setShowBlotter(false)
                           setSuccess(true)
                           setShowSuccess(true)
-                          SetMessage( !isViewing ?  'Blotter successfully created' : "Blotter successfully updated")
+                          SetMessage(!isViewing ? 'Blotter successfully created' : "Blotter successfully updated")
                           setCount(count + 1)
                           setBlotter({
                             complainee_name: '',

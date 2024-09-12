@@ -150,6 +150,9 @@ export default function Official({ params }) {
 
   const [searchVal, setSearchVal] = useState('')
   const [searchOfficial, setSearchOfficial] = useState([])
+
+  const [searchUserList, setSearchUser] = useState([])
+
   const [selectedSearchItem, setSelectedSearchItem] = useState('')
   const [count, setCount] = useState(0)
 
@@ -203,7 +206,11 @@ export default function Official({ params }) {
     complainee_name: '',
     complainant_name: '',
     status_resolved: '',
-    complaint_remarks: ''
+    complaint_remarks: '',
+    is_resident: null,
+    complainee_id: '',
+    search: '',
+    officer_on_duty: ''
   })
 
   //0 ongoing 1 solve
@@ -311,7 +318,8 @@ export default function Official({ params }) {
       token: token.token,
       currentPage,
       searchItemList,
-      isPending
+      isPending,
+      per_page: 10
     }
 
 
@@ -361,6 +369,7 @@ export default function Official({ params }) {
       fetchData();
     }
     if (tab == 1 || tab == 0) {
+
       const fetchData = async () => {
 
         try {
@@ -458,7 +467,7 @@ export default function Official({ params }) {
 
     if (tab == 4) {
 
-
+      loadAll()
       const fetchData = async () => {
 
         try {
@@ -494,6 +503,7 @@ export default function Official({ params }) {
     //v search val
     // officials list
     let tmpArr = []
+
     alluser.list.data.map((i, k) => {
 
       let fullname = i.first_name + " " + i.middle_name + " " + i.last_name
@@ -511,7 +521,68 @@ export default function Official({ params }) {
 
     })
 
+
     setSearchOfficial(tmpArr)
+  }
+
+  const searchUser = (v) => {
+
+
+    setSearchVal(v)
+    //v search val
+    // officials list
+    let tmpArr = []
+
+    alluser.user.data.map((i, k) => {
+
+      let fullname = i.first_name + " " + i.middle_name + " " + i.last_name
+
+
+      // Create a regular expression dynamically with case-insensitive flag
+      const regex = new RegExp(v, 'i');
+
+      // Perform the search
+      const found = regex.test(fullname);
+
+      if (found) {
+        tmpArr.push(i)
+      }
+
+    })
+
+
+    setSearchUser(tmpArr)
+  }
+
+  const loadAll = (v) => {
+
+    let data = {
+      token: token.token,
+      currentPage,
+      searchItemList: '',
+      isPending,
+      per_page: 1000000
+    }
+
+    const fetchData = async () => {
+
+      try {
+        const result = await dispatch(loadAllUsers(data)).unwrap();
+
+        setTotalPage(result.total_pages)
+
+
+        // Handle success, e.g., navigate to another page
+      } catch (error) {
+
+        // Handle error, e.g., show an error message
+      }
+
+      setLoading(false)
+    };
+
+
+    fetchData();
   }
 
   const deleteOffials = () => {
@@ -1176,24 +1247,25 @@ export default function Official({ params }) {
       <Auth>
         <div className="vh-100 w-100" style={{ backgroundColor: "white", display: "flex" }}>
 
-          <div id='sidebar' className="sidebar">
+          <div id='sidebar' className="sidebar overflow-auto">
             {/* asan */}
 
             <div className="col-lg-12 p-5 d-flex flex-column bg-green side-bg">
 
-              <div 
+              <div
                 className="d-flex align-items-center justify-content-center pointer"
-                style={{position:"absolute", top: 20, right: 30}}
+                style={{ position: "absolute", top: 20, right: 30 }}
                 onClick={() => {
-                  document.getElementById("sidebar").style.width = "0%";
+
+                  document.getElementById("sidebar").classList.remove("openSidebar");
                 }}
               >
-              <i class="bi bi-arrow-bar-left f-white" style={{fontSize:"36px"}}></i>
-              <span className="f-white" style={{fontSize:"24px"}}>Close</span>
+                <i class="bi bi-arrow-bar-left f-white" style={{ fontSize: "36px" }}></i>
+                <span className="f-white" style={{ fontSize: "24px" }}>Close</span>
               </div>
 
               <div className="d-flex flex-column align-items-center logo-bg col-lg-12 mt-5" style={{ height: "100px" }}>
-              
+
               </div>
 
 
@@ -1202,7 +1274,7 @@ export default function Official({ params }) {
 
               <div className="flex-column mt-5">
 
-                
+
 
                 <div onClick={() => changeTab(10)} className={`p-4 w-100 rounded ${tab == 10 ? 'active-nav' : ''} pointer`}>
                   <i class="bi bi-person f-white icon"></i>
@@ -1270,7 +1342,7 @@ export default function Official({ params }) {
             </div>
           </div>
 
-          <div className="mainpage d-flex flex-column align-items-center justify-content-center mt-5" style={{}}>
+          <div className="mainpage flex-column align-items-center justify-content-center mt-5" style={{}}>
 
 
 
@@ -1278,9 +1350,11 @@ export default function Official({ params }) {
 
 
               <div className="d-flex align-items-center justify-content-center">
-                <div 
+                <div
                   onClick={() => {
-                    document.getElementById("sidebar").style.width = "30%";
+
+
+                    document.getElementById("sidebar").classList.add("openSidebar");
                   }}
                   className="pointer">
                   <i class="bi bi-list" style={{ fontSize: "32px" }}></i>
@@ -1829,9 +1903,9 @@ export default function Official({ params }) {
 
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
-
+                    { }
                     {
-                      alluser.list.data.map((i, k) => {
+                      alluser.user.data.map((i, k) => {
 
                         return (
 
@@ -2435,6 +2509,7 @@ export default function Official({ params }) {
                                 <button
                                   onClick={() => {
 
+                                    console.log(i)
                                     setIsViewing(true)
                                     setShowBlotter(true)
                                     setBlotter(i)
@@ -3477,6 +3552,7 @@ export default function Official({ params }) {
                   <div class="mb-3 w-100">
                     <label class="form-label">Complainant</label>
                     <input
+                      disabled={isViewing ? true : false}
                       id='complainantinput'
                       // value={cost}
                       value={blotter.complainant_name}
@@ -3493,21 +3569,93 @@ export default function Official({ params }) {
 
                   </div>
 
-                  <div class="mb-3 w-100">
+                      {
+                        !isViewing && 
+
+                        <div className="d-flex align-items-center w-100 mb-3">
+                        <div class="form-check">
+                          <input 
+                            
+                            onChange={() => {
+    
+                              setBlotter({
+                                ...blotter, ...{
+                                  is_resident: true
+                                }
+                              })
+                            }}   
+                            class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" />
+                          <label class="form-check-label" for="flexRadioDefault1">
+                            Resident
+                          </label>
+                        </div>
+                        <div class="form-check ms-3">
+                          <input 
+                             onChange={() => {
+    
+                              setBlotter({
+                                ...blotter, ...{
+                                  is_resident: false
+                                }
+                              })
+                            }}
+                          class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                          <label class="form-check-label" for="flexRadioDefault2">
+                            Non-resident
+                          </label>
+                        </div>
+                      </div>
+                      }
+
+                  <div class="mb-3 w-100" style={{ position: "relative" }}>
                     <label class="form-label">Complainee</label>
                     <input
                       id='complaineeinput'
                       // value={cost}
+                      disabled={isViewing ? true : false}
                       value={blotter.complainee_name}
                       onChange={(val) => {
                         setBlotter({
                           ...blotter, ...{
-                            complainee_name: val.target.value
+                            complainee_name: val.target.value,
+                            complainee_id: '',
+                            search: val.target.value
                           }
                         })
 
+
+                        searchUser(val.target.value)
+
                       }}
                       class="form-control" />
+                    {
+                        blotter.search != "" && blotter.is_resident &&
+                      <div className="box position-absolute w-100" style={{ maxHeight: "300px", overflow: "scroll", width: "500px" }}>
+                        {
+                          searchUserList.map((i, k) => {
+                            return (
+                              <div
+                                onClick={() => {
+                                  
+                                  setBlotter({
+                                    ...blotter, ...{
+                                      complainee_id: i.id,
+                                      complainee_name: i.full_name,
+                                      search: ''
+                                    }
+                                  })
+                                  console.log(i)
+                                }}
+                                className="search-item pointer">
+                                <span>
+                                  {i.first_name + " " + i.middle_name + " " + i.last_name}
+                                </span>
+                              </div>
+                            )
+                          })
+                        }
+                      </div>
+                    }
 
                   </div>
 
@@ -3521,6 +3669,23 @@ export default function Official({ params }) {
                         setBlotter({
                           ...blotter, ...{
                             complaint_remarks: val.target.value
+                          }
+                        })
+                      }}
+                      class="form-control" />
+
+                  </div>
+
+                  <div class="mb-3 w-100">
+                    <label class="form-label">Officer on duty</label>
+                    <input
+                      id='inputofficer'
+                      // value={cost}
+                      value={blotter.officer_on_duty}
+                      onChange={(val) => {
+                        setBlotter({
+                          ...blotter, ...{
+                            officer_on_duty: val.target.value
                           }
                         })
                       }}
@@ -3580,8 +3745,12 @@ export default function Official({ params }) {
                             complainee_name: '',
                             complainant_name: '',
                             status_resolved: '',
-                            complaint_remarks: ''
+                            complaint_remarks: '',
+                            is_resident: null,
+                            complainee_id: '',
+                            search: ''
                           })
+                          setIsViewing(false)
                           setLoading(false)
                           // Handle success, e.g., navigate to another page
                         } catch (error) {

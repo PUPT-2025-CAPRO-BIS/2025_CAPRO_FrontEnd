@@ -8,6 +8,9 @@ const initialState = {
   list: {
     data: []
   },
+  user: {
+    data: []
+  },
   status: 'idle',  // Start with 'idle' instead of 'false'
   token: '',
 };
@@ -106,7 +109,7 @@ export const loadAllUsers = createAsyncThunk('user/viewAllUsers', async (data) =
     }, params: {
       search_value: data.searchItemList,
       page_number: data.currentPage,
-      item_per_page: 10,
+      item_per_page: data.per_page,
       isPendingResident: data.isPending
     }
   });
@@ -235,11 +238,12 @@ export const fileBlotterReportApi = createAsyncThunk('user/fileBlotterReport', a
   console.log(data, "--> RECEIVED")
 
   const res = await apiClient.post('/fileBlotterReport', {
-    complainee_name: data.complainee_name,
-    complainant_name: data.complainant_name,
+    complainee_name: data.complainee_id == "" ? data.complainee_name : '',
+      complainant_name: data.complainant_name,
     status_resolved: data.status_resolved,
-    complaint_remarks: data.complaint_remarks
-
+     complaint_remarks: data.complaint_remarks,
+    complainee_id: data.complainee_id,
+    officer_on_duty: data.officer_on_duty
 
   }, {
     headers: {
@@ -259,7 +263,8 @@ export const editBlotterReportApi = createAsyncThunk('user/editBlotterReport', a
     complainant_name: data.complainant_name,
     status_resolved: data.status_resolved,
     complaint_remarks: data.complaint_remarks,
-    id: data.id
+    id: data.id,
+    officer_on_duty: data.officer_on_duty
 
 
   }, {
@@ -331,14 +336,15 @@ const usersSlice = createSlice({
     builder
       .addCase(loadAllUsers.pending, (state) => {
         state.status = 'loading';
-        state.list.data = []
+        state.user.data = []
       })
       .addCase(loadAllUsers.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.list = action.payload;
+        // state.list = action.payload;
+        state.user = action.payload
       })
       .addCase(loadAllUsers.rejected, (state) => {
-        state.list.data = []
+        state.user.data = []
         state.status = 'failed';
       });
 

@@ -12,7 +12,7 @@ export default function ResidentAppointment() {
 
         <div className="logo-bg col-lg-7" style={{height: "150px"}}></div>
         <div className="d-flex flex-column justify-content-center align-items-center mt-5">
-
+            
             <button 
             onClick={() => {
                 router.push('/Appointment/Resident/Create', { scroll: false })
@@ -23,7 +23,7 @@ export default function ResidentAppointment() {
               </button>
           </div>
 
-
+        
       </div>
     </main>
   );

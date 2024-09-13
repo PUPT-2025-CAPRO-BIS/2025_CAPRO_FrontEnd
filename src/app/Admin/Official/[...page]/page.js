@@ -111,7 +111,7 @@ export default function Official({ params }) {
       '/Admin/Official/Dashboard',
       '/Admin/Official/Logs/1/'
     ];
-
+    
     const path = tab < paths.length ? paths[tab] + searchItem : paths[paths.length - 1];
     router.push(path);
   };
@@ -305,7 +305,7 @@ export default function Official({ params }) {
 
     if (getPage == "Logs") {
       setCurrentPage(getPageNumber)
-      seTab(7)
+      seTab(6)
     }
 
     setSearchItemList(getSearchItem)
@@ -377,7 +377,7 @@ export default function Official({ params }) {
       const fetchData = async () => {
 
         try {
-          console.log('RECEIVED: ', data)
+          
           const result = await dispatch(loadAllUsers(data)).unwrap();
 
           setTotalPage(result.total_pages)
@@ -396,7 +396,7 @@ export default function Official({ params }) {
       fetchData();
     }
 
-    if (tab == 7) {
+    if (tab == 6) {
       const fetchData = async () => {
 
         try {
@@ -1072,6 +1072,7 @@ export default function Official({ params }) {
   const changeTab = (v) => {
 
 
+    
 
 
     if (v == 0) {
@@ -1092,7 +1093,7 @@ export default function Official({ params }) {
     if (v == 10) {
       router.push('/Admin/Official/Dashboard')
     }
-    if (v == 7) {
+    if (v == 6) {
       router.push('/Admin/Official/Logs/1')
     }
 
@@ -1109,7 +1110,7 @@ export default function Official({ params }) {
     if (tab == 3) slug = "Services"
     if (tab == 1) slug = "Resident"
     if (tab == 4) slug = "Blotter"
-    if (tab == 7) slug = "Logs"
+    if (tab == 6) slug = "Logs"
 
 
     if (k == 1) {
@@ -1332,7 +1333,7 @@ export default function Official({ params }) {
                 </div>
 
 
-                <div onClick={() => changeTab(7)} className={`p-4 w-100 rounded ${tab == 7 ? 'active-nav' : ''} pointer`}>
+                <div onClick={() => changeTab(6)} className={`p-4 w-100 rounded ${tab == 6 ? 'active-nav' : ''} pointer`}>
                   <i class="bi bi-activity f-white icon"></i>
                   <span className="f-white nav-item ms-2">
                     Logs
@@ -1908,7 +1909,7 @@ export default function Official({ params }) {
 
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
-                    { console.log(alluser.list.data, "--> CHECK") }
+                    {  }
                     {
                       alluser.list.length != 0 && alluser.list.data.map((i, k) => {
 
@@ -2514,7 +2515,7 @@ export default function Official({ params }) {
                                 <button
                                   onClick={() => {
 
-                                    console.log(i)
+                                    
                                     setIsViewing(true)
                                     setShowBlotter(true)
                                     setBlotter(i)
@@ -2553,7 +2554,7 @@ export default function Official({ params }) {
             {/* Barangay services */}
 
             {
-              tab == 7 &&
+              tab == 6 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
                 <div className="border-bottom p-2 pb-4 mt-3">
@@ -2612,15 +2613,16 @@ export default function Official({ params }) {
 
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
+                      {}
                     {
-                      logs.length != 0 && logs.map((i, k) => {
+                      logs.length != 0 && logs.data.map((i, k) => {
                         return (
 
                           // Put dynamic className
                           <div className='d-flex col-lg-12 justify-content-around row-item-container'>
                             <RowItem>
                               <span className="f-white">
-                                {i.action_taker_id}
+                                {i.action_target_id}
                               </span>
                             </RowItem>
                             <RowItem>
@@ -3632,7 +3634,7 @@ export default function Official({ params }) {
                                       searchFirst: ''
                                     }
                                   })
-                                  console.log(i)
+                                  
                                 }}
                                 className="search-item pointer">
                                 <span>
@@ -3722,7 +3724,7 @@ export default function Official({ params }) {
                                       search: ''
                                     }
                                   })
-                                  console.log(i)
+                                  
                                 }}
                                 className="search-item pointer">
                                 <span>

@@ -1849,7 +1849,7 @@ export default function Official({ params }) {
                           style={{
                             // color: isPending == 1 ? "#057350" : "white"
                           }}
-                        >{isPending == 0 ? "View Pending Resident" : "View Registered Resident"}</span>
+                        >{alluser.isPending == 0 ? "View Pending Resident" : "View Registered Resident"}</span>
                       </button>
 
 
@@ -1868,7 +1868,7 @@ export default function Official({ params }) {
 
                     {
                       
-                      isPending == 0 &&
+                      alluser.isPending == 0 &&
                       <button
                       onClick={() => {
                         setShowAddResident(true)
@@ -2443,7 +2443,17 @@ export default function Official({ params }) {
                   <div >
                     <button
                       onClick={() => {
+                        setBlotter({
+                          complainee_name: '',
+                          complainant_name: '',
+                          status_resolved: '',
+                          complaint_remarks: '',
+                          is_resident: null,
+                          complainee_id: '',
+                          search: ''
+                        })
                         setShowBlotter(true)
+                        
                       }}
                       className="primary bg-yellow p-2 rounded border-0"
                     >
@@ -2587,15 +2597,7 @@ export default function Official({ params }) {
                       type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
                   </div>
 
-                  <div >
-                    <button
-                      data-bs-toggle="modal" data-bs-target="#addBarangayServices"
-                      className="primary bg-yellow p-2 rounded border-0"
-                    >
-                      <i className="bi bi-plus fw-bold f-white" style={{ fontSize: "20px" }}></i>
-                      <span className="fw-bold f-white">Document Type</span>
-                    </button>
-                  </div>
+                  
                 </div>
 
 
@@ -3580,7 +3582,8 @@ export default function Official({ params }) {
     
                               setBlotter({
                                 ...blotter, ...{
-                                  is_resident_complainant: true
+                                  is_resident_complainant: true,
+                                  complainant_name: ""
                                 }
                               })
                             }}   
@@ -3595,7 +3598,8 @@ export default function Official({ params }) {
     
                               setBlotter({
                                 ...blotter, ...{
-                                  is_resident_complainant: false
+                                  is_resident_complainant: false,
+                                   complainant_name: ""
                                 }
                               })
                             }}
@@ -3672,7 +3676,8 @@ export default function Official({ params }) {
     
                               setBlotter({
                                 ...blotter, ...{
-                                  is_resident: true
+                                  is_resident: true,
+                                  complainee_name: ''
                                 }
                               })
                             }}   
@@ -3687,7 +3692,8 @@ export default function Official({ params }) {
     
                               setBlotter({
                                 ...blotter, ...{
-                                  is_resident: false
+                                  is_resident: false,
+                                  complainee_name: ''
                                 }
                               })
                             }}

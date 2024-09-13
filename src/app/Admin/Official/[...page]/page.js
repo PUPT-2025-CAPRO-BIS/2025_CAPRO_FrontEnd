@@ -2,7 +2,7 @@
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
 import { addOfficials, dashboardViewApi, deleteOffialsApi, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
-import { addResidentApi, approveNewResidentApi, approveOrRejectAppointmentApi, deleteResidentInformationApi, editBlotterReportApi, editResidentApi, fileBlotterReportApi, importExcelResidentsApi, loadAllUsers, viewAllBlottersApi, viewAppointmentListApi } from "@/redux/reducer/resident";
+import { addResidentApi, approveNewResidentApi, approveOrRejectAppointmentApi, deleteResidentInformationApi, editBlotterReportApi, editResidentApi, fileBlotterReportApi, importExcelResidentsApi, loadAllUsers, logOutResident, settingPeding, viewAllBlottersApi, viewAppointmentListApi } from "@/redux/reducer/resident";
 import { LogOut, viewAdminLogsApi } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
 import Image from "next/image";
@@ -312,6 +312,7 @@ export default function Official({ params }) {
 
   }, [])
 
+  
 
 
   useEffect(() => {
@@ -321,11 +322,11 @@ export default function Official({ params }) {
       token: token.token,
       currentPage,
       searchItemList,
-      isPending,
+      isPending: alluser.isPending,
       per_page: 10
     }
 
-
+    
     if (tab == 10) {
       const fetchData = async () => {
 
@@ -380,8 +381,8 @@ export default function Official({ params }) {
           
           const result = await dispatch(loadAllUsers(data)).unwrap();
 
+          
           setTotalPage(result.total_pages)
-
 
           // Handle success, e.g., navigate to another page
         } catch (error) {
@@ -470,6 +471,7 @@ export default function Official({ params }) {
 
     }
 
+    console.log(alluser)
     if (tab == 4) {
 
       loadAll()
@@ -532,7 +534,7 @@ export default function Official({ params }) {
 
   const searchUser = (v) => {
 
-    console.log(alluser, "--> RECEIVED?")
+    
     setSearchVal(v)
     //v search val
     // officials list
@@ -1104,6 +1106,7 @@ export default function Official({ params }) {
 
   const paginate = (v, k) => {
 
+    
     let slug = ''
 
 
@@ -1409,6 +1412,8 @@ export default function Official({ params }) {
 
                       try {
                         const result = await dispatch(LogOut());
+                        const a = await dispatch(logOutResident());
+                        
                         router.replace('/', { scroll: false })
                         // Handle success, e.g., navigate to another page
                       } catch (error) {
@@ -1820,10 +1825,11 @@ export default function Official({ params }) {
 
                       <button
                         onClick={() => {
+                         
 
-
-                          setIsPending(isPending == 0 ? 1 : 0)
-
+                          
+                          dispatch(settingPeding(alluser.isPending == 0 ? 1 : 0))
+                          setCurrentPage(1)
                           setCount(count + 1)
                         }}
                         className="ms-3 primary bg-yellow p-2 rounded d-flex align-items-center justify-content-center" style={{ border: "0px" }}
@@ -2474,10 +2480,12 @@ export default function Official({ params }) {
 
                   {/* Table body */}
 
+                  {}
+
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
                     {
-                      alluser.list.length != 0 && alluser.list.data.map((i, k) => {
+                      alluser.blotterlist.length != 0 && alluser.blotterlist.data.map((i, k) => {
                         return (
 
                           // Put dynamic className

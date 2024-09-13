@@ -8,11 +8,16 @@ const initialState = {
   list: {
     data: []
   },
+  blotterlist:{
+    data: []
+  },
   user: {
     data: []
   },
   status: 'idle',  // Start with 'idle' instead of 'false'
   token: '',
+  isPending: 0,
+  asahdgasdgsad: "asdasdahsdgajs"
 };
 
 // Create axios instance
@@ -334,6 +339,25 @@ const usersSlice = createSlice({
       state.user = action.payload;
       state.signedIn = true;  // Use a boolean value here
     },
+    settingPeding: (state, action) => {
+      state.isPending = action.payload
+    },
+    logOutResident: (state, action) => {
+      state.list ={
+        data: []
+      }
+      state.blotterlist ={
+        data: []
+      }
+      state.user ={
+        data: []
+      } 
+      state.statu = 'idle',  // Start with 'idle' instead of 'false'
+      state.token = '',
+      state.isPending = 0,
+      state.asahdgasdgsad = "asdasdahsdgajs"
+    }
+    
   },
   extraReducers: builder => {
     builder
@@ -397,14 +421,14 @@ const usersSlice = createSlice({
     builder
       .addCase(viewAllBlottersApi.pending, (state) => {
         state.status = 'loading';
-        state.list.data = []
+        state.blotterlist.data = []
       })
       .addCase(viewAllBlottersApi.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.list = action.payload;
+        state.blotterlist = action.payload;
       })
       .addCase(viewAllBlottersApi.rejected, (state) => {
-        state.list.data = []
+        state.blotterlist.data = []
         state.status = 'failed';
       });
 
@@ -412,5 +436,5 @@ const usersSlice = createSlice({
 });
 
 // Export actions and reducer
-export const { LoaddAllUsers } = usersSlice.actions;
+export const { LoaddAllUsers, settingPeding,logOutResident } = usersSlice.actions;
 export default usersSlice.reducer;

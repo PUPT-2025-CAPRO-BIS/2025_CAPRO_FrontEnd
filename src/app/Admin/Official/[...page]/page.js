@@ -1660,6 +1660,7 @@ export default function Official({ params }) {
                     <span className="f-white">Search:</span>
                     <input
                       // onKeyDown={handleKeyDown}
+                      value={searchItemList}
                       onChange={(v) => {
                         setSearchItemList(v.target.value)
                         handleKeyDown(v.target.value)
@@ -1858,7 +1859,10 @@ export default function Official({ params }) {
                       <i class="bi bi-file-earmark-excel-fill" style={{ fontSize: "28px", color: "green" }}></i>
                       Download</button>
 
-                    <button
+                    {
+                      
+                      isPending == 0 &&
+                      <button
                       onClick={() => {
                         setShowAddResident(true)
                       }}
@@ -1867,6 +1871,7 @@ export default function Official({ params }) {
                       <i className="bi bi-plus fw-bold f-white" style={{ fontSize: "20px" }}></i>
                       <span className="fw-bold f-white">Add Resident</span>
                     </button>
+                    }
                   </div>
                 </div>
 

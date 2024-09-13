@@ -102,7 +102,9 @@ export const deleteResidentInformationApi = createAsyncThunk('user/deleteResiden
 
 export const loadAllUsers = createAsyncThunk('user/viewAllUsers', async (data) => {
 
+  
   const res = await apiClient.get('/viewAllUsers', {
+  
     headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token
       'Content-Type': 'application/json',
@@ -235,7 +237,7 @@ export const viewAllBlottersApi = createAsyncThunk('user/viewAllBlotters', async
 
 export const fileBlotterReportApi = createAsyncThunk('user/fileBlotterReport', async (data) => {
 
-  console.log(data, "--> RECEIVED")
+  
 
   const res = await apiClient.post('/fileBlotterReport', {
     complainee_name: data.complainee_id == "" ? data.complainee_name : '',
@@ -257,7 +259,7 @@ export const fileBlotterReportApi = createAsyncThunk('user/fileBlotterReport', a
 
 export const editBlotterReportApi = createAsyncThunk('user/editBlotterReport', async (data) => {
 
-  console.log(data, "--> RECEIVED")
+  
 
   const res = await apiClient.post('/editBlotterReport', {
     complainee_name: data.complainee_name,
@@ -336,15 +338,18 @@ const usersSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(loadAllUsers.pending, (state) => {
+        
         state.status = 'loading';
         state.user.data = []
       })
       .addCase(loadAllUsers.fulfilled, (state, action) => {
+        
         state.status = 'succeeded';
-        // state.list = action.payload;
-        state.user = action.payload
+        state.list = action.payload;
+        // state.user = action.payload
       })
       .addCase(loadAllUsers.rejected, (state) => {
+        
         state.user.data = []
         state.status = 'failed';
       });

@@ -372,10 +372,12 @@ export default function Official({ params }) {
       fetchData();
     }
     if (tab == 1 || tab == 0) {
+     
 
       const fetchData = async () => {
 
         try {
+          console.log('RECEIVED: ', data)
           const result = await dispatch(loadAllUsers(data)).unwrap();
 
           setTotalPage(result.total_pages)
@@ -1828,9 +1830,9 @@ export default function Official({ params }) {
 
                         {
                           isPending == 1 ?
-                            <i class="bi bi-person-check-fill" style={{ fontSize: "40px" }}></i>
+                            <i class="bi bi-person-check-fill" style={{ fontSize: "25px" }}></i>
                             :
-                            <i class="bi bi-person-exclamation" style={{ fontSize: "40px" }}></i>
+                            <i class="bi bi-person-exclamation" style={{ fontSize: "25px" }}></i>
                         }
 
 
@@ -1906,9 +1908,9 @@ export default function Official({ params }) {
 
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
-                    { }
+                    { console.log(alluser.list.data, "--> CHECK") }
                     {
-                      alluser.user.data.map((i, k) => {
+                      alluser.list.length != 0 && alluser.list.data.map((i, k) => {
 
                         return (
 

@@ -532,13 +532,13 @@ export default function Official({ params }) {
 
   const searchUser = (v) => {
 
-
+    console.log(alluser, "--> RECEIVED?")
     setSearchVal(v)
     //v search val
     // officials list
     let tmpArr = []
 
-    alluser.user.data.map((i, k) => {
+    alluser.list.data.map((i, k) => {
 
       let fullname = i.first_name + " " + i.middle_name + " " + i.last_name
 
@@ -549,6 +549,7 @@ export default function Official({ params }) {
       // Perform the search
       const found = regex.test(fullname);
 
+   
       if (found) {
         tmpArr.push(i)
       }
@@ -2174,8 +2175,6 @@ export default function Official({ params }) {
                                           type="button" class="btn btn-primary">Approve</button>
 
                                         <button
-                                          data-bs-toggle="modal"
-
                                           onClick={() => {
 
                                             setLoading()
@@ -3577,10 +3576,10 @@ export default function Official({ params }) {
                                 }
                               })
                             }}   
-                            class="form-check-input" type="radio" name="flexRadioDefault2" id="flexRadioDefault3" />
+                            class="form-check-input" type="radio" name="complainantRadio" id="flexRadioDefault3" />
                           <label class="form-check-label" for="flexRadioDefault3">
                             Resident
-                          </label>
+                          </label>  
                         </div>
                         <div class="form-check ms-3">
                           <input 
@@ -3592,7 +3591,7 @@ export default function Official({ params }) {
                                 }
                               })
                             }}
-                          class="form-check-input" type="radio" name="flexRadioDefaul2" id="flexRadioDefault4" />
+                          class="form-check-input" type="radio" name="complainantRadio" id="flexRadioDefault4" />
                           <label class="form-check-label" for="flexRadioDefault4">
                             Non-resident
                           </label>

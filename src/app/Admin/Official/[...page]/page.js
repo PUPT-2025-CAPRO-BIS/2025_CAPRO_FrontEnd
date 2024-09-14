@@ -1115,6 +1115,7 @@ export default function Official({ params }) {
     if (tab == 1) slug = "Resident"
     if (tab == 4) slug = "Blotter"
     if (tab == 6) slug = "Logs"
+    if(tab == 2) slug = "Schedule"
 
 
     if (k == 1) {
@@ -2086,6 +2087,9 @@ export default function Official({ params }) {
                       Service
                     </HeaderItem>
                     <HeaderItem>
+                      Purpose
+                    </HeaderItem>
+                    <HeaderItem>
                       Status
                     </HeaderItem>
                     <HeaderItem>
@@ -2123,6 +2127,11 @@ export default function Official({ params }) {
                             <RowItem>
                               <span className="f-white">
                                 {i.document_type}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.purpose}
                               </span>
                             </RowItem>
                             <RowItem>
@@ -2301,6 +2310,7 @@ export default function Official({ params }) {
                         setIsCert(1)
                         setDocId('')
                         setServiceDesc('')
+                        setIsEdit(false)
                       }}
                       data-bs-toggle="modal" data-bs-target="#addBarangayServices"
                       className="primary bg-yellow p-2 rounded border-0"
@@ -3626,7 +3636,7 @@ export default function Official({ params }) {
                   <div class="mb-3 w-100" style={{position:"relative"}}>
                     <label class="form-label">Complainant</label>
                     <input
-                      disabled={isViewing ? true : false}
+                      disabled={isViewing ? true : (blotter.is_resident_complainant == null ? true : false)}
                       id='complainantinput'
                       // value={cost}
                       value={blotter.complainant_name}
@@ -3721,7 +3731,7 @@ export default function Official({ params }) {
                     <input
                       id='complaineeinput'
                       // value={cost}
-                      disabled={isViewing ? true : false}
+                      disabled={isViewing ? true : (blotter.is_resident == null ? true : false)}
                       value={blotter.complainee_name}
                       onChange={(val) => {
                         setBlotter({
@@ -3829,6 +3839,8 @@ export default function Official({ params }) {
 
                   <div >
                     <button
+
+                      // disabled={false}
                       onClick={async () => {
                         // setShowBlotter(true)
                         setLoading(true)

@@ -299,14 +299,14 @@ export default function CreateAppointment() {
         }
 
         const fetchData = async () => {
-
+            
             try {
 
                 const result = await dispatch(otpLoginApi(merge)).unwrap();
 
 
                 // Handle success, e.g., navigate to another page
-
+                
                 if (result.success) {
                     setSuccessOTP(result.success)
                     setAccessToken(result.access_token)
@@ -320,7 +320,10 @@ export default function CreateAppointment() {
 
 
             } catch (error) {
-
+                
+                setShowSuccess(true)
+                setMessage("Invalid OTP")
+                setIsButtonDisabled(true)
                 // Handle error, e.g., show an error message
             }
         };
@@ -355,10 +358,8 @@ export default function CreateAppointment() {
 
             const result = await dispatch(createAppointmentApi(data)).unwrap();
 
-            console.log(result.success, "--> nani")
-
-
-            if (result.success = true) {
+          
+            if (result.error == false || result.success == true) {
                 setSuccess(true)
                 setIsButtonDisabled(false)
                 setMessage("Successfully created an appointment please check your email for more details")
@@ -371,7 +372,7 @@ export default function CreateAppointment() {
 
             }
             else {
-                setMessage("Something went wrong.")
+                setMessage(result.error_msg)
                 setShowSuccess(true)
             }
 
@@ -379,7 +380,8 @@ export default function CreateAppointment() {
 
 
         } catch (error) {
-
+            setMessage("Something went wrong.")
+            setShowSuccess(true)
             // Handle error, e.g., show an error message
         }
 
@@ -415,7 +417,7 @@ export default function CreateAppointment() {
 
 
 
-        if (selectedDate != "" && selectedDoc != "" && files.length != 0) {
+        if (selectedDate != "" && selectedDoc != "" && files.length != 0 && purpose != "") {
 
 
             setIsButtonDisabled(false)
@@ -425,7 +427,7 @@ export default function CreateAppointment() {
             setIsButtonDisabled(true)
         }
 
-    }, [selectedDate, selectedDoc, files.length])
+    }, [selectedDate, selectedDoc, files.length, purpose])
 
 
 

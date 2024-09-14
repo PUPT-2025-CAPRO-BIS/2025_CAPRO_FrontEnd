@@ -828,7 +828,9 @@ export default function CreateAppointment() {
                             </div>
                         </div>
 
-                        <button type="button" onClick={() => {
+                        <button 
+                            disabled={files.length == 0 ? true : false}
+                            type="button" onClick={() => {
                             addResident()
                         }} class="btn btn-primary bg-green">Submit</button>
 

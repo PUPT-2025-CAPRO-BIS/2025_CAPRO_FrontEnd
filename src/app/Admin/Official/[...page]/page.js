@@ -1872,6 +1872,7 @@ export default function Official({ params }) {
                       <button
                       onClick={() => {
                         setShowAddResident(true)
+                        setIsEdit(false)
                       }}
                       className="primary bg-yellow p-2 rounded ms-3" style={{ border: "0px" }}
                     >
@@ -2291,6 +2292,16 @@ export default function Official({ params }) {
 
                   <div >
                     <button
+                      onClick={() => {
+
+                        setSSS({
+                          service: ''
+                        })
+                        setCost(0)
+                        setIsCert(1)
+                        setDocId('')
+                        setServiceDesc('')
+                      }}
                       data-bs-toggle="modal" data-bs-target="#addBarangayServices"
                       className="primary bg-yellow p-2 rounded border-0"
                     >
@@ -3875,6 +3886,7 @@ export default function Official({ params }) {
                         setSuccess(false)
                         setShowSuccess(false)
                         SetMessage('')
+                        setIsViewing(false)
                       }}
                       className="primary p-2 rounded border-0 mt-3"
                     >

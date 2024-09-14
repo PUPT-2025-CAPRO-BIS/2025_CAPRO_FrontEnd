@@ -1286,7 +1286,7 @@ export default function Official({ params }) {
 
 
 
-                <div onClick={() => changeTab(10)} className={`p-4 w-100 rounded ${tab == 10 ? 'active-nav' : ''} pointer`}>
+                <div onClick={() => changeTab(10)} className={`p-4 w-100 rounded nav-container ${tab == 10 ? 'active-nav' : ''} pointer`}>
                   <i class="bi bi-person f-white icon"></i>
                   <span className="f-white ms-2 nav-item">
                     Dashboard
@@ -1295,7 +1295,7 @@ export default function Official({ params }) {
 
 
 
-                <div onClick={() => changeTab(0)} className={`p-4 w-100 rounded ${tab == 0 ? 'active-nav' : ''} pointer`}>
+                <div onClick={() => changeTab(0)} className={`p-4 w-100 rounded nav-container ${tab == 0 ? 'active-nav' : ''} pointer`}>
                   <i class="bi bi-person f-white icon"></i>
                   <span className="f-white ms-2 nav-item">
                     Barangay Officials
@@ -1303,7 +1303,7 @@ export default function Official({ params }) {
                 </div>
 
 
-                <div onClick={() => changeTab(1)} className={`p-4 w-100 rounded ${tab == 1 ? 'active-nav' : ''} pointer`}>
+                <div onClick={() => changeTab(1)} className={`p-4 w-100 rounded nav-container ${tab == 1 ? 'active-nav' : ''} pointer`}>
 
                   <i class="bi bi-people-fill f-white icon"></i>
                   <span className="f-white ms-2 nav-item">
@@ -1312,7 +1312,7 @@ export default function Official({ params }) {
                 </div>
 
 
-                <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded ${tab == 2 ? 'active-nav' : ''} pointer`}>
+                <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded nav-container ${tab == 2 ? 'active-nav' : ''} pointer`}>
 
                   <i class="bi bi-calendar-date f-white icon"></i>
                   <span className="f-white ms-2 nav-item">
@@ -1321,7 +1321,7 @@ export default function Official({ params }) {
                 </div>
 
 
-                <div onClick={() => changeTab(4)} className={`p-4 w-100 rounded ${tab == 4 ? 'active-nav' : ''} pointer`}>
+                <div onClick={() => changeTab(4)} className={`p-4 w-100 rounded nav-container ${tab == 4 ? 'active-nav' : ''} pointer`}>
 
                   <i class="bi bi-person-fill-slash f-white icon"></i>
                   <span className="f-white ms-2 nav-item">
@@ -1329,7 +1329,7 @@ export default function Official({ params }) {
                   </span>
                 </div>
 
-                <div onClick={() => changeTab(3)} className={`p-4 w-100 rounded ${tab == 3 ? 'active-nav' : ''} pointer`}>
+                <div onClick={() => changeTab(3)} className={`p-4 w-100 rounded nav-container ${tab == 3 ? 'active-nav' : ''} pointer`}>
                   <i class="bi bi-file-earmark-diff-fill f-white icon" ></i>
                   <span className="f-white nav-item ms-2">
                     Services
@@ -1337,7 +1337,7 @@ export default function Official({ params }) {
                 </div>
 
 
-                <div onClick={() => changeTab(6)} className={`p-4 w-100 rounded ${tab == 6 ? 'active-nav' : ''} pointer`}>
+                <div onClick={() => changeTab(6)} className={`p-4 w-100 rounded nav-container ${tab == 6 ? 'active-nav' : ''} pointer`}>
                   <i class="bi bi-activity f-white icon"></i>
                   <span className="f-white nav-item ms-2">
                     Logs
@@ -1724,7 +1724,7 @@ export default function Official({ params }) {
                         return (
 
                           // Put dynamic className
-                          <div className='d-flex col-lg-12 justify-content-around  row-item-container'>
+                          <div className='nav-container d-flex col-lg-12 justify-content-around  row-item-container'>
                             <RowItem>
                               <span className="f-white">
                                 {i.full_name}
@@ -1929,7 +1929,7 @@ export default function Official({ params }) {
                         return (
 
                           // Put dynamic className
-                          <div className='d-flex col-lg-12 justify-content-around row-item-container'>
+                          <div className='nav-container d-flex col-lg-12 justify-content-around row-item-container'>
                             <RowItem
 
                             >
@@ -2104,7 +2104,7 @@ export default function Official({ params }) {
                         return (
 
                           // Put dynamic className
-                          <div className='d-flex col-lg-12 justify-content-around row-item-container'>
+                          <div className='nav-container d-flex col-lg-12 justify-content-around row-item-container'>
                             <RowItem>
                               <span className="f-white">
                                 {i.appointment_id}
@@ -2342,7 +2342,7 @@ export default function Official({ params }) {
                         return (
 
                           // Put dynamic className
-                          <div className='d-flex col-lg-12 justify-content-around row-item-container'>
+                          <div className='nav-container d-flex col-lg-12 justify-content-around row-item-container'>
                             <RowItem>
                               <span className="f-white">
                                 {i.id}
@@ -2510,7 +2510,7 @@ export default function Official({ params }) {
                         return (
 
                           // Put dynamic className
-                          <div className='d-flex col-lg-12 justify-content-around row-item-container'>
+                          <div className='nav-container d-flex col-lg-12 justify-content-around row-item-container'>
                             <RowItem>
                               <span className="f-white">
                                 {i.complainant_name}
@@ -2644,8 +2644,8 @@ export default function Official({ params }) {
                         return (
 
                           // Put dynamic className
-                          <div className='d-flex col-lg-12 justify-content-around row-item-container'>
-                            <RowItem>
+                          <div className='nav-container d-flex col-lg-12 justify-content-around row-item-container'>
+                            <RowItem> 
                               <span className="f-white">
                                 {i.action_target_id}
                               </span>

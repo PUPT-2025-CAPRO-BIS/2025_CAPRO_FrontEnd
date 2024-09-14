@@ -19,9 +19,9 @@ export const HeaderItem = (props) => {
 export const RowItem = (props) => {
 
     return(
-      <div 
-        onClick={props.onClick}
-        className='col-lg-1 d-flex align-items-center pb-3 pt-3 justify-content-center' >
+        <div 
+          onClick={props.onClick}
+          className='col-lg-1 d-flex align-items-center pb-3 pt-3 justify-content-center ' >
           {/* <span className='f-white'> */}
           {props.children}
           {/* </span> */}

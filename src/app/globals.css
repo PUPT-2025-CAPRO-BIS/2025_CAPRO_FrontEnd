@@ -121,6 +121,11 @@ a {
   background-color: #FEDB34;
 }
 
+.nav-container:hover{
+  background-color: #27ae60;
+  transform: scale(1.02);
+}
+
 
 .my-button{
   background-color: yellow;
@@ -220,6 +225,10 @@ a {
 
 .nav-item{
   font-size: 20px;
+}
+
+.nav-item:hover{
+  opacity: 0.5;
 }
 
 

@@ -2389,7 +2389,10 @@ export default function Official({ params }) {
                       Service
                     </HeaderItem>
                     <HeaderItem>
-                      Description
+                      Date
+                    </HeaderItem>
+                    <HeaderItem>
+                      Cost
                     </HeaderItem>
                     <HeaderItem>
                       Action
@@ -2420,7 +2423,12 @@ export default function Official({ params }) {
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-                                {i.service}
+                                {i.created_at	}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.price}
                               </span>
                             </RowItem>
                             <RowItem>
@@ -2657,7 +2665,7 @@ export default function Official({ params }) {
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
                 <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
-                  <h2 className="f-white">Admin logs</h2>
+                  <h2 className="f-white fw-bold">Admin logs</h2>
                 </div>
 
                 <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
@@ -2693,6 +2701,9 @@ export default function Official({ params }) {
                       Description
                     </HeaderItem>
                     <HeaderItem>
+                      Date
+                    </HeaderItem>
+                    <HeaderItem>
                       Action taker
                     </HeaderItem>
                   </div>
@@ -2726,6 +2737,12 @@ export default function Official({ params }) {
                                 {i.log_details}
                               </span>
                             </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.created_at	}
+                              </span>
+                            </RowItem>
+                            
                             <RowItem>
                               <span className="f-white">
                                 {i.admin_name}

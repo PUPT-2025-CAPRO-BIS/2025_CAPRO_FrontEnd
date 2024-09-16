@@ -72,7 +72,7 @@ export default function Official({ params }) {
       '/Admin/Official/Dashboard',
       '/Admin/Official/Logs/1/'
     ];
-    
+
     const path = tab < paths.length ? paths[tab] + searchItem : paths[paths.length - 1];
     router.push(path);
   };
@@ -172,7 +172,7 @@ export default function Official({ params }) {
     is_resident: null,
     is_resident_complainant: null,
     complainee_id: '',
-    complainant_id:'',
+    complainant_id: '',
     search: '',
     searchFirst: '',
     officer_on_duty: ''
@@ -180,71 +180,71 @@ export default function Official({ params }) {
 
   useEffect(() => {
     // This effect runs whenever any specified property in the `blotter` object changes
-    
 
-    if(blotter.is_resident){
 
-      if(blotter.complainee_id == ""){
+    if (blotter.is_resident) {
+
+      if (blotter.complainee_id == "") {
         setDisabledBlotterButton(true)
       }
     }
-    else{
-      if(blotter.complainant_name == ""){
-        setDisabledBlotterButton(true)
-      }
-    }
-
-    if(blotter.is_resident_complainant){
-
-      if(blotter.complainant_id == ""){
-        setDisabledBlotterButton(true)
-      }
-    }
-    else{
-      if(blotter.complainee_name == ""){
+    else {
+      if (blotter.complainant_name == "") {
         setDisabledBlotterButton(true)
       }
     }
 
-    
-    
-    
-    
+    if (blotter.is_resident_complainant) {
 
-    if(blotter.is_resident && blotter.is_resident_complainant){
-
-        if(blotter.complainant_id != "" && blotter.complainee_id != "" && blotter.complaint_remarks != "" && blotter.officer_on_duty != "" && blotter.status_resolved != ""){
-          setDisabledBlotterButton(false)
-        }
-        else{
-          setDisabledBlotterButton(true)
-        }
-
+      if (blotter.complainant_id == "") {
+        setDisabledBlotterButton(true)
+      }
     }
-    else if(!blotter.is_resident && blotter.is_resident_complainant){
-      if(blotter.complainee_name != "" && blotter.complainant_id != "" && blotter.complaint_remarks != "" && blotter.officer_on_duty != "" && blotter.status_resolved != ""){
+    else {
+      if (blotter.complainee_name == "") {
+        setDisabledBlotterButton(true)
+      }
+    }
+
+
+
+
+
+
+    if (blotter.is_resident && blotter.is_resident_complainant) {
+
+      if (blotter.complainant_id != "" && blotter.complainee_id != "" && blotter.complaint_remarks != "" && blotter.officer_on_duty != "" && blotter.status_resolved != "") {
         setDisabledBlotterButton(false)
       }
-      else{
+      else {
+        setDisabledBlotterButton(true)
+      }
+
+    }
+    else if (!blotter.is_resident && blotter.is_resident_complainant) {
+      if (blotter.complainee_name != "" && blotter.complainant_id != "" && blotter.complaint_remarks != "" && blotter.officer_on_duty != "" && blotter.status_resolved != "") {
+        setDisabledBlotterButton(false)
+      }
+      else {
         setDisabledBlotterButton(true)
       }
     }
 
-    else if(blotter.is_resident && !blotter.is_resident_complainant){
-      
-      if(blotter.complainee_id != "" && blotter.complainant_name != "" && blotter.complaint_remarks != "" && blotter.officer_on_duty != "" && blotter.status_resolved != ""){
+    else if (blotter.is_resident && !blotter.is_resident_complainant) {
+
+      if (blotter.complainee_id != "" && blotter.complainant_name != "" && blotter.complaint_remarks != "" && blotter.officer_on_duty != "" && blotter.status_resolved != "") {
         setDisabledBlotterButton(false)
       }
-      else{
+      else {
         setDisabledBlotterButton(true)
       }
     }
 
-    else if(!blotter.is_resident && !blotter.is_resident_complainant){
-      if(blotter.complainant_name != "" && blotter.complainee_name != "" && blotter.complaint_remarks != "" && blotter.officer_on_duty != "" && blotter.status_resolved != ""){
+    else if (!blotter.is_resident && !blotter.is_resident_complainant) {
+      if (blotter.complainant_name != "" && blotter.complainee_name != "" && blotter.complaint_remarks != "" && blotter.officer_on_duty != "" && blotter.status_resolved != "") {
         setDisabledBlotterButton(false)
       }
-      else{
+      else {
         setDisabledBlotterButton(true)
       }
     }
@@ -360,7 +360,7 @@ export default function Official({ params }) {
 
   }, [])
 
-  
+
 
 
   useEffect(() => {
@@ -374,7 +374,7 @@ export default function Official({ params }) {
       per_page: 10
     }
 
-    
+
     if (tab == 10) {
       const fetchData = async () => {
 
@@ -421,15 +421,15 @@ export default function Official({ params }) {
       fetchData();
     }
     if (tab == 1 || tab == 0) {
-     
+
 
       const fetchData = async () => {
 
         try {
-          
+
           const result = await dispatch(loadAllUsers(data)).unwrap();
 
-          
+
           setTotalPage(result.total_pages)
 
           // Handle success, e.g., navigate to another page
@@ -519,7 +519,7 @@ export default function Official({ params }) {
 
     }
 
-    
+
     if (tab == 4) {
 
       loadAll()
@@ -582,7 +582,7 @@ export default function Official({ params }) {
 
   const searchUser = (v) => {
 
-    
+
     setSearchVal(v)
     //v search val
     // officials list
@@ -599,7 +599,7 @@ export default function Official({ params }) {
       // Perform the search
       const found = regex.test(fullname);
 
-   
+
       if (found) {
         tmpArr.push(i)
       }
@@ -1123,7 +1123,7 @@ export default function Official({ params }) {
   const changeTab = (v) => {
 
 
-    
+
 
 
     if (v == 0) {
@@ -1154,7 +1154,7 @@ export default function Official({ params }) {
 
   const paginate = (v, k) => {
 
-    
+
     let slug = ''
 
 
@@ -1163,7 +1163,7 @@ export default function Official({ params }) {
     if (tab == 1) slug = "Resident"
     if (tab == 4) slug = "Blotter"
     if (tab == 6) slug = "Logs"
-    if(tab == 2) slug = "Schedule"
+    if (tab == 2) slug = "Schedule"
 
 
     if (k == 1) {
@@ -1306,18 +1306,18 @@ export default function Official({ params }) {
       <Auth>
         <div className="vh-100 w-100" style={{ backgroundColor: "white", display: "flex" }}>
 
-          <div id='sidebar' 
+          <div id='sidebar'
             onClick={() => {
               document.getElementById("menu").classList.remove("openSidebar");
               document.getElementById("sidebar").classList.remove("openSidebar-full");
             }}
             className="sidebar overflow-auto">
-          <div id='menu' className="sidebar">
-            { /* asan */}
+            <div id='menu' className="sidebar" style={{overflow:"scroll"}}>
+              { /* asan */}
 
-            <div className="col-lg-12 p-5 d-flex flex-column bg-green side-bg">
+              <div className="col-lg-12 p-5 d-flex flex-column bg-green side-bg">
 
-              {/* <div
+                {/* <div
                 className="d-flex align-items-center justify-content-center pointer"
                 style={{ position: "absolute", top: 20, right: 30 }}
                 onClick={() => {
@@ -1329,83 +1329,103 @@ export default function Official({ params }) {
                 <span className="f-white" style={{ fontSize: "24px" }}>Close</span>
               </div> */}
 
-              <div className="d-flex flex-column align-items-center logo-bg col-lg-12 mt-5" style={{ height: "100px" }}>
+                <div className="d-flex flex-column align-items-center logo-bg col-lg-12 mt-5" style={{ height: "100px" }}>
+
+                </div>
+
+
+
+                {/* Navigation */}
+
+                <div className="flex-column mt-5 mb-5">
+
+
+
+                  <div onClick={() => changeTab(10)} className={`p-4 w-100 rounded nav-container ${tab == 10 ? 'active-nav' : ''} pointer`}>
+                    <i class="bi bi-person f-white icon"></i>
+                    <span className="f-white ms-2 nav-item">
+                      Dashboard
+                    </span>
+                  </div>
+
+
+
+                  <div onClick={() => changeTab(0)} className={`p-4 w-100 rounded nav-container ${tab == 0 ? 'active-nav' : ''} pointer`}>
+                    <i class="bi bi-person f-white icon"></i>
+                    <span className="f-white ms-2 nav-item">
+                      Barangay Officials
+                    </span>
+                  </div>
+
+
+                  <div onClick={() => changeTab(1)} className={`p-4 w-100 rounded nav-container ${tab == 1 ? 'active-nav' : ''} pointer`}>
+
+                    <i class="bi bi-people-fill f-white icon"></i>
+                    <span className="f-white ms-2 nav-item">
+                      Manage Residents
+                    </span>
+                  </div>
+
+
+                  <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded nav-container ${tab == 2 ? 'active-nav' : ''} pointer`}>
+
+                    <i class="bi bi-calendar-date f-white icon"></i>
+                    <span className="f-white ms-2 nav-item">
+                      Schedules
+                    </span>
+                  </div>
+
+
+                  <div onClick={() => changeTab(4)} className={`p-4 w-100 rounded nav-container ${tab == 4 ? 'active-nav' : ''} pointer`}>
+
+                    <i class="bi bi-person-fill-slash f-white icon"></i>
+                    <span className="f-white ms-2 nav-item">
+                      Blotter
+                    </span>
+                  </div>
+
+                  <div onClick={() => changeTab(3)} className={`p-4 w-100 rounded nav-container ${tab == 3 ? 'active-nav' : ''} pointer`}>
+                    <i class="bi bi-file-earmark-diff-fill f-white icon" ></i>
+                    <span className="f-white nav-item ms-2">
+                      Services
+                    </span>
+                  </div>
+
+
+                  <div onClick={() => changeTab(6)} className={`p-4 w-100 rounded nav-container ${tab == 6 ? 'active-nav' : ''} pointer`}>
+                    <i class="bi bi-activity f-white icon"></i>
+                    <span className="f-white nav-item ms-2">
+                      Logs
+                    </span>
+                  </div>
+
+                  <div onClick={async () => {
+                      try {
+                        const result = await dispatch(LogOut());
+                        const a = await dispatch(logOutResident());
+
+                        router.replace('/', { scroll: false })
+                        // Handle success, e.g., navigate to another page
+                      } catch (error) {
+
+                        // Handle error, e.g., show an error message
+                      }
+
+                    }
+                  } className={`p-4 w-100 rounded nav-container pointer`}>
+                    {/* <i class="bi bi-activity f-white icon"></i> */}
+                    <span className="f-white nav-item ms-2 fw-bold">
+                      Log out
+                    </span>
+                  </div>
+
+
+                  
+                </div>
+                {/* Navigation */}
 
               </div>
-
-
-
-              {/* Navigation */}
-
-              <div className="flex-column mt-5">
-
-
-
-                <div onClick={() => changeTab(10)} className={`p-4 w-100 rounded nav-container ${tab == 10 ? 'active-nav' : ''} pointer`}>
-                  <i class="bi bi-person f-white icon"></i>
-                  <span className="f-white ms-2 nav-item">
-                    Dashboard
-                  </span>
-                </div>
-
-
-
-                <div onClick={() => changeTab(0)} className={`p-4 w-100 rounded nav-container ${tab == 0 ? 'active-nav' : ''} pointer`}>
-                  <i class="bi bi-person f-white icon"></i>
-                  <span className="f-white ms-2 nav-item">
-                    Barangay Officials
-                  </span>
-                </div>
-
-
-                <div onClick={() => changeTab(1)} className={`p-4 w-100 rounded nav-container ${tab == 1 ? 'active-nav' : ''} pointer`}>
-
-                  <i class="bi bi-people-fill f-white icon"></i>
-                  <span className="f-white ms-2 nav-item">
-                    Manage Residents
-                  </span>
-                </div>
-
-
-                <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded nav-container ${tab == 2 ? 'active-nav' : ''} pointer`}>
-
-                  <i class="bi bi-calendar-date f-white icon"></i>
-                  <span className="f-white ms-2 nav-item">
-                    Schedules
-                  </span>
-                </div>
-
-
-                <div onClick={() => changeTab(4)} className={`p-4 w-100 rounded nav-container ${tab == 4 ? 'active-nav' : ''} pointer`}>
-
-                  <i class="bi bi-person-fill-slash f-white icon"></i>
-                  <span className="f-white ms-2 nav-item">
-                    Blotter
-                  </span>
-                </div>
-
-                <div onClick={() => changeTab(3)} className={`p-4 w-100 rounded nav-container ${tab == 3 ? 'active-nav' : ''} pointer`}>
-                  <i class="bi bi-file-earmark-diff-fill f-white icon" ></i>
-                  <span className="f-white nav-item ms-2">
-                    Services
-                  </span>
-                </div>
-
-
-                <div onClick={() => changeTab(6)} className={`p-4 w-100 rounded nav-container ${tab == 6 ? 'active-nav' : ''} pointer`}>
-                  <i class="bi bi-activity f-white icon"></i>
-                  <span className="f-white nav-item ms-2">
-                    Logs
-                  </span>
-                </div>
-
-
-
-              </div>
-              {/* Navigation */}
-
             </div>
-          </div>
           </div>
 
           <div className="mainpage flex-column align-items-center justify-content-center mt-5" style={{}}>
@@ -1418,7 +1438,7 @@ export default function Official({ params }) {
               <div className="d-flex align-items-center justify-content-center">
                 <div
                   onClick={() => {
-                    
+
                     document.getElementById("menu").classList.add("openSidebar");
                     document.getElementById("sidebar").classList.add("openSidebar-full");
                   }}
@@ -1450,7 +1470,7 @@ export default function Official({ params }) {
                   style={{ height: "70px", width: "70px", borderRadius: "35px", border: "1px solid green", backgroundColor: "white", position: "absolute", left: -50, bottom: -10 }}>
                   <i class="bi bi-person-fill" style={{ fontSize: "50px" }}></i>
                 </div>
-                <button class="btn-remove bg-yellow roundedEnd p-3" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn-remove bg-yellow roundedEnd p-3">
 
 
 
@@ -1469,7 +1489,7 @@ export default function Official({ params }) {
                       try {
                         const result = await dispatch(LogOut());
                         const a = await dispatch(logOutResident());
-                        
+
                         router.replace('/', { scroll: false })
                         // Handle success, e.g., navigate to another page
                       } catch (error) {
@@ -1712,7 +1732,7 @@ export default function Official({ params }) {
 
               <div className="mt-3 min-w-table flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
+                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
                   <h2 className="f-white">Current Barangay Officials</h2>
                 </div>
 
@@ -1745,7 +1765,7 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
+                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
@@ -1848,7 +1868,7 @@ export default function Official({ params }) {
               tab == 1 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
+                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
                   <h2 className="f-white">Resident Records</h2>
                 </div>
 
@@ -1881,9 +1901,9 @@ export default function Official({ params }) {
 
                       <button
                         onClick={() => {
-                         
 
-                          
+
+
                           dispatch(settingPeding(alluser.isPending == 0 ? 1 : 0))
                           setCurrentPage(1)
                           setCount(count + 1)
@@ -1923,25 +1943,25 @@ export default function Official({ params }) {
                       Download</button>
 
                     {
-                      
+
                       alluser.isPending == 0 &&
                       <button
-                      onClick={() => {
-                        setShowAddResident(true)
-                        setIsEdit(false)
-                      }}
-                      className="primary bg-yellow p-2 rounded ms-3" style={{ border: "0px" }}
-                    >
-                      <i className="bi bi-plus fw-bold f-white" style={{ fontSize: "20px" }}></i>
-                      <span className="fw-bold f-white">Add Resident</span>
-                    </button>
+                        onClick={() => {
+                          setShowAddResident(true)
+                          setIsEdit(false)
+                        }}
+                        className="primary bg-yellow p-2 rounded ms-3" style={{ border: "0px" }}
+                      >
+                        <i className="bi bi-plus fw-bold f-white" style={{ fontSize: "20px" }}></i>
+                        <span className="fw-bold f-white">Add Resident</span>
+                      </button>
                     }
                   </div>
                 </div>
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
+                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
@@ -1978,7 +1998,7 @@ export default function Official({ params }) {
 
                   <div className="w-100 flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
-                    {  }
+                    { }
                     {
                       alluser.list.length != 0 && alluser.list.data.map((i, k) => {
 
@@ -2015,12 +2035,7 @@ export default function Official({ params }) {
                             </RowItem>
 
                             <RowItem
-                              onClick={() => {
-                                setIsEdit(true)
-                                setIsViewing(true)
-                                setResident(i)
-                                setShowAddResident(true)
-                              }}
+
                             >
                               <span className="f-white pointer" style={{ fontWeight: i.isPendingResident == 1 ? "bold" : "normal", color: i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                                 {i.isPendingResident == 1 ? "Pending" : "Registered"}
@@ -2040,12 +2055,25 @@ export default function Official({ params }) {
 
                                   onClick={() => {
 
+                                    setIsEdit(true)
+                                    setIsViewing(true)
+                                    setResident(i)
+                                    setShowAddResident(true)
+                                  }}
+                                  type="button" class="btn btn-primary"><i class="bi bi-eye"></i></button>
+
+                               
+
+                                <button
+
+                                  onClick={() => {
+
                                     setIsViewing(false)
                                     setIsEdit(true)
                                     setResident(i)
                                     setShowAddResident(true)
                                   }}
-                                  type="button" class="btn btn-primary">Edit</button>
+                                  type="button" class="btn btn-primary ms-3"><i class="bi bi-pencil"></i></button>
 
                                 <button
                                   data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
@@ -2056,7 +2084,7 @@ export default function Official({ params }) {
                                     setSelectedItem(i)
                                     setResident(i)
                                   }}
-                                  type="button" class="btn btn-danger ms-3">Delete</button>
+                                  type="button" class="btn btn-danger ms-3"><i class="bi bi-trash"></i></button>
 
                               </div>
                             </RowItem>
@@ -2083,7 +2111,7 @@ export default function Official({ params }) {
               tab == 2 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
+                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
                   <h2 className="f-white">Schedule</h2>
                 </div>
 
@@ -2124,7 +2152,7 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
+                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
@@ -2336,7 +2364,7 @@ export default function Official({ params }) {
               tab == 3 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
+                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
                   <h2 className="f-white">List of Document Type</h2>
                 </div>
 
@@ -2378,7 +2406,7 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
+                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
@@ -2423,7 +2451,7 @@ export default function Official({ params }) {
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-                                {i.created_at	}
+                                {i.created_at}
                               </span>
                             </RowItem>
                             <RowItem>
@@ -2454,7 +2482,7 @@ export default function Official({ params }) {
 
                                     setIsEdit(true)
                                   }}
-                                  type="button" class="btn btn-primary">Edit</button>
+                                  type="button" class="btn btn-primary"><i class="bi bi-pencil"></i></button>
 
                                 <button
                                   onClick={() => {
@@ -2462,7 +2490,7 @@ export default function Official({ params }) {
                                     viewCreatedTemplate(i)
                                     setSelectedItem(i)
                                   }}
-                                  type="button" class="btn btn-warning ms-3">View</button>
+                                  type="button" class="btn btn-warning ms-3"><i class="bi bi-eye"></i></button>
 
                                 <button
                                   data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
@@ -2470,7 +2498,7 @@ export default function Official({ params }) {
                                   onClick={() => {
                                     setSelectedItem(i)
                                   }}
-                                  type="button" class="btn btn-danger ms-3">Delete</button>
+                                  type="button" class="btn btn-danger ms-3"><i class="bi bi-trash"></i></button>
 
                               </div>
                             </RowItem>
@@ -2497,7 +2525,7 @@ export default function Official({ params }) {
               tab == 4 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
+                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
                   <h2 className="f-white">Blotter</h2>
                 </div>
 
@@ -2538,7 +2566,7 @@ export default function Official({ params }) {
                           search: ''
                         })
                         setShowBlotter(true)
-                        
+
                       }}
                       className="primary bg-yellow p-2 rounded border-0"
                     >
@@ -2550,7 +2578,7 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
+                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
@@ -2575,7 +2603,7 @@ export default function Official({ params }) {
 
                   {/* Table body */}
 
-                  {}
+                  { }
 
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
@@ -2622,7 +2650,7 @@ export default function Official({ params }) {
                                 <button
                                   onClick={() => {
 
-                                    
+
                                     setIsViewing(true)
                                     setShowBlotter(true)
                                     setBlotter(i)
@@ -2664,7 +2692,7 @@ export default function Official({ params }) {
               tab == 6 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
+                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
                   <h2 className="f-white fw-bold">Admin logs</h2>
                 </div>
 
@@ -2682,12 +2710,12 @@ export default function Official({ params }) {
                       type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
                   </div>
 
-                  
+
                 </div>
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
+                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
@@ -2715,14 +2743,14 @@ export default function Official({ params }) {
 
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
-                      {}
+                    { }
                     {
                       logs.length != 0 && logs.data.map((i, k) => {
                         return (
 
                           // Put dynamic className
                           <div className='nav-container d-flex col-lg-12 justify-content-around row-item-container w-100'>
-                            <RowItem> 
+                            <RowItem>
                               <span className="f-white">
                                 {i.action_target_id}
                               </span>
@@ -2739,10 +2767,10 @@ export default function Official({ params }) {
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-                                {i.created_at	}
+                                {i.created_at}
                               </span>
                             </RowItem>
-                            
+
                             <RowItem>
                               <span className="f-white">
                                 {i.admin_name}
@@ -3473,7 +3501,7 @@ export default function Official({ params }) {
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title">Delete</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  {/* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> */}
                 </div>
                 <div class="modal-body">
                   Are you sure you want to delete <span className="fw-bold">{selectedItem != null && (selectedItem.full_name || selectedItem.service)}</span>?
@@ -3500,7 +3528,7 @@ export default function Official({ params }) {
                 <div class="modal-content">
                   <div class="modal-header">
                     {/* <h5 class="modal-title">Delete</h5> */}
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    {/* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> */}
                   </div>
                   <div class="modal-body">
                     {success ? message : "Something went wrong."}
@@ -3665,50 +3693,50 @@ export default function Official({ params }) {
                 <div class="d-flex align-items-center flex-column justify-content-center w-100 p-5" >
 
 
-                {
-                        !isViewing && 
+                  {
+                    !isViewing &&
 
-                        <div className="d-flex align-items-center w-100 mb-3">
-                        <div class="form-check">
-                          <input 
-                            
-                            onChange={() => {
-    
-                              setBlotter({
-                                ...blotter, ...{
-                                  is_resident_complainant: true,
-                                  complainant_name: "",
-                                  complainant_id: ''
-                                }
-                              })
-                            }}   
-                            class="form-check-input" type="radio" name="complainantRadio" id="flexRadioDefault3" />
-                          <label class="form-check-label" for="flexRadioDefault3">
-                            Resident
-                          </label>  
-                        </div>
-                        <div class="form-check ms-3">
-                          <input 
-                             onChange={() => {
-    
-                              setBlotter({
-                                ...blotter, ...{
-                                  is_resident_complainant: false,
-                                   complainant_name: "",
-                                    complainant_id: ''
-                                }
-                              })
-                            }}
-                          class="form-check-input" type="radio" name="complainantRadio" id="flexRadioDefault4" />
-                          <label class="form-check-label" for="flexRadioDefault4">
-                            Non-resident
-                          </label>
-                        </div>
+                    <div className="d-flex align-items-center w-100 mb-3">
+                      <div class="form-check">
+                        <input
+
+                          onChange={() => {
+
+                            setBlotter({
+                              ...blotter, ...{
+                                is_resident_complainant: true,
+                                complainant_name: "",
+                                complainant_id: ''
+                              }
+                            })
+                          }}
+                          class="form-check-input" type="radio" name="complainantRadio" id="flexRadioDefault3" />
+                        <label class="form-check-label" for="flexRadioDefault3">
+                          Resident
+                        </label>
                       </div>
-                      }
+                      <div class="form-check ms-3">
+                        <input
+                          onChange={() => {
+
+                            setBlotter({
+                              ...blotter, ...{
+                                is_resident_complainant: false,
+                                complainant_name: "",
+                                complainant_id: ''
+                              }
+                            })
+                          }}
+                          class="form-check-input" type="radio" name="complainantRadio" id="flexRadioDefault4" />
+                        <label class="form-check-label" for="flexRadioDefault4">
+                          Non-resident
+                        </label>
+                      </div>
+                    </div>
+                  }
 
 
-                  <div class="mb-3 w-100" style={{position:"relative"}}>
+                  <div class="mb-3 w-100" style={{ position: "relative" }}>
                     <label class="form-label">Complainant</label>
                     <input
                       disabled={isViewing ? true : (blotter.is_resident_complainant == null ? true : false)}
@@ -3730,15 +3758,15 @@ export default function Official({ params }) {
                       }}
                       class="form-control" />
 
-            {
-                        blotter.searchFirst != "" && blotter.is_resident_complainant &&
+                    {
+                      blotter.searchFirst != "" && blotter.is_resident_complainant &&
                       <div className="box position-absolute w-100" style={{ maxHeight: "300px", overflow: "scroll", width: "500px", zIndex: 999999 }}>
                         {
                           searchUserList.map((i, k) => {
                             return (
                               <div
                                 onClick={() => {
-                                  
+
                                   setBlotter({
                                     ...blotter, ...{
                                       complainant_id: i.id,
@@ -3746,7 +3774,7 @@ export default function Official({ params }) {
                                       searchFirst: ''
                                     }
                                   })
-                                  
+
                                 }}
                                 className="search-item pointer">
                                 <span>
@@ -3761,47 +3789,47 @@ export default function Official({ params }) {
 
                   </div>
 
-                      {
-                        !isViewing && 
+                  {
+                    !isViewing &&
 
-                        <div className="d-flex align-items-center w-100 mb-3">
-                        <div class="form-check">
-                          <input 
-                            
-                            onChange={() => {
-    
-                              setBlotter({
-                                ...blotter, ...{
-                                  is_resident: true,
-                                  complainee_name: '',
-                                  complainee_id: ''
-                                }
-                              })
-                            }}   
-                            class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" />
-                          <label class="form-check-label" for="flexRadioDefault1">
-                            Resident
-                          </label>
-                        </div>
-                        <div class="form-check ms-3">
-                          <input 
-                             onChange={() => {
-    
-                              setBlotter({
-                                ...blotter, ...{
-                                  is_resident: false,
-                                  complainee_name: '', 
-                                  complainee_id:''
-                                }
-                              })
-                            }}
-                          class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
-                          <label class="form-check-label" for="flexRadioDefault2">
-                            Non-resident
-                          </label>
-                        </div>
+                    <div className="d-flex align-items-center w-100 mb-3">
+                      <div class="form-check">
+                        <input
+
+                          onChange={() => {
+
+                            setBlotter({
+                              ...blotter, ...{
+                                is_resident: true,
+                                complainee_name: '',
+                                complainee_id: ''
+                              }
+                            })
+                          }}
+                          class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" />
+                        <label class="form-check-label" for="flexRadioDefault1">
+                          Resident
+                        </label>
                       </div>
-                      }
+                      <div class="form-check ms-3">
+                        <input
+                          onChange={() => {
+
+                            setBlotter({
+                              ...blotter, ...{
+                                is_resident: false,
+                                complainee_name: '',
+                                complainee_id: ''
+                              }
+                            })
+                          }}
+                          class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          Non-resident
+                        </label>
+                      </div>
+                    </div>
+                  }
 
                   <div class="mb-3 w-100" style={{ position: "relative" }}>
                     <label class="form-label">Complainee</label>
@@ -3825,14 +3853,14 @@ export default function Official({ params }) {
                       }}
                       class="form-control" />
                     {
-                        blotter.search != "" && blotter.is_resident &&
+                      blotter.search != "" && blotter.is_resident &&
                       <div className="box position-absolute w-100" style={{ maxHeight: "300px", overflow: "scroll", width: "500px" }}>
                         {
                           searchUserList.map((i, k) => {
                             return (
                               <div
                                 onClick={() => {
-                                  
+
                                   setBlotter({
                                     ...blotter, ...{
                                       complainee_id: i.id,
@@ -3840,7 +3868,7 @@ export default function Official({ params }) {
                                       search: ''
                                     }
                                   })
-                                  
+
                                 }}
                                 className="search-item pointer">
                                 <span>
@@ -3950,7 +3978,7 @@ export default function Official({ params }) {
                             complainant_id: '',
                             search: ''
                           })
-                         
+
                           setLoading(false)
                           // Handle success, e.g., navigate to another page
                         } catch (error) {

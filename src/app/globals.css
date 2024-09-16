@@ -371,3 +371,13 @@ a {
   background-color: yellow;
   transform: scale(1.1);
 }
+
+.primary:hover{
+  /* background-color: yellow; */
+  transform: scale(1.1);
+}
+
+.btn:hover{
+  /* background-color: yellow; */
+  transform: scale(1.1);
+}

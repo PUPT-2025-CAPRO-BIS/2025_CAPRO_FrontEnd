@@ -12,7 +12,7 @@ const initialState = {
 
 // Create axios instance
 export const apiClient = axios.create({
-  baseURL: 'http://18.141.22.83/api',
+  baseURL: 'https://000040120.xyz/api',
   // baseURL: 'https://bis-nine.vercel.app/api/api'
 });
 

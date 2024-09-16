@@ -114,8 +114,8 @@ export default function Home() {
 
 
           <div className="d-flex flex-column align-items-center" style={{ width: "80%" }}>
-            <button onClick={() => login()} type="button" className="btn fw-bold f-white w-100 bg-yellow">SIGN IN</button>
-            
+            <button onClick={() => login()} type="button" className="btn fw-bold f-white w-100 bg-yellow mybutton">SIGN IN</button>
+         
           </div>
 
 

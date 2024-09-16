@@ -57,46 +57,6 @@ export default function Official({ params }) {
 
   const [isPending, setIsPending] = useState(0)
 
-  
-  // const handleKeyDown = (event) => {
-
-
-  //   let slug = ''
-
-
-  //   if (event.key === 'Enter') {
-  //     event.preventDefault(); // Optional: Prevents the default action if needed
-  //     // changeTab(tab)
-  //     let data = {
-  //       token: token.token,
-  //       currentPage: 1,
-  //       searchItemList
-  //     }
-
-
-  //     if (tab == 0) {
-  //       router.push('/Admin/Official/Staff/1/' + searchItemList)
-  //     }
-  //     if (tab == 1) {
-  //       router.push('/Admin/Official/Resident/1/' + searchItemList)
-  //     }
-  //     if (tab == 2) {
-  //       router.push('/Admin/Official/Schedule/1/' + searchItemList)
-  //     }
-  //     if (tab == 3) {
-  //       router.push('/Admin/Official/Services/1/' + searchItemList)
-  //     }
-  //     if (tab == 4) {
-  //       router.push('/Admin/Official/Blotter/1/' + searchItemList)
-  //     }
-  //     if (tab == 10) {
-  //       router.push('/Admin/Official/Dashboard')
-  //     }
-
-
-  //     // You can perform any action here, like submitting a form or calling a function
-  //   }
-  // };
 
 
   const typingTimeoutRef = useRef(null);
@@ -247,9 +207,9 @@ export default function Official({ params }) {
     }
 
     
-    console.log(blotter.is_resident , blotter.is_resident_complainant)
     
-    console.log(blotter)
+    
+    
 
     if(blotter.is_resident && blotter.is_resident_complainant){
 
@@ -1151,8 +1111,8 @@ export default function Official({ params }) {
   const viewCreatedTemplate = (val) => {
 
 
-    window.open(`https://000040120.xyz/api/generatePdf?doc_id=${val.id}&download=0`)
-    // https://000040120.xyz/api/generatePdf?doc_id=14&download=0
+    window.open(`http://18.141.22.83/api/generatePdf?doc_id=${val.id}&download=0`)
+    // http://18.141.22.83/api/generatePdf?doc_id=14&download=0
 
   }
 
@@ -1346,22 +1306,28 @@ export default function Official({ params }) {
       <Auth>
         <div className="vh-100 w-100" style={{ backgroundColor: "white", display: "flex" }}>
 
-          <div id='sidebar' className="sidebar overflow-auto">
-            {/* asan */}
+          <div id='sidebar' 
+            onClick={() => {
+              document.getElementById("menu").classList.remove("openSidebar");
+              document.getElementById("sidebar").classList.remove("openSidebar-full");
+            }}
+            className="sidebar overflow-auto">
+          <div id='menu' className="sidebar">
+            { /* asan */}
 
             <div className="col-lg-12 p-5 d-flex flex-column bg-green side-bg">
 
-              <div
+              {/* <div
                 className="d-flex align-items-center justify-content-center pointer"
                 style={{ position: "absolute", top: 20, right: 30 }}
                 onClick={() => {
-
-                  document.getElementById("sidebar").classList.remove("openSidebar");
+                  document.getElementById("menu").classList.remove("openSidebar");
+                  document.getElementById("sidebar").classList.remove("openSidebar-full");
                 }}
               >
                 <i class="bi bi-arrow-bar-left f-white" style={{ fontSize: "36px" }}></i>
                 <span className="f-white" style={{ fontSize: "24px" }}>Close</span>
-              </div>
+              </div> */}
 
               <div className="d-flex flex-column align-items-center logo-bg col-lg-12 mt-5" style={{ height: "100px" }}>
 
@@ -1440,6 +1406,7 @@ export default function Official({ params }) {
 
             </div>
           </div>
+          </div>
 
           <div className="mainpage flex-column align-items-center justify-content-center mt-5" style={{}}>
 
@@ -1451,9 +1418,9 @@ export default function Official({ params }) {
               <div className="d-flex align-items-center justify-content-center">
                 <div
                   onClick={() => {
-
-
-                    document.getElementById("sidebar").classList.add("openSidebar");
+                    
+                    document.getElementById("menu").classList.add("openSidebar");
+                    document.getElementById("sidebar").classList.add("openSidebar-full");
                   }}
                   className="pointer">
                   <i class="bi bi-list" style={{ fontSize: "32px" }}></i>
@@ -1526,7 +1493,7 @@ export default function Official({ params }) {
 
             {
               tab != 10 ?
-                <div className="d-flex flex-column align-items-center justify-content-center w-100 p-5 rounded bg-green mt-3">
+                <div className="d-flex flex-column align-items-center justify-content-center w-100 p-5 rounded bg-green mt-3 logo-bg-officials" >
                   <h1 className="f-white">
                     BARANGAY CENTRAL BICUTAN
                   </h1>
@@ -1743,9 +1710,9 @@ export default function Official({ params }) {
             {/* BO */}
             {tab == 0 &&
 
-              <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
+              <div className="mt-3 min-w-table flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3">
+                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
                   <h2 className="f-white">Current Barangay Officials</h2>
                 </div>
 
@@ -1778,10 +1745,10 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3">
+                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
 
                   {/* Table header */}
-                  <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{}}>
+                  <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
                     <HeaderItem>
                       NAME
                     </HeaderItem>
@@ -1803,7 +1770,7 @@ export default function Official({ params }) {
 
                   {/* Table body */}
 
-                  <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
+                  <div className="flex-column w-100 align-items-center justify-content-between table-mh" >
 
 
                     {
@@ -1813,7 +1780,7 @@ export default function Official({ params }) {
                         return (
 
                           // Put dynamic className
-                          <div className='nav-container d-flex col-lg-12 justify-content-around  row-item-container'>
+                          <div className='nav-container d-flex col-lg-12 justify-content-around  row-item-container w-100'>
                             <RowItem>
                               <span className="f-white">
                                 {i.full_name}
@@ -1881,7 +1848,7 @@ export default function Official({ params }) {
               tab == 1 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3">
+                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
                   <h2 className="f-white">Resident Records</h2>
                 </div>
 
@@ -1948,7 +1915,7 @@ export default function Official({ params }) {
 
                   <div className="d-flex">
 
-                    <button onClick={() => window.open('https://000040120.xyz/api/downloadUsers')} type="button"
+                    <button onClick={() => window.open('https://18.141.22.83/api/downloadUsers')} type="button"
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "200px" }}>
 
@@ -1974,10 +1941,10 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3">
+                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
 
                   {/* Table header */}
-                  <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{}}>
+                  <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
                     <HeaderItem>
                       Fullname
                     </HeaderItem>
@@ -2009,7 +1976,7 @@ export default function Official({ params }) {
 
                   {/* Table body */}
 
-                  <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
+                  <div className="w-100 flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
                     {  }
                     {
@@ -2018,7 +1985,7 @@ export default function Official({ params }) {
                         return (
 
                           // Put dynamic className
-                          <div className='nav-container d-flex col-lg-12 justify-content-around row-item-container'>
+                          <div className='nav-container d-flex col-lg-12 justify-content-around row-item-container w-100'>
                             <RowItem
 
                             >
@@ -2116,7 +2083,7 @@ export default function Official({ params }) {
               tab == 2 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3">
+                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
                   <h2 className="f-white">Schedule</h2>
                 </div>
 
@@ -2133,7 +2100,7 @@ export default function Official({ params }) {
                       value={searchItemList}
                       className="form-control rounded ms-2" placeholder="Search name" />
 
-                    <button onClick={() => window.open('https://000040120.xyz/api/downloadAppointments')} type="button"
+                    <button onClick={() => window.open('http://18.141.22.83/api/downloadAppointments')} type="button"
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "300px" }}>
 
@@ -2157,10 +2124,10 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3">
+                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
 
                   {/* Table header */}
-                  <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{}}>
+                  <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
 
                     <HeaderItem>
                       Queing
@@ -2196,7 +2163,7 @@ export default function Official({ params }) {
                         return (
 
                           // Put dynamic className
-                          <div className='nav-container d-flex col-lg-12 justify-content-around row-item-container'>
+                          <div className='nav-container d-flex col-lg-12 justify-content-around row-item-container w-100'>
                             <RowItem>
                               <span className="f-white">
                                 {i.appointment_id}
@@ -2329,7 +2296,7 @@ export default function Official({ params }) {
                                         <button
 
                                           onClick={() => {
-                                            window.open(`https://000040120.xyz/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
+                                            window.open(`http://18.141.22.83/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
 
 
                                           }}
@@ -2369,7 +2336,7 @@ export default function Official({ params }) {
               tab == 3 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3">
+                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
                   <h2 className="f-white">List of Document Type</h2>
                 </div>
 
@@ -2411,10 +2378,10 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3">
+                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
 
                   {/* Table header */}
-                  <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{}}>
+                  <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
                     <HeaderItem>
                       No.
                     </HeaderItem>
@@ -2440,7 +2407,7 @@ export default function Official({ params }) {
                         return (
 
                           // Put dynamic className
-                          <div className='nav-container d-flex col-lg-12 justify-content-around row-item-container'>
+                          <div className='nav-container d-flex col-lg-12 justify-content-around row-item-container w-100'>
                             <RowItem>
                               <span className="f-white">
                                 {i.id}
@@ -2522,7 +2489,7 @@ export default function Official({ params }) {
               tab == 4 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3">
+                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
                   <h2 className="f-white">Blotter</h2>
                 </div>
 
@@ -2540,7 +2507,7 @@ export default function Official({ params }) {
                       type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
 
 
-                    <button onClick={() => window.open('https://000040120.xyz/api/downloadBlotters')} type="button"
+                    <button onClick={() => window.open('https://18.141.22.83/api/downloadBlotters')} type="button"
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "300px" }}>
 
@@ -2575,10 +2542,10 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3">
+                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
 
                   {/* Table header */}
-                  <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{}}>
+                  <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
                     <HeaderItem>
                       Complainant
                     </HeaderItem>
@@ -2609,7 +2576,7 @@ export default function Official({ params }) {
                         return (
 
                           // Put dynamic className
-                          <div className='nav-container d-flex col-lg-12 justify-content-around row-item-container'>
+                          <div className='nav-container d-flex col-lg-12 justify-content-around row-item-container w-100'>
                             <RowItem>
                               <span className="f-white">
                                 {i.complainant_name}
@@ -2689,7 +2656,7 @@ export default function Official({ params }) {
               tab == 6 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3">
+                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
                   <h2 className="f-white">Admin logs</h2>
                 </div>
 
@@ -2712,10 +2679,10 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3">
+                <div className="border-bottom p-2 pb-4 mt-3" style={{overflow:"scroll"}}>
 
                   {/* Table header */}
-                  <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{}}>
+                  <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
                     <HeaderItem>
                       No.
                     </HeaderItem>
@@ -2743,7 +2710,7 @@ export default function Official({ params }) {
                         return (
 
                           // Put dynamic className
-                          <div className='nav-container d-flex col-lg-12 justify-content-around row-item-container'>
+                          <div className='nav-container d-flex col-lg-12 justify-content-around row-item-container w-100'>
                             <RowItem> 
                               <span className="f-white">
                                 {i.action_target_id}
@@ -2820,7 +2787,7 @@ export default function Official({ params }) {
           {/* Modal */
 
           }
-          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal fade" id="exampleModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
                 <div class="modal-header">

@@ -137,6 +137,7 @@ a {
 
 .row-item-container:nth-child(even){
   background-color: #057350;
+  min-width: 1080px
 }
 
 
@@ -190,8 +191,25 @@ a {
   background-repeat: no-repeat;
 }
 
+
+.logo-bg-officials{
+  background-image: url('../assets//offical_bg.png');
+  background-size:cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+
 .table-mh{
   max-height: 720px;
+  /* overflow: scroll; */
+  min-width: 1080px;
+  flex-direction: row;
+  display: flex;
+}
+
+.min-w-table{
+  min-width: 1080px;
   overflow: scroll;
 }
 
@@ -301,9 +319,12 @@ a {
 }
 
 .openSidebar{
-  width: 30%;
+  width: 100%;
 }
 
+.openSidebar-full{
+  width: 100%;
+}
 @media only screen and (max-width: 768px) {
   /* For mobile phones: */
   .openSidebar{
@@ -322,7 +343,7 @@ a {
 @media only screen and (max-width: 768px) {
   /* For desktop: */
   .openSidebar{
-    width: 50%;
+    width: 100%;
   }
 }
 
@@ -331,4 +352,22 @@ a {
   .openSidebar{
     width: 30%;
   }
+}
+
+.mybutton {
+  background-color: #4CAF50; /* Green background */
+  border: none; /* No border */
+  color: white; /* White text */
+  padding: 15px 32px; /* Padding */
+  text-align: center; /* Center-aligned text */
+  text-decoration: none; /* No underline */
+  display: inline-block; /* Inline-block for layout */
+  font-size: 16px; /* Font size */
+  transition: transform 0.3s ease, background-color 0.3s ease; /* Smooth transition */
+  border-radius: 8px; /* Rounded corners */
+}
+
+.mybutton:hover{
+  background-color: yellow;
+  transform: scale(1.1);
 }

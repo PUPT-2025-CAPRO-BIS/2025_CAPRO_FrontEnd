@@ -1112,7 +1112,7 @@ export default function Official({ params }) {
   const viewCreatedTemplate = (val) => {
 
 
-    window.open('https://000040122.xyz/api/generatePdf?doc_id=${val.id}&download=0')
+    window.open(`https://000040122.xyz/api/generatePdf?doc_id=${val.id}&download=0`)
     // http://18.141.22.83/api/generatePdf?doc_id=14&download=0
 
   }
@@ -2391,7 +2391,7 @@ export default function Official({ params }) {
                                         <button
 
                                           onClick={() => {
-                                           window.open('https://000040122.xyz/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0')
+                                          window.open(`https://000040122.xyz/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
 
 
                                           }}

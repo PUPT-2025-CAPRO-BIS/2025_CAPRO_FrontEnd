@@ -302,8 +302,9 @@ a {
 
 .sidebar {
   height: 100%;
-  width: 0%;
-  position: fixed;
+  width: 0px;
+  /* width: 10%; */
+  /* position: fixed; */
   z-index: 1;
   top: 0;
   left: 0;
@@ -313,13 +314,19 @@ a {
   transition: 0.5s;
 }
 
+
+
 .mainpage{
-  width: 100%;
+  width: 90%;
   padding: 20px;
 }
 
 .openSidebar{
   width: 100%;
+}
+
+.closeSideBar{
+  width: 0px;
 }
 
 .openSidebar-full{
@@ -329,29 +336,78 @@ a {
   /* For mobile phones: */
   .openSidebar{
     width: 100%;
+    
+  }
+  .mainpage{
+    width: 100%;
+    padding: 20px;
+  }
+  .closeSideBar{
+    width: 0px;
+  }
+
+  .sidebar{
+    position: fixed;
+   
   }
 }
 
-@media only screen and (min-width: 600px) {
+@media only screen and (max-width: 600px) {
   /* For tablets: */
   
   .openSidebar{
-    width: 50%;
+    width: 100%;
+  }
+  .mainpage{
+    width: 100%;
+    padding: 20px;
+  }
+
+  .closeSideBar{
+    width: 0px;
+  }
+  .sidebar{
+    position: fixed;
+
   }
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 1200px) {
+  .openSidebar{
+    width: 100%;
+  }
+  .mainpage{
+    width: 100%;
+    padding: 20px;
+  }
+
+  .closeSideBar{
+    width: 0px;
+  }
+  .sidebar{
+    position: fixed;
+  
+  
+  
+  }
+}
+
+@media only screen and (min-width: 1280px) {
   /* For desktop: */
   .openSidebar{
     width: 100%;
   }
-}
 
-@media only screen and (min-width: 800px) {
-  /* For desktop: */
-  .openSidebar{
-    width: 30%;
+  .closeSideBar{
+    width: auto;
   }
+  .menuicon{
+    display: none;
+  }
+  .sidebar{
+    width: auto;
+  }
+
 }
 
 .mybutton {

@@ -1113,7 +1113,7 @@ export default function Official({ params }) {
 
 
     window.open(`https://000040122.xyz/api/generatePdf?doc_id=${val.id}&download=0`)
-    // http://18.141.22.83/api/generatePdf?doc_id=14&download=0
+    // https://000040122.xyz/api/generatePdf?doc_id=14&download=0
 
   }
 
@@ -2002,7 +2002,7 @@ export default function Official({ params }) {
 
                   <div className="d-flex">
 
-                   <button onClick={() => window.open('https://000040122.xyz/api/downloadUsers')%7D type="button"
+                    <button onClick={() => window.open('https://18.141.22.83/api/downloadUsers')} type="button"
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "200px" }}>
 
@@ -2195,7 +2195,7 @@ export default function Official({ params }) {
                       value={searchItemList}
                       className="form-control rounded ms-2" placeholder="Search name" />
 
-                    <button onClick={() => window.open('https://000040122.xyz/api/downloadAppointments')%7D type="button"
+                    <button onClick={() => window.open('https://000040122.xyz/api/downloadAppointments')} type="button"
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "300px" }}>
 
@@ -2391,7 +2391,7 @@ export default function Official({ params }) {
                                         <button
 
                                           onClick={() => {
-                                          window.open(`https://000040122.xyz/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
+                                            window.open(`https://000040122.xyz/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
 
 
                                           }}
@@ -2610,7 +2610,7 @@ export default function Official({ params }) {
                       type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
 
 
-                  <button onClick={() => window.open('https://000040122.xyz/api/downloadBlotters')%7D type="button"
+                    <button onClick={() => window.open('https://18.141.22.83/api/downloadBlotters')} type="button"
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "300px" }}>
 

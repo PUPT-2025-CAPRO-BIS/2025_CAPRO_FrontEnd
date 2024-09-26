@@ -3191,7 +3191,7 @@ export default function Official({ params }) {
                       <label class="form-label">Email</label>
                       <input
                         id='emailinput'
-                        disabled={isViewing}
+                        // disabled={isViewing}
                         value={resident.Email == undefined ? resident.email : resident.Email}
                         onChange={(val) => {
                           if (val.target.value != "") {

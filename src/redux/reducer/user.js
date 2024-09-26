@@ -65,6 +65,39 @@ export const viewAdminLogsApi = createAsyncThunk('user/viewAdminLogs', async (da
 });
 
 
+export const generateOTPForgotapi = createAsyncThunk('user/generateOTPForgotapi', async (data) => {
+
+
+  const res = await apiClient.post('/generateOTP', {
+    email: data.email,
+    change_password: data.change_pass
+
+  }, {
+    headers: {
+      // 'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }
+  });
+  return res.data;
+});
+
+
+export const otpChangePasswordForgotApi = createAsyncThunk('user/otpChangePasswordForgotApi', async (data) => {
+
+
+  const res = await apiClient.post('/otpChangePassword', {
+    email: data.email,
+    new_pass:data.newPass,
+    otp: data.otp
+
+  }, {
+    headers: {
+      // 'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }
+  });
+  return res.data;
+});
 
 
 // Create slice

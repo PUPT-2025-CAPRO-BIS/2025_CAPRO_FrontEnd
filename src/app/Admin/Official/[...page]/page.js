@@ -34,6 +34,7 @@ export default function Official({ params }) {
   const dashboard = useSelector(state => state.officials.dashboardData)
   const token = useSelector(state => state.user)
 
+  const [openSide, setOpenSide] = useState(false)
 
   const logs = useSelector(state => state.user.list)
 
@@ -1111,7 +1112,7 @@ export default function Official({ params }) {
   const viewCreatedTemplate = (val) => {
 
 
-    window.open(`https://000040122.xyz/api/generatePdf?doc_id=${val.id}&download=0`)
+    window.open(`http://18.141.22.83/api/generatePdf?doc_id=${val.id}&download=0`)
     // http://18.141.22.83/api/generatePdf?doc_id=14&download=0
 
   }
@@ -1307,28 +1308,42 @@ export default function Official({ params }) {
         <div className="vh-100 w-100" style={{ backgroundColor: "white", display: "flex" }}>
 
           <div id='sidebar'
-            onClick={() => {
-              document.getElementById("menu").classList.remove("openSidebar");
-              document.getElementById("sidebar").classList.remove("openSidebar-full");
-            }}
-            className="sidebar overflow-auto">
-            <div id='menu' className="sidebar" style={{overflow:"scroll"}}>
+            className="overflow-auto sidebar">
+         
+            <div id='menu' className="w-100" style={{overflow:"scroll"}}>
               { /* asan */}
 
+            
               <div className="col-lg-12 p-5 d-flex flex-column bg-green side-bg">
+              <div
+                  onClick={() => {
 
-                {/* <div
-                className="d-flex align-items-center justify-content-center pointer"
-                style={{ position: "absolute", top: 20, right: 30 }}
-                onClick={() => {
-                  document.getElementById("menu").classList.remove("openSidebar");
-                  document.getElementById("sidebar").classList.remove("openSidebar-full");
-                }}
-              >
-                <i class="bi bi-arrow-bar-left f-white" style={{ fontSize: "36px" }}></i>
-                <span className="f-white" style={{ fontSize: "24px" }}>Close</span>
-              </div> */}
+                
+                    
 
+                    if(document.getElementById("menu").classList.contains("openSidebar")){
+
+                      document.getElementById("menu").classList.remove("openSidebar");
+                      document.getElementById("sidebar").classList.remove("openSidebar-full");
+
+                      document.getElementById("sidebar").classList.add("sidebar");
+                      // document.getElementById("sidebar").style.width = "auto"
+                      setOpenSide(false)
+                    }
+                    else{
+                      document.getElementById("menu").classList.add("openSidebar");
+                      document.getElementById("sidebar").classList.add("openSidebar-full");
+
+                      document.getElementById("sidebar").classList.remove("sidebar");
+
+                      setOpenSide(true)
+                    }
+
+
+                  }}
+                  className="pointer">
+                  <i class="bi bi-list" style={{ fontSize: "32px" }}></i>
+                </div>
                 <div className="d-flex flex-column align-items-center logo-bg col-lg-12 mt-5" style={{ height: "100px" }}>
 
                 </div>
@@ -1343,60 +1358,95 @@ export default function Official({ params }) {
 
                   <div onClick={() => changeTab(10)} className={`p-4 w-100 rounded nav-container ${tab == 10 ? 'active-nav' : ''} pointer`}>
                     <i class="bi bi-person f-white icon"></i>
-                    <span className="f-white ms-2 nav-item">
-                      Dashboard
-                    </span>
+
+                    {
+                      openSide 
+                       &&   <span className="f-white ms-2 nav-item">
+                       Dashboard
+                     </span>
+                    }
+                  
                   </div>
 
 
 
                   <div onClick={() => changeTab(0)} className={`p-4 w-100 rounded nav-container ${tab == 0 ? 'active-nav' : ''} pointer`}>
                     <i class="bi bi-person f-white icon"></i>
-                    <span className="f-white ms-2 nav-item">
+                    {
+                        openSide  &&
+                      <span className="f-white ms-2 nav-item">
                       Barangay Officials
                     </span>
+                    }
+               
                   </div>
 
 
                   <div onClick={() => changeTab(1)} className={`p-4 w-100 rounded nav-container ${tab == 1 ? 'active-nav' : ''} pointer`}>
 
                     <i class="bi bi-people-fill f-white icon"></i>
-                    <span className="f-white ms-2 nav-item">
+
+                    {
+                        openSide  &&
+                      <span className="f-white ms-2 nav-item">
                       Manage Residents
                     </span>
+                    }
+                  
                   </div>
 
 
                   <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded nav-container ${tab == 2 ? 'active-nav' : ''} pointer`}>
 
                     <i class="bi bi-calendar-date f-white icon"></i>
-                    <span className="f-white ms-2 nav-item">
+
+                    {
+                        openSide  &&
+                      <span className="f-white ms-2 nav-item">
                       Schedules
                     </span>
+                    }
+                   
                   </div>
 
 
                   <div onClick={() => changeTab(4)} className={`p-4 w-100 rounded nav-container ${tab == 4 ? 'active-nav' : ''} pointer`}>
 
                     <i class="bi bi-person-fill-slash f-white icon"></i>
-                    <span className="f-white ms-2 nav-item">
+
+                    {
+                        openSide  &&
+                      <span className="f-white ms-2 nav-item">
                       Blotter
                     </span>
+                    }
+
+                 
                   </div>
 
                   <div onClick={() => changeTab(3)} className={`p-4 w-100 rounded nav-container ${tab == 3 ? 'active-nav' : ''} pointer`}>
                     <i class="bi bi-file-earmark-diff-fill f-white icon" ></i>
-                    <span className="f-white nav-item ms-2">
+
+                    {
+                        openSide  &&
+                      <span className="f-white nav-item ms-2">
                       Services
                     </span>
+                    }
+                  
                   </div>
 
 
                   <div onClick={() => changeTab(6)} className={`p-4 w-100 rounded nav-container ${tab == 6 ? 'active-nav' : ''} pointer`}>
                     <i class="bi bi-activity f-white icon"></i>
-                    <span className="f-white nav-item ms-2">
+
+                    {
+                        openSide  &&
+                      <span className="f-white nav-item ms-2">
                       Logs
                     </span>
+                    }
+                 
                   </div>
 
                   <div onClick={async () => {
@@ -1428,23 +1478,40 @@ export default function Official({ params }) {
             </div>
           </div>
 
-          <div className="mainpage flex-column align-items-center justify-content-center mt-5" style={{}}>
-
-
-
+          <div 
+            
+            className="mainpage flex-column align-items-center justify-content-center mt-5" style={{}}>
             <div class="dropdown d-flex align-items-center justify-content-between w-100 " >
 
-
-              <div className="d-flex align-items-center justify-content-center">
-                <div
+            <div
                   onClick={() => {
 
-                    document.getElementById("menu").classList.add("openSidebar");
-                    document.getElementById("sidebar").classList.add("openSidebar-full");
+                    
+                    
+                    
+
+                    if(document.getElementById("menu").classList.contains("openSidebar")){
+                      document.getElementById("menu").classList.remove("openSidebar");
+                      document.getElementById("sidebar").classList.remove("openSidebar-full");
+
+                      setOpenSide(false)
+                    }
+                    else{
+                      
+                      document.getElementById("menu").classList.add("openSidebar");
+                      document.getElementById("sidebar").classList.add("openSidebar-full");
+
+                      setOpenSide(true)
+                    }
+
+
                   }}
-                  className="pointer">
+                  className="pointer menuicon">
                   <i class="bi bi-list" style={{ fontSize: "32px" }}></i>
                 </div>
+
+              <div className="d-flex align-items-center justify-content-center">
+              
                 <h4 className="ms-5">
                   {
                     tab == 10 && "Dashboard"
@@ -1935,7 +2002,7 @@ export default function Official({ params }) {
 
                   <div className="d-flex">
 
-                    <button onClick={() => window.open('https://000040122.xyz/api/downloadUsers')} type="button"
+                    <button onClick={() => window.open('https://18.141.22.83/api/downloadUsers')} type="button"
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "200px" }}>
 
@@ -2128,7 +2195,7 @@ export default function Official({ params }) {
                       value={searchItemList}
                       className="form-control rounded ms-2" placeholder="Search name" />
 
-                    <button onClick={() => window.open('https://000040122.xyz/api/downloadAppointments')} type="button"
+                    <button onClick={() => window.open('http://18.141.22.83/api/downloadAppointments')} type="button"
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "300px" }}>
 
@@ -2324,7 +2391,7 @@ export default function Official({ params }) {
                                         <button
 
                                           onClick={() => {
-                                            window.open(`https://000040122.xyz/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
+                                            window.open(`http://18.141.22.83/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
 
 
                                           }}
@@ -2543,7 +2610,7 @@ export default function Official({ params }) {
                       type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
 
 
-                    <button onClick={() => window.open('https://000040122.xyz/api/downloadBlotters')} type="button"
+                    <button onClick={() => window.open('https://18.141.22.83/api/downloadBlotters')} type="button"
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "300px" }}>
 

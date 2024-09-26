@@ -7,6 +7,7 @@ import styles from "./page.module.css";
 import { SignOn, loginUser } from '@/redux/reducer/user';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
+import { ForgotModal } from '@/components/Modal';
 
 export default function Home() {
   const router = useRouter()
@@ -14,6 +15,8 @@ export default function Home() {
   const [pass, setPass] = useState('')
   const dispatch = useDispatch();
   const userState = useSelector(state => state.user)
+
+  const [openForgot, setOpenForgot] = useState(false)
   const login = async () => {
 
     var User = {
@@ -59,9 +62,18 @@ export default function Home() {
 
   return (
     <main className={`container-fluid ${styles.fullHeight}`}>
+
+
       <div className="row vh-100">
 
+        {
+          openForgot && <ForgotModal
+            close={() => setOpenForgot(false)}
+          />
+        }
+
         <div className="col-lg-7 d-flex align-items-center justify-content-center bg-2">
+
 
         </div>
 
@@ -115,18 +127,25 @@ export default function Home() {
 
           <div className="d-flex flex-column align-items-center" style={{ width: "80%" }}>
             <button onClick={() => login()} type="button" className="btn fw-bold f-white w-100 bg-yellow mybutton">SIGN IN</button>
-         
+
+          </div>
+
+
+
+          <div className="d-flex flex-column align-items-center mt-2" style={{ width: "80%" }}>
+            <button onClick={() => setOpenForgot(true)} type="button" className="btn fw-bold f-white w-100  mybutton" style={{ backgroundColor: "red" }}>FORGOT PASSWORD?</button>
+
           </div>
 
 
           <div className="d-flex flex-column justify-content-center align-items-center mt-5">
-            
+
             <button onClick={() => {
-             router.push('/Appointment/Resident', { scroll: false })
-            }} type="button" className="btn fw-bold f-white w-100 bg-yellow d-flex d-flex align-items-center justify-content-center"> 
-            <i class="bi bi-calendar-month me-3" style={{fontSize: "36px"}}></i>
+              router.push('/Appointment/Resident', { scroll: false })
+            }} type="button" className="btn fw-bold f-white w-100 bg-yellow d-flex d-flex align-items-center justify-content-center">
+              <i class="bi bi-calendar-month me-3" style={{ fontSize: "36px" }}></i>
               Resident Appointment
-              </button>
+            </button>
           </div>
 
 

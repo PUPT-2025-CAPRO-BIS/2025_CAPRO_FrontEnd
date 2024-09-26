@@ -132,8 +132,17 @@ export default function Home() {
 
 
 
-          <div className="d-flex flex-column align-items-center mt-2" style={{ width: "80%" }}>
-            <button onClick={() => setOpenForgot(true)} type="button" className="btn fw-bold f-white w-100  mybutton" style={{ backgroundColor: "red" }}>FORGOT PASSWORD?</button>
+          <div 
+          
+         
+          className="d-flex  align-items-center mt-2 justify-content-end" style={{ width: "80%" }}>
+           
+           <label
+             onClick={() => setOpenForgot(true)}
+             className='pointer f-white'
+           >
+            Forgot Password?
+           </label>
 
           </div>
 
@@ -142,7 +151,7 @@ export default function Home() {
 
             <button onClick={() => {
               router.push('/Appointment/Resident', { scroll: false })
-            }} type="button" className="btn fw-bold f-white w-100 bg-yellow d-flex d-flex align-items-center justify-content-center">
+            }} type="button" className="btn fw-bold f-white w-100 d-flex d-flex align-items-center justify-content-center mybutton">
               <i class="bi bi-calendar-month me-3" style={{ fontSize: "36px" }}></i>
               Resident Appointment
             </button>

@@ -310,14 +310,14 @@ a {
   left: 0;
   /* background-color: #111; */
   overflow-x: hidden;
-  overflow-y: hidden;
+  overflow-y: scroll;
   transition: 0.5s;
 }
 
 
 
 .mainpage{
-  width: 90%;
+  width: 100%;
   padding: 20px;
 }
 
@@ -330,7 +330,7 @@ a {
 }
 
 .openSidebar-full{
-  width: 100%;
+  width: 40%;
 }
 @media only screen and (max-width: 768px) {
   /* For mobile phones: */
@@ -348,7 +348,7 @@ a {
 
   .sidebar{
     position: fixed;
-   
+    
   }
 }
 
@@ -386,7 +386,7 @@ a {
   }
   .sidebar{
     position: fixed;
-  
+    
   
   
   }
@@ -406,6 +406,7 @@ a {
   }
   .sidebar{
     width: auto;
+    height: auto;
   }
 
 }

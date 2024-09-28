@@ -150,7 +150,7 @@ export default function Home() {
           <div className="d-flex flex-column justify-content-center align-items-center mt-5">
 
             <button onClick={() => {
-              router.push('/Appointment/Resident', { scroll: false })
+              router.push('/Appointment/Resident/Create', { scroll: false })
             }} type="button" className="btn fw-bold f-white w-100 d-flex d-flex align-items-center justify-content-center mybutton">
               <i class="bi bi-calendar-month me-3" style={{ fontSize: "36px" }}></i>
               Resident Appointment

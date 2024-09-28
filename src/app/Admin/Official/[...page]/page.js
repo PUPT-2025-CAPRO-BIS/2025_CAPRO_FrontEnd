@@ -133,7 +133,9 @@ export default function Official({ params }) {
     cell_number: '',
     civil_status_id: '',
     male_female: '',
-    isPendingResident: 0
+    isPendingResident: 0,
+    supporting_files_obj : [],
+    current_address: ''
   })
 
   const [selectedSchedule, setSelectedSchedule] = useState({
@@ -812,9 +814,13 @@ export default function Official({ params }) {
   const addResident = async () => {
 
 
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    let validateEmail = emailPattern.test(resident.email);
 
-
-
+    
+    
+    const numberPattern = /^09\d{9}$/;
+    let validateNumber = numberPattern.test(resident.cell_number);
 
     if (resident.first_name == "") {
       document.getElementById('fnameinput').style.border = '1px solid red'
@@ -825,7 +831,7 @@ export default function Official({ params }) {
     }
 
 
-    if (resident.email == "") {
+    if (resident.email == "" || !validateEmail) {
       document.getElementById('emailinput').style.border = '1px solid red'
     }
 
@@ -833,7 +839,7 @@ export default function Official({ params }) {
       // document.getElementById('bdayinput').style.border = '1px solid red'
     }
 
-    if (resident.cell_number == "") {
+    if (resident.cell_number == "" || !validateNumber) {
       document.getElementById('phoneinput').style.border = '1px solid red'
     }
 
@@ -845,14 +851,18 @@ export default function Official({ params }) {
       document.getElementById('civilinput').style.border = '1px solid red'
     }
 
+    if (resident.current_address == "") {
+      document.getElementById('addressinput').style.border = '1px solid red'
+    }
+
     if (resident.first_name != "" && resident.last_name != "" && resident.birthday != "" && resident.cell_number != ""
-      && resident.male_female !== "" && resident.civil_status_id != ""
+      && resident.male_female !== "" && resident.civil_status_id != "" && validateEmail && validateNumber && resident.current_address != ""
 
     ) {
 
       let merge = {
         resident,
-        birthday: startDate,
+        birthday: resident.birthday,
         token: token.token
       }
 
@@ -875,6 +885,8 @@ export default function Official({ params }) {
               cell_number: '',
               civil_status_id: '',
               male_female: '',
+              current_address: ''
+              
             })
             setCount(count + 1)
             setShowAddResident(false)
@@ -907,7 +919,8 @@ export default function Official({ params }) {
               birthday: '',
               cell_number: '',
               civil_status_id: '',
-              male_female: ''
+              male_female: '',
+              current_address: ''
             })
             setShowAddResident(false)
             setCount(count + 1)
@@ -1112,8 +1125,8 @@ export default function Official({ params }) {
   const viewCreatedTemplate = (val) => {
 
 
-    window.open(`https://000040122.xyz/api/generatePdf?doc_id=${val.id}&download=0`)
-    // https://000040122.xyz/api/generatePdf?doc_id=14&download=0
+    window.open(`http://000040122.xyz/api/generatePdf?doc_id=${val.id}&download=0`)
+    // http://000040122.xyz/api/generatePdf?doc_id=14&download=0
 
   }
 
@@ -1229,7 +1242,8 @@ export default function Official({ params }) {
           cell_number: '',
           civil_status_id: '',
           male_female: '',
-          isPendingResident: 0
+          isPendingResident: 0,
+          current_address: ''
         })
         setCount(count + 1)
       }
@@ -1281,7 +1295,8 @@ export default function Official({ params }) {
           cell_number: '',
           civil_status_id: '',
           male_female: '',
-          isPendingResident: 0
+          isPendingResident: 0,
+          current_address: ''
         })
         setCount(count + 1)
       }
@@ -1305,16 +1320,16 @@ export default function Official({ params }) {
   return (
     <main className={``}>
       <Auth>
-        <div className="vh-100 w-100" style={{ backgroundColor: "white", display: "flex" }}>
+        <div className="w-100" style={{ backgroundColor: "white", display: "flex" }}>
 
           <div id='sidebar'
-            className="overflow-auto sidebar">
+            className="overflow-auto sidebar bg-green">
          
-            <div id='menu' className="w-100" style={{overflow:"scroll"}}>
+            <div id='menu' className="w-100">
               { /* asan */}
 
             
-              <div className="col-lg-12 p-5 d-flex flex-column bg-green side-bg">
+              <div  className="col-lg-12 p-5 d-flex flex-column">
               <div
                   onClick={() => {
 
@@ -1327,13 +1342,14 @@ export default function Official({ params }) {
                       document.getElementById("sidebar").classList.remove("openSidebar-full");
 
                       document.getElementById("sidebar").classList.add("sidebar");
+                      document.getElementById("sidebarbg").classList.remove('logo-bg')
                       // document.getElementById("sidebar").style.width = "auto"
                       setOpenSide(false)
                     }
                     else{
                       document.getElementById("menu").classList.add("openSidebar");
                       document.getElementById("sidebar").classList.add("openSidebar-full");
-
+                      document.getElementById("sidebarbg").classList.add('logo-bg')
                       document.getElementById("sidebar").classList.remove("sidebar");
 
                       setOpenSide(true)
@@ -1344,7 +1360,7 @@ export default function Official({ params }) {
                   className="pointer">
                   <i class="bi bi-list" style={{ fontSize: "32px" }}></i>
                 </div>
-                <div className="d-flex flex-column align-items-center logo-bg col-lg-12 mt-5" style={{ height: "100px" }}>
+                <div id='sidebarbg' className="d-flex flex-column align-items-center  col-lg-12 mt-5" style={{ height: "100px" }}>
 
                 </div>
 
@@ -1493,14 +1509,14 @@ export default function Official({ params }) {
                     if(document.getElementById("menu").classList.contains("openSidebar")){
                       document.getElementById("menu").classList.remove("openSidebar");
                       document.getElementById("sidebar").classList.remove("openSidebar-full");
-
+                      document.getElementById("sidebarbg").classList.remove('logo-bg')
                       setOpenSide(false)
                     }
                     else{
                       
                       document.getElementById("menu").classList.add("openSidebar");
                       document.getElementById("sidebar").classList.add("openSidebar-full");
-
+                      document.getElementById("sidebarbg").classList.add('logo-bg')
                       setOpenSide(true)
                     }
 
@@ -2014,8 +2030,10 @@ export default function Official({ params }) {
                       alluser.isPending == 0 &&
                       <button
                         onClick={() => {
-                          setShowAddResident(true)
                           setIsEdit(false)
+                          setIsViewing(false)
+                          setShowAddResident(true)
+                       
                         }}
                         className="primary bg-yellow p-2 rounded ms-3" style={{ border: "0px" }}
                       >
@@ -2034,6 +2052,9 @@ export default function Official({ params }) {
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
                     <HeaderItem>
                       Fullname
+                    </HeaderItem>
+                    <HeaderItem>
+                      Address
                     </HeaderItem>
                     <HeaderItem>
                       Age
@@ -2082,6 +2103,11 @@ export default function Official({ params }) {
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
+                                {i.current_address}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
                                 {i.age}
                               </span>
                             </RowItem>
@@ -2124,7 +2150,10 @@ export default function Official({ params }) {
 
                                     setIsEdit(true)
                                     setIsViewing(true)
-                                    setResident(i)
+                                    setResident({
+                                      ...i,
+                                      email: i.Email
+                                    })
                                     setShowAddResident(true)
                                   }}
                                   type="button" class="btn btn-primary"><i class="bi bi-eye"></i></button>
@@ -2137,7 +2166,10 @@ export default function Official({ params }) {
 
                                     setIsViewing(false)
                                     setIsEdit(true)
-                                    setResident(i)
+                                    setResident({
+                                      ...i,
+                                      email: i.Email
+                                    })
                                     setShowAddResident(true)
                                   }}
                                   type="button" class="btn btn-primary ms-3"><i class="bi bi-pencil"></i></button>
@@ -2195,7 +2227,7 @@ export default function Official({ params }) {
                       value={searchItemList}
                       className="form-control rounded ms-2" placeholder="Search name" />
 
-                    <button onClick={() => window.open('https://000040122.xyz/api/downloadAppointments')} type="button"
+                    <button onClick={() => window.open('http://000040122.xyz/api/downloadAppointments')} type="button"
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "300px" }}>
 
@@ -2391,7 +2423,7 @@ export default function Official({ params }) {
                                         <button
 
                                           onClick={() => {
-                                            window.open(`https://000040122.xyz/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
+                                            window.open(`http://000040122.xyz/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
 
 
                                           }}
@@ -2966,7 +2998,7 @@ export default function Official({ params }) {
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button onClick={() => updateOfficial()} type="button" class="btn btn-primary bg-green" data-bs-dismiss="modal">Save changes</button>
+                  <button onClick={() => updateOfficial()} type="button" class="btn btn-primary bg-green" data-bs-dismiss="modal">Save change</button>
                 </div>
               </div>
             </div>
@@ -3062,7 +3094,7 @@ export default function Official({ params }) {
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" data-bs-dismiss="modal" onClick={() => addOfficial()} class="btn btn-primary bg-green">Save changes</button>
+                  <button type="button" data-bs-dismiss="modal" onClick={() => addOfficial()} class="btn btn-primary bg-green">Save changes!!</button>
                 </div>
               </div>
             </div>
@@ -3188,6 +3220,32 @@ export default function Official({ params }) {
                     </div>
 
                     <div class="mb-3">
+                      <label class="form-label">Current address</label>
+                      <input
+                        id='addressinput'
+                        disabled={isViewing}
+                        value={resident.current_address}
+                        onChange={(val) => {
+
+                          if (val.target.value != "") {
+                            document.getElementById('addressinput').style.border = '1px solid #dee2e6'
+                          }
+                          else {
+                            document.getElementById('addressinput').style.border = '1px solid red'
+                          }
+
+                          setResident({
+                            ...resident, ...{
+                              current_address: val.target.value
+                            }
+                          })
+
+                        }}
+                        class="form-control" />
+
+                    </div>
+
+                    <div class="mb-3">
                       <label class="form-label">Email</label>
                       <input
                         id='emailinput'
@@ -3213,7 +3271,7 @@ export default function Official({ params }) {
 
                     <div class="mb-3 d-flex flex-column">
                       <label class="form-label">Birthday</label>
-                      <span className="fw-bold">{resident.birthday}</span>
+                      <span className="fw-bold">{moment(resident.birthday).format('YYYY-MM-DD')}</span>
 
                       {!isViewing &&
                         <Calendar
@@ -3238,24 +3296,31 @@ export default function Official({ params }) {
 
                     <div class="mb-3">
                       <label class="form-label">Phone number</label>
+                      <small className="ms-3">Format: 09xxxxxxxxx</small>
                       <input
                         id='phoneinput'
                         disabled={isViewing}
                         value={resident.cell_number}
                         onChange={(val) => {
 
-                          if (val.target.value != "") {
-                            document.getElementById('phoneinput').style.border = '1px solid #dee2e6'
-                          }
-                          else {
-                            document.getElementById('phoneinput').style.border = '1px solid red'
-                          }
+                          const numberPattern = /^\d+(\.\d+)?$/; // Matches integers and decimals
+                          let validate = numberPattern.test(val.target.value);
 
-                          setResident({
-                            ...resident, ...{
-                              cell_number: val.target.value
+
+                          if(validate){
+                            if (val.target.value != "") {
+                              document.getElementById('phoneinput').style.border = '1px solid #dee2e6'
                             }
-                          })
+                            else {
+                              document.getElementById('phoneinput').style.border = '1px solid red'
+                            }
+  
+                            setResident({
+                              ...resident, ...{
+                                cell_number: val.target.value
+                              }
+                            })
+                          }
 
                         }}
                         class="form-control" />
@@ -3344,7 +3409,7 @@ export default function Official({ params }) {
 
                         {/* resident.supporting_files_obj */}
                         { }
-                        {resident.supporting_files_obj.lenght != 0 &&
+                        {resident.supporting_files_obj.length != 0 || resident.supporting_files_obj  != undefined &&
                           resident.supporting_files_obj.map((i, k) => {
 
                             return (
@@ -3382,7 +3447,8 @@ export default function Official({ params }) {
                             cell_number: '',
                             civil_status_id: '',
                             male_female: '',
-                            isPendingResident: 0
+                            isPendingResident: 0,
+                            supporting_files_obj : []
                           })
                           setShowAddResident(false)
 

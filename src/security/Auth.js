@@ -20,9 +20,9 @@ const Auth = ({ onClick, children }) => {
     })
     
     return (
-      <div>
+      <>
         {children}
-      </div>
+      </>
     );
   };
   

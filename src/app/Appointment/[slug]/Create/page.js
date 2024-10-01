@@ -281,6 +281,7 @@ export default function CreateAppointment() {
                     setNewResident(null)
                 }
                 else {
+                    setMessage(result.error_msg || 'An error occurred');
                     setSuccess(false)
                     setShowSuccess(true)
                 }
@@ -289,12 +290,7 @@ export default function CreateAppointment() {
 
             }
 
-
-
-
-
         }
-
 
     }
 
@@ -442,646 +438,560 @@ export default function CreateAppointment() {
 
 
     return (
-        <main >
-            <div className="d-flex bg-3 bg-white  align-items-center flex-column" style={{ overflow: "scroll" }}>
+        <main>
+            <div className="d-flex bg-3 bg-white align-items-center flex-column" style={{ overflow: "scroll" }}>
                 <div>
-                    <Image
-                        className='logo-size'
-                        src={require('../../../../assets/central.png')}
-                    />
-                    <Image
-                        className='logo-size'
-                        src={require('../../../../assets/taguig.png')}
-                    />
-                    <Image
-                        className='logo-size'
-                        src={require('../../../../assets/sk.png')}
-                    />
+                    <Image 
+                        className="logo-size" 
+                        src={require('../../../../assets/central.png')} />
+                    <Image 
+                        className="logo-size" 
+                        src={require('../../../../assets/taguig.png')} />
+                    <Image 
+                        className="logo-size" 
+                        src={require('../../../../assets/sk.png')} />
                 </div>
 
                 <div className="d-flex flex-column align-items-center justify-content-center w-100 p-5 rounded bg-green mt-3 mb-5">
-
-                    <h1 className="f-white">
-                        BARANGAY CENTRAL BICUTAN
-                    </h1>
-
-                    <span className="f-white">
-                        Sunflower Street, Taguig City, Metro Manila
-                    </span>
+                    <h1 className="f-white">BARANGAY CENTRAL BICUTAN</h1>
+                    <span className="f-white">Sunflower Street, Taguig City, Metro Manila</span>
                 </div>
 
-
-                {
-                    newResident == null &&
-                    <>
-
-                        <div className="d-flex align-items-center justify-content-around col-6" style={{ height: "50%" }}>
-
-                            <div
-                                onClick={() => {
-                                    setNewResident(false)
-                                }}
-                                className="pointer col-5 box bg-green p-5 d-flex align-items-center justify-content-center rounded flex-column">
-                                <i class="bi bi-person-check" style={{ fontSize: "56px" }}></i>
-                                Registered
-                            </div>
-
-                            <div
-                                onClick={() => {
-                                    setNewResident(true)
-                                }}
-                                className="pointer col-5 box bg-yellow p-5 d-flex align-items-center justify-content-center rounded rounded flex-column">
-                                <i class="bi bi-person-add" style={{ fontSize: "56px" }}></i>
-                                Unregistered
-                            </div>
-
-                        </div>
-                    </>
-                }
-
-
-
-
-                {
-                    newResident == true &&
-
-                    <div className=" schedule-form p-4 col-6 rounded" style={{}}>
-                        <h4>
-                            Enter your details below:
-                        </h4>
-                        <div class="mb-3">
-                            <label class="form-label">First name</label>
-                            <input
-                                id='fnameinput'
-                                value={resident.first_name}
-                                onChange={(val) => {
-
-                                    if (val.target.value != "") {
-                                        document.getElementById('fnameinput').style.border = '1px solid #dee2e6'
-                                    }
-                                    else {
-                                        document.getElementById('fnameinput').style.border = '1px solid red'
-                                    }
-
-                                    setResident({
-                                        ...resident, ...{
-                                            first_name: val.target.value
-                                        }
-                                    })
-
-                                }}
-                                class="form-control" />
-
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Middle name</label>
-                            <input
-                                value={resident.middle_name}
-                                onChange={(val) => {
-
-                                    setResident({
-                                        ...resident, ...{
-                                            middle_name: val.target.value
-                                        }
-                                    })
-
-                                }}
-                                class="form-control" />
-
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Last name</label>
-                            <input
-                                id='lnameinput'
-                                value={resident.last_name}
-                                onChange={(val) => {
-
-                                    if (val.target.value != "") {
-                                        document.getElementById('lnameinput').style.border = '1px solid #dee2e6'
-                                    }
-                                    else {
-                                        document.getElementById('lnameinput').style.border = '1px solid red'
-                                    }
-
-                                    setResident({
-                                        ...resident, ...{
-                                            last_name: val.target.value
-                                        }
-                                    })
-
-                                }}
-                                class="form-control" />
-
-                        </div>
-
-                        <div class="mb-3">
-                      <label class="form-label">Current address</label>
-                      <input
-                        id='addressinput'
-                        disabled={isViewing}
-                        value={resident.current_address}
-                        onChange={(val) => {
-
-                          if (val.target.value != "") {
-                            document.getElementById('addressinput').style.border = '1px solid #dee2e6'
-                          }
-                          else {
-                            document.getElementById('addressinput').style.border = '1px solid red'
-                          }
-
-                          setResident({
-                            ...resident, ...{
-                              current_address: val.target.value
-                            }
-                          })
-
-                        }}
-                        class="form-control" />
-
-                    </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input
-                                id='emailinput'
-                                value={resident.Email == undefined ? resident.email : resident.Email}
-                                onChange={(val) => {
-                                    if (val.target.value != "") {
-                                        document.getElementById('emailinput').style.border = '1px solid #dee2e6'
-                                    }
-                                    else {
-                                        document.getElementById('emailinput').style.border = '1px solid red'
-                                    }
-                                    setResident({
-                                        ...resident, ...{
-                                            email: val.target.value
-                                        }
-                                    })
-
-                                }}
-                                class="form-control" />
-
-                        </div>
-
-                        <div class="mb-3 d-flex flex-column">
-                            <label class="form-label">Birthday</label>
-                            <span>{moment(resident.birthday).format('YYYY-MM-DD')}</span>
-                            <Calendar
-                                id='bdayinput'
-                                className="mt-3"
-                                value={resident.birthday}
-                                onChange={(v) => {
-                                    // document.getElementById('bdayinput').style.border = '1px solid #dee2e6'
-
-                                    setResident({
-                                        ...resident, ...{
-                                            birthday: moment(v).format("YYYY-MM-DD")
-                                        }
-                                    })
-                                    setStartDate(moment(v).format("YYYY-MM-DD"))
-                                }}
-                            />
-
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Current Address</label>
-                            <input
-                                id='addressinput'
-                                value={resident.current_address}
-                                onChange={(val) => {
-
-                                    if (val.target.value != "") {
-                                        document.getElementById('addressinput').style.border = '1px solid #dee2e6'
-                                    }
-                                    else {
-                                        document.getElementById('addressinput').style.border = '1px solid red'
-                                    }
-
-                                    setResident({
-                                        ...resident, ...{
-                                            current_address: val.target.value
-                                        }
-                                    })
-
-                                }}
-                                class="form-control" />
-
-                        </div>
-
-
-                        <div class="mb-3">
-                            <label class="form-label">Phone number</label>
-                            <small className="ms-3">Format: 09xxxxxxxxx</small>
-                            <input
-                                id='phoneinput'
-                                value={resident.cell_number}
-                                onChange={(val) => {
-
-                                    const numberPattern = /^\d+(\.\d+)?$/; // Matches integers and decimals
-                                    let validate = numberPattern.test(val.target.value);
-
-                                    if (validate) {
-                                        if (val.target.value != "") {
-                                            document.getElementById('phoneinput').style.border = '1px solid #dee2e6'
-                                        }
-                                        else {
-                                            document.getElementById('phoneinput').style.border = '1px solid red'
-                                        }
-
-                                        setResident({
-                                            ...resident, ...{
-                                                cell_number: val.target.value
-                                            }
-                                        })
-                                    }
-
-                                }}
-                                class="form-control" />
-
-                        </div>
-
-
-
-                        <div id='genderinput' class="mb-3">
-                            <label class="form-label">Gender</label>
-                            <div class="form-check">
-                                <input
-                                    checked={resident.male_female === 0 ? true : false}
-                                    onChange={() => {
-
-
-                                        document.getElementById('genderinput').style.border = '0px solid #dee2e6'
-
-
-                                        setResident({
-                                            ...resident, ...{
-                                                male_female: 0
-                                            }
-                                        })
-                                    }}
-                                    class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
-                                <label class="form-check-label" for="flexRadioDefault2">
-                                    Male
-                                </label>
-                            </div>
-                            { }
-                            <div class="form-check">
-                                <input
-                                    checked={resident.male_female === 1 ? true : false}
-                                    onChange={() => {
-
-
-                                        document.getElementById('genderinput').style.border = '0px solid #dee2e6'
-
-                                        setResident({
-                                            ...resident, ...{
-                                                male_female: 1
-                                            }
-                                        })
-                                    }}
-                                    class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
-                                <label class="form-check-label" for="flexRadioDefault2">
-                                    Female
-                                </label>
-                            </div>
-
-                        </div>
-
-
-                        <div class="mb-3">
-                            <label class="form-label">Civil Status</label>
-                            <select
-                                value={resident.civil_status_id}
-                                id='civilinput'
-                                onChange={(v) => {
-                                    document.getElementById('civilinput').style.border = '1px solid #dee2e6'
-                                    setResident({
-                                        ...resident, ...{
-                                            civil_status_id: v.target.value
-                                        }
-                                    })
-                                }}
-                                class="form-select" aria-label="Default select example">
-                                <option value="null">Civil Status</option>
-                                <option value={1}>Single</option>
-                                <option value={2}>Married</option>
-                                <option value={3}>Widowed</option>
-                                <option value={4}>Legally Separated</option>
-                            </select>
-
-                        </div>
-
-
-
-                        <div id='voterinput' class="mb-3">
-                            <label class="form-label">Voter status</label>
-                            <div class="form-check">
-                                <input
-                                    checked={resident.voter_status === 0 ? true : false}
-                                    onChange={() => {
-
-
-                                        document.getElementById('voterinput').style.border = '0px solid #dee2e6'
-
-
-                                        setResident({
-                                            ...resident, ...{
-                                                voter_status: 0
-                                            }
-                                        })
-                                    }}
-                                    class="form-check-input" type="radio" name="voter" id="voter" />
-                                <label class="form-check-label" for="voter">
-                                    No
-                                </label>
-                            </div>
-                            { }
-                            <div class="form-check">
-                                <input
-                                    checked={resident.voter_status === 1 ? true : false}
-                                    onChange={() => {
-
-
-                                        document.getElementById('voterinput').style.border = '0px solid #dee2e6'
-
-                                        setResident({
-                                            ...resident, ...{
-                                                voter_status: 1
-                                            }
-                                        })
-                                    }}
-                                    class="form-check-input" type="radio" name='voter' id="voter" />
-                                <label class="form-check-label" for="voter">
-                                    Yes
-                                </label>
-                            </div>
-
-                        </div>
-
-
-                        <div className="mt-5 mb-5" >
-                            <label class="form-label">Supporting Documents: <span className="fw-bold" style={{ color: "red" }}>Valid ID</span></label>
-                            <div {...getRootProps()} style={{ borderStyle: "dotted" }}>
-                                <input {...getInputProps()} />
-                                {
-                                    isDragActive ?
-                                        <p>Drop the files here ...</p> :
-                                        <p>Drag 'n' drop some files here, or click to select files</p>
-                                }
-
-
-                            </div>
-
-                            <div className="mt-3">
-                                {
-                                    files.length != 0 && files.map((i, k) => {
-                                        return (
-                                            <div
-                                                className="d-flex align-items-center justify-content-between mt-2"
-                                            >
-                                                <span
-                                                    className="pointer"
-                                                    onClick={() => {
-
-                                                        setSelectedFileForViewing(i)
-                                                        setShowImage(true)
-                                                    }}
-                                                >{i.fileName}</span>
-
-                                                <div className="pointer"
-
-                                                    onClick={() => {
-                                                        let tmpArr = files
-                                                        tmpArr.splice(k, 1);
-
-
-                                                        setFiles([...tmpArr])
-                                                    }}
-
-                                                >
-                                                    <i class="bi bi-trash" style={{ fontSize: "30px", color: "red" }}></i>
-                                                </div>
-
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </div>
-                        </div>
-
-                        <button
-                            disabled={files.length == 0 ? true : false}
-                            type="button" onClick={() => {
-                                addResident()
-                            }} class="btn btn-primary bg-green">Submit</button>
-
-
-                    </div>
-                }
-
-
-
-                {
-                    newResident == false &&
-
+                {/* Registered Form (default) */}
+                {!newResident && (
                     <div className="schedule-form p-4 col-6 rounded">
-                        <h4>
-                            Scheduling Form
-                        </h4>
+                        <h4>Scheduling Form</h4>
 
-                        {
-                            !success &&
-
+                        {!success && (
                             <div>
                                 <div className="d-flex flex-column mt-5">
-                                    <span className="">Email address</span>
+                                    <span>Email address</span>
                                     <input
-                                        // onKeyDown={handleKeyDown}
                                         onChange={(v) => setEmail(v.target.value)}
                                         value={email}
-                                        type="email" className="form-control rounded mt-3" placeholder="Enter your email" />
+                                        type="email"
+                                        className="form-control rounded mt-3"
+                                        placeholder="Enter your email"
+                                    />
                                 </div>
 
                                 <div className="d-flex flex-column mt-3">
-                                    <span className="">Birthday</span>
+                                    <span>Birthday</span>
                                     <input
-                                        // onKeyDown={handleKeyDown}
                                         value={birthday}
                                         onChange={(v) => setBirthday(v.target.value)}
-                                        className="form-control rounded mt-3" placeholder="YYYY-MM-DD" />
+                                        className="form-control rounded mt-3"
+                                        placeholder="YYYY-MM-DD"
+                                    />
                                 </div>
-
                             </div>
-                        }
-                        {
-                            success && !successOTP &&
+                        )}
 
+                        {success && !successOTP && (
                             <div className="d-flex flex-column mt-5">
-                                <span className="">OTP</span>
+                                <span>OTP</span>
                                 <input
-                                    // onKeyDown={handleKeyDown}
                                     onChange={(v) => {
-
-                                        if (v.target.value != "") {
-                                            setIsButtonDisabled(false)
+                                        if (v.target.value !== '') {
+                                            setIsButtonDisabled(false);
+                                        } else {
+                                            setIsButtonDisabled(true);
                                         }
-                                        else {
-                                            setIsButtonDisabled(true)
-                                        }
-                                        setOTP(v.target.value)
-
-
+                                        setOTP(v.target.value);
                                     }}
                                     value={otp}
-                                    type="email" className="form-control rounded mt-3" placeholder="Enter otp received in your email address" />
+                                    type="email"
+                                    className="form-control rounded mt-3"
+                                    placeholder="Enter OTP received in your email address"
+                                />
                             </div>
-                        }
+                        )}
 
-                        {
-                            success && successOTP &&
+                        {success && successOTP && (
                             <div>
-
-
-
-                                <div className="d-flex flex-column" >
-
+                                <div className="d-flex flex-column">
                                     <label>Select date</label>
                                     <label className="fw-bold mt-3">{selectedDate}</label>
                                     <Calendar
                                         minDate={new Date()}
                                         className="mt-3"
                                         onChange={(v) => {
-
-                                            setSelectedDate(moment(v).format("YYYY-MM-DD"))
-
+                                            setSelectedDate(moment(v).format('YYYY-MM-DD'));
                                         }}
                                     />
                                 </div>
 
                                 <div className="d-flex flex-column mt-3">
-                                    <span className="">Purpose</span>
+                                    <span>Purpose</span>
                                     <input
-                                        // onKeyDown={handleKeyDown}
                                         onChange={(v) => setPurpose(v.target.value)}
                                         value={purpose}
-                                        className="form-control rounded mt-3" placeholder="Enter your purpose" />
+                                        className="form-control rounded mt-3"
+                                        placeholder="Enter your purpose"
+                                    />
                                 </div>
 
-
                                 <div className="mt-3">
-
-
                                     <label>Select service</label>
-
                                     <select
-
-                                        onChange={(v) => {
-                                            setSelectedDoc(v.target.value)
-                                        }}
-                                        class="form-select" aria-label="Default select example">
-
-                                        {documentList.map((i, k) => {
-
-                                            return (
-                                                <option value={i.id} key={k}>{i.service}</option>
-                                            )
-
-                                        })}
+                                        onChange={(v) => setSelectedDoc(v.target.value)}
+                                        className="form-select"
+                                        aria-label="Default select example"
+                                    >
+                                        {documentList.map((i, k) => (
+                                            <option value={i.id} key={k}>
+                                                {i.service}
+                                            </option>
+                                        ))}
                                     </select>
                                 </div>
 
-
-                                <div {...getRootProps()} className="mt-5" style={{ borderStyle: "dotted" }}>
+                                <div {...getRootProps()} className="mt-5" style={{ borderStyle: 'dotted' }}>
                                     <input {...getInputProps()} />
-                                    {
-                                        isDragActive ?
-                                            <p>Drop the files here ...</p> :
-                                            <p>Drag 'n' drop some files here, or click to select files</p>
-                                    }
-
-
+                                    {isDragActive ? (
+                                        <p>Drop the files here ...</p>
+                                    ) : (
+                                        <p>Drag 'n' drop some files here, or click to select files</p>
+                                    )}
                                 </div>
 
                                 <div className="mt-3">
-                                    {
-                                        files.length != 0 && files.map((i, k) => {
-                                            return (
-                                                <div
-                                                    className="d-flex align-items-center justify-content-between mt-2"
+                                    {files.length !== 0 &&
+                                        files.map((i, k) => (
+                                            <div
+                                                className="d-flex align-items-center justify-content-between mt-2"
+                                                key={k}
+                                            >
+                                                <span
+                                                    className="pointer"
+                                                    onClick={() => {
+                                                        setSelectedFileForViewing(i);
+                                                        setShowImage(true);
+                                                    }}
                                                 >
-                                                    <span
-                                                        className="pointer"
-                                                        onClick={() => {
-
-                                                            setSelectedFileForViewing(i)
-                                                            setShowImage(true)
-                                                        }}
-                                                    >{i.fileName}</span>
-
-                                                    <div className="pointer"
-
-                                                        onClick={() => {
-                                                            let tmpArr = files
-                                                            tmpArr.splice(k, 1);
-
-
-                                                            setFiles([...tmpArr])
-                                                        }}
-
-                                                    >
-                                                        <i class="bi bi-trash" style={{ fontSize: "30px", color: "red" }}></i>
-                                                    </div>
-
+                                                    {i.fileName}
+                                                </span>
+                                                <div
+                                                    className="pointer"
+                                                    onClick={() => {
+                                                        let tmpArr = [...files];
+                                                        tmpArr.splice(k, 1);
+                                                        setFiles(tmpArr);
+                                                    }}
+                                                >
+                                                    <i className="bi bi-trash" style={{ fontSize: '30px', color: 'red' }}></i>
                                                 </div>
-                                            )
-                                        })
-                                    }
+                                            </div>
+                                        ))}
                                 </div>
                             </div>
-                        }
+                        )}
 
-                        {
-                            !success && !successOTP &&
-                            <button
-                                id='rotp'
-                                disabled={isButtonDisabled}
-                                onClick={(v) => {
-                                    submit()
-                                    v.preventDefault()
-                                }} type="button" class="btn btn-primary bg-green mt-5 col-12" >Request OTP</button>
-
-
-                        }
-
-                        {
-                            success && !successOTP &&
+                        {!success && !successOTP && (
                             <button
                                 disabled={isButtonDisabled}
                                 onClick={(v) => {
-                                    submitOTP()
-                                    v.preventDefault()
-                                }} type="button" class="btn btn-primary bg-green mt-5 col-12" >Verify OTP</button>
+                                    submit();
+                                    v.preventDefault();
+                                }}
+                                type="button"
+                                className="btn btn-primary bg-green mt-5 col-12"
+                            >
+                                Request OTP
+                            </button>
+                        )}
 
+                        {success && !successOTP && (
+                            <button
+                                disabled={isButtonDisabled}
+                                onClick={(v) => {
+                                    submitOTP();
+                                    v.preventDefault();
+                                }}
+                                type="button"
+                                className="btn btn-primary bg-green mt-5 col-12"
+                            >
+                                Verify OTP
+                            </button>
+                        )}
 
-                        }
-
-                        {
-                            success && successOTP &&
+                        {success && successOTP && (
                             <button
                                 disabled={isButtonDisabled}
                                 onClick={() => {
-                                    createAppoint()
-                                }} type="button" class="btn btn-primary bg-green mt-5 col-12" >Create appointment</button>
+                                    createAppoint();
+                                }}
+                                type="button"
+                                className="btn btn-primary bg-green mt-5 col-12"
+                            >
+                                Create appointment
+                            </button>
+                        )}
 
-
-                        }
+                        <div className="mt-3">
+                            <p>
+                                Not registered yet?{' '}
+                                <a href="#" className="text-primary" onClick={(e) => { e.preventDefault(); setNewResident(true); }}>
+                                    Please register here
+                                </a>
+                            </p>
+                        </div>
                     </div>
-                }
+                )}
 
-                {
+                {newResident && (
+                    <div className=" schedule-form p-4 col-6 rounded" style={{}}>
+                    <h4>
+                        Enter your details below:
+                    </h4>
+                    <div class="mb-3">
+                        <label class="form-label">First name</label>
+                        <input
+                            id='fnameinput'
+                            value={resident.first_name}
+                            onChange={(val) => {
+
+                                if (val.target.value != "") {
+                                    document.getElementById('fnameinput').style.border = '1px solid #dee2e6'
+                                }
+                                else {
+                                    document.getElementById('fnameinput').style.border = '1px solid red'
+                                }
+
+                                setResident({
+                                    ...resident, ...{
+                                        first_name: val.target.value
+                                    }
+                                })
+
+                            }}
+                            class="form-control" />
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Middle name</label>
+                        <input
+                            value={resident.middle_name}
+                            onChange={(val) => {
+
+                                setResident({
+                                    ...resident, ...{
+                                        middle_name: val.target.value
+                                    }
+                                })
+
+                            }}
+                            class="form-control" />
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Last name</label>
+                        <input
+                            id='lnameinput'
+                            value={resident.last_name}
+                            onChange={(val) => {
+
+                                if (val.target.value != "") {
+                                    document.getElementById('lnameinput').style.border = '1px solid #dee2e6'
+                                }
+                                else {
+                                    document.getElementById('lnameinput').style.border = '1px solid red'
+                                }
+
+                                setResident({
+                                    ...resident, ...{
+                                        last_name: val.target.value
+                                    }
+                                })
+
+                            }}
+                            class="form-control" />
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input
+                            id='emailinput'
+                            value={resident.Email == undefined ? resident.email : resident.Email}
+                            onChange={(val) => {
+                                if (val.target.value != "") {
+                                    document.getElementById('emailinput').style.border = '1px solid #dee2e6'
+                                }
+                                else {
+                                    document.getElementById('emailinput').style.border = '1px solid red'
+                                }
+                                setResident({
+                                    ...resident, ...{
+                                        email: val.target.value
+                                    }
+                                })
+
+                            }}
+                            class="form-control" />
+
+                    </div>
+
+                    <div class="mb-3 d-flex flex-column">
+                        <label class="form-label">Birthday</label>
+                        <span>{moment(resident.birthday).format('YYYY-MM-DD')}</span>
+                        <Calendar
+                            id='bdayinput'
+                            className="mt-3"
+                            value={resident.birthday}
+                            onChange={(v) => {
+                                // document.getElementById('bdayinput').style.border = '1px solid #dee2e6'
+
+                                setResident({
+                                    ...resident, ...{
+                                        birthday: moment(v).format("YYYY-MM-DD")
+                                    }
+                                })
+                                setStartDate(moment(v).format("YYYY-MM-DD"))
+                            }}
+                        />
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Current Address</label>
+                        <input
+                            id='addressinput'
+                            value={resident.current_address}
+                            onChange={(val) => {
+
+                                if (val.target.value != "") {
+                                    document.getElementById('addressinput').style.border = '1px solid #dee2e6'
+                                }
+                                else {
+                                    document.getElementById('addressinput').style.border = '1px solid red'
+                                }
+
+                                setResident({
+                                    ...resident, ...{
+                                        current_address: val.target.value
+                                    }
+                                })
+
+                            }}
+                            class="form-control" />
+
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label class="form-label">Phone number</label>
+                        <small className="ms-3">Format: 09xxxxxxxxx</small>
+                        <input
+                            id='phoneinput'
+                            value={resident.cell_number}
+                            onChange={(val) => {
+
+                                const numberPattern = /^\d+(\.\d+)?$/; // Matches integers and decimals
+                                let validate = numberPattern.test(val.target.value);
+
+                                if (validate) {
+                                    if (val.target.value != "") {
+                                        document.getElementById('phoneinput').style.border = '1px solid #dee2e6'
+                                    }
+                                    else {
+                                        document.getElementById('phoneinput').style.border = '1px solid red'
+                                    }
+
+                                    setResident({
+                                        ...resident, ...{
+                                            cell_number: val.target.value
+                                        }
+                                    })
+                                }
+
+                            }}
+                            class="form-control" />
+
+                    </div>
+
+
+
+                    <div id='genderinput' class="mb-3">
+                        <label class="form-label">Gender</label>
+                        <div class="form-check">
+                            <input
+                                checked={resident.male_female === 0 ? true : false}
+                                onChange={() => {
+
+
+                                    document.getElementById('genderinput').style.border = '0px solid #dee2e6'
+
+
+                                    setResident({
+                                        ...resident, ...{
+                                            male_female: 0
+                                        }
+                                    })
+                                }}
+                                class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                Male
+                            </label>
+                        </div>
+                        { }
+                        <div class="form-check">
+                            <input
+                                checked={resident.male_female === 1 ? true : false}
+                                onChange={() => {
+
+
+                                    document.getElementById('genderinput').style.border = '0px solid #dee2e6'
+
+                                    setResident({
+                                        ...resident, ...{
+                                            male_female: 1
+                                        }
+                                    })
+                                }}
+                                class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                Female
+                            </label>
+                        </div>
+
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label class="form-label">Civil Status</label>
+                        <select
+                            value={resident.civil_status_id}
+                            id='civilinput'
+                            onChange={(v) => {
+                                document.getElementById('civilinput').style.border = '1px solid #dee2e6'
+                                setResident({
+                                    ...resident, ...{
+                                        civil_status_id: v.target.value
+                                    }
+                                })
+                            }}
+                            class="form-select" aria-label="Default select example">
+                            <option value="null">Civil Status</option>
+                            <option value={1}>Single</option>
+                            <option value={2}>Married</option>
+                            <option value={3}>Widowed</option>
+                            <option value={4}>Legally Separated</option>
+                        </select>
+
+                    </div>
+
+
+
+                    <div id='voterinput' class="mb-3">
+                        <label class="form-label">Voter status</label>
+                        <div class="form-check">
+                            <input
+                                checked={resident.voter_status === 0 ? true : false}
+                                onChange={() => {
+
+
+                                    document.getElementById('voterinput').style.border = '0px solid #dee2e6'
+
+
+                                    setResident({
+                                        ...resident, ...{
+                                            voter_status: 0
+                                        }
+                                    })
+                                }}
+                                class="form-check-input" type="radio" name="voter" id="voter" />
+                            <label class="form-check-label" for="voter">
+                                No
+                            </label>
+                        </div>
+                        { }
+                        <div class="form-check">
+                            <input
+                                checked={resident.voter_status === 1 ? true : false}
+                                onChange={() => {
+
+
+                                    document.getElementById('voterinput').style.border = '0px solid #dee2e6'
+
+                                    setResident({
+                                        ...resident, ...{
+                                            voter_status: 1
+                                        }
+                                    })
+                                }}
+                                class="form-check-input" type="radio" name='voter' id="voter" />
+                            <label class="form-check-label" for="voter">
+                                Yes
+                            </label>
+                        </div>
+
+                    </div>
+
+
+                    <div className="mt-5 mb-5" >
+                        <label class="form-label">Supporting Documents: <span className="fw-bold" style={{ color: "red" }}>Valid ID</span></label>
+                        <div {...getRootProps()} style={{ borderStyle: "dotted" }}>
+                            <input {...getInputProps()} />
+                            {
+                                isDragActive ?
+                                    <p>Drop the files here ...</p> :
+                                    <p>Drag 'n' drop some files here, or click to select files</p>
+                            }
+
+
+                        </div>
+
+                        <div className="mt-3">
+                            {
+                                files.length != 0 && files.map((i, k) => {
+                                    return (
+                                        <div
+                                            className="d-flex align-items-center justify-content-between mt-2"
+                                        >
+                                            <span
+                                                className="pointer"
+                                                onClick={() => {
+
+                                                    setSelectedFileForViewing(i)
+                                                    setShowImage(true)
+                                                }}
+                                            >{i.fileName}</span>
+
+                                            <div className="pointer"
+
+                                                onClick={() => {
+                                                    let tmpArr = files
+                                                    tmpArr.splice(k, 1);
+
+
+                                                    setFiles([...tmpArr])
+                                                }}
+
+                                            >
+                                                <i class="bi bi-trash" style={{ fontSize: "30px", color: "red" }}></i>
+                                            </div>
+
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                    </div>
+
+                    <button
+                        disabled={files.length == 0 ? true : false}
+                        type="button" onClick={() => {
+                            addResident()
+                        }} class="btn btn-primary bg-green">Submit</button>
+
+
+                </div>
+                )}
+
+                    {
                     showSuccess &&
                     <div id="statusModal " class="modal fade show d-block">
                         <div class="modal-dialog">

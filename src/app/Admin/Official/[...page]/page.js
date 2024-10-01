@@ -169,6 +169,7 @@ export default function Official({ params }) {
 
   const [blotter, setBlotter] = useState({
     complainee_name: '',
+    id: '',
     complainant_name: '',
     status_resolved: '',
     complaint_remarks: '',
@@ -2748,13 +2749,16 @@ export default function Official({ params }) {
 
                                 <button
                                   onClick={() => {
-
-
                                     setIsViewing(true)
                                     setShowBlotter(true)
                                     setBlotter(i)
                                   }}
                                   type="button" class="btn btn-warning ms-3">View</button>
+
+                                <button
+                                  onClick={() => window.open(`https://000040122.xyz/api/downloadBlotterPDF?blotter_id=${i.id}&download=0`)}
+                                  type="button" class="btn btn-warning ms-3">Download
+                                </button>
 
                                 {/* <button
                                   data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
@@ -3402,35 +3406,29 @@ export default function Official({ params }) {
                     </div>
 
                     {
-                      isViewing &&
-
-                      <div class="mb-3 d-flex flex-column">
-                        <label class="form-label">Supporting documents</label>
-
-                        {/* resident.supporting_files_obj */}
-                        { }
-                        {resident.supporting_files_obj.length != 0 || resident.supporting_files_obj  != undefined &&
-                          resident.supporting_files_obj.map((i, k) => {
-
-                            return (
+                      isViewing && (
+                        <div className="mb-3 d-flex flex-column">
+                          <label className="form-label">Supporting documents</label>
+                          {resident.supporting_files_obj &&
+                            resident.supporting_files_obj.length > 0 &&
+                            resident.supporting_files_obj.map((i, k) => (
                               <span
+                                key={k}
                                 onClick={() => {
                                   setSelectedFileForViewing({
                                     fileName: i.file_name,
-                                    base64: i.base64_file
-
-                                  })
-                                  setShowImage(true)
+                                    base64: i.base64_file,
+                                  });
+                                  setShowImage(true);
                                 }}
-                                className="pointer">{i.file_name}</span>
-                            )
-                          })
-                        }
-
-                      </div>
+                                className="pointer"
+                              >
+                                {i.file_name}
+                              </span>
+                            ))}
+                        </div>
+                      )
                     }
-
-
 
                   </div>
                   {

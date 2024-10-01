@@ -52,13 +52,137 @@ export default function Official({ params }) {
   const [totalPage, setTotalPage] = useState(0)
 
   const [searchItemList, setSearchItemList] = useState('')
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
+  const [category, setCategory] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isAppointments, setIsAppointments] = useState(true);
+  const [tab, seTab] = useState(10)
 
   const [showAddResident, setShowAddResident] = useState(false)
 
 
   const [isPending, setIsPending] = useState(0)
 
+  useEffect(() => {
+    if (tab === 2 && fromDate && toDate) { 
+        // Schedule (Appointments) tab: Requires both From and To Dates
+        setIsAppointments(true);
+        fetchFilteredData(searchItemList, fromDate, toDate, currentPage);
+    } else if (tab === 4) { 
+        // Blotter tab logic:
+        
+        // Case 1: Category is selected but no dates
+        if (category && (!fromDate && !toDate)) {
+            setIsAppointments(false);
+            fetchFilteredDataBlotters(null, null, category, currentPage);
 
+        // Case 2: Both From and To Dates are selected (regardless of category)
+        } else if (fromDate && toDate) {
+            setIsAppointments(false);
+            fetchFilteredDataBlotters(fromDate, toDate, category, currentPage);
+
+        // Case 3: All of From Date, To Date, and Category are selected
+        } else if (fromDate && toDate && category) {
+            setIsAppointments(false);
+            fetchFilteredDataBlotters(fromDate, toDate, category, currentPage);
+
+        // If only one date is selected or nothing matches, do nothing
+        } else {
+            console.log("Either both dates must be selected or category must be picked for Blotter data.");
+        }
+    }
+  }, [tab, fromDate, toDate, category, currentPage]);
+  
+  // Function to reset filters and refresh data for both tabs
+  const resetFilters = () => {
+    setFromDate(null);
+    setToDate(null);
+    setCategory('');
+    setCurrentPage(1);
+  
+    // Fetch data without filters based on the active tab
+    if (isAppointments) {
+      fetchFilteredData('', null, null, 1);  // Fetch appointments
+    } else {
+      fetchFilteredDataBlotters('', null, null, '', 1);  // Fetch blotters
+    }
+  };
+  
+  // Fetching Schedule (Appointments) data
+  const fetchFilteredData = async (searchValue, fromDate, toDate, currentPage = 1) => {
+    setLoading(true);
+    const data = {
+      token: token.token,
+      currentPage,
+      searchItemList: searchValue,
+      from_date: fromDate ? moment(fromDate).format('YYYY-MM-DD') : null,
+      to_date: toDate ? moment(toDate).format('YYYY-MM-DD') : null,
+    };
+  
+    try {
+      const result = await dispatch(viewAppointmentListApi(data)).unwrap();
+      setTotalPage(result.total_pages);
+      setErrorMessage('');
+    } catch (error) {
+      setErrorMessage('Error fetching data');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // Fetching Blotter data
+  const fetchFilteredDataBlotters = async (fromDate, toDate, category, currentPage = 1) => {
+    setLoading(true);
+    const data = {
+        token: token.token,
+        currentPage,
+        from_date: fromDate ? moment(fromDate).format('YYYY-MM-DD') : null,
+        to_date: toDate ? moment(toDate).format('YYYY-MM-DD') : null,
+        category: category || null,
+    };
+
+    try {
+        const result = await dispatch(viewAllBlottersApi(data)).unwrap();
+        setTotalPage(result.total_pages);
+        setErrorMessage('');
+    } catch (error) {
+        setErrorMessage('Error fetching blotter data');
+    } finally {
+        setLoading(false);
+    }
+};
+
+  const handleDownloadSchedule = () => {
+    // Clear error if dates are valid
+    setErrorMessage("");
+
+    // Construct the dynamic URL for downloading appointments based on fromDate and toDate
+    let url = 'https://000040122.xyz/api/downloadAppointments?';
+
+    if (fromDate && toDate) {
+      // Append both from_date and to_date to the URL
+      url += `from_date=${moment(fromDate).format('YYYY-MM-DD')}&to_date=${moment(toDate).format('YYYY-MM-DD')}`;
+    }
+    // Open the dynamically constructed URL
+    window.open(url);
+  };
+
+  const handleDownloadBlotter = () => {
+    let url = 'https://000040122.xyz/api/downloadBlotters?';
+
+    if (fromDate && toDate) {
+      // Append both from_date and to_date to the URL
+      url += `from_date=${moment(fromDate).format('YYYY-MM-DD')}&to_date=${moment(toDate).format('YYYY-MM-DD')}&`;
+    }
+
+    if (category) {
+      // Append category if selected
+      url += `category=${category}`;
+    }
+    // Open the dynamically constructed URL
+    window.open(url);
+  };
 
   const typingTimeoutRef = useRef(null);
 
@@ -108,7 +232,6 @@ export default function Official({ params }) {
 
 
   // 0 - BO,   MR -1,    SCHEDULES - 2, BR - 3, Services - 4 Dashboard -10
-  const [tab, seTab] = useState(10)
 
   const [searchVal, setSearchVal] = useState('')
   const [searchOfficial, setSearchOfficial] = useState([])
@@ -1413,32 +1536,30 @@ export default function Official({ params }) {
                   </div>
 
 
-                  <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded nav-container ${tab == 2 ? 'active-nav' : ''} pointer`}>
-
+                  <div 
+                    onClick={() => {
+                      changeTab(2);
+                      setIsAppointments(true);  // Switch to Appointments (Schedules)
+                    }} 
+                    className={`p-4 w-100 rounded nav-container ${tab == 2 ? 'active-nav' : ''} pointer`}
+                  >
                     <i class="bi bi-calendar-date f-white icon"></i>
-
-                    {
-                        openSide  &&
-                      <span className="f-white ms-2 nav-item">
-                      Schedules
-                    </span>
-                    }
-                   
+                    {openSide && (
+                      <span className="f-white ms-2 nav-item">Schedules</span>
+                    )}
                   </div>
 
-
-                  <div onClick={() => changeTab(4)} className={`p-4 w-100 rounded nav-container ${tab == 4 ? 'active-nav' : ''} pointer`}>
-
+                  <div 
+                    onClick={() => {
+                      changeTab(4);
+                      setIsAppointments(false);  // Switch to Blotter
+                    }} 
+                    className={`p-4 w-100 rounded nav-container ${tab == 4 ? 'active-nav' : ''} pointer`}
+                  >
                     <i class="bi bi-person-fill-slash f-white icon"></i>
-
-                    {
-                        openSide  &&
-                      <span className="f-white ms-2 nav-item">
-                      Blotter
-                    </span>
-                    }
-
-                 
+                    {openSide && (
+                      <span className="f-white ms-2 nav-item">Blotter</span>
+                    )}
                   </div>
 
                   <div onClick={() => changeTab(3)} className={`p-4 w-100 rounded nav-container ${tab == 3 ? 'active-nav' : ''} pointer`}>
@@ -1986,8 +2107,6 @@ export default function Official({ params }) {
                       <button
                         onClick={() => {
 
-
-
                           dispatch(settingPeding(alluser.isPending == 0 ? 1 : 0))
                           setCurrentPage(1)
                           setCount(count + 1)
@@ -2217,25 +2336,59 @@ export default function Official({ params }) {
 
                 <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
 
-                  <div className="d-flex align-items-center">
-                    <span className="f-white">Search:</span>
-                    <input
-                      // onKeyDown={handleKeyDown}
-                      onChange={(v) => {
-                        setSearchItemList(v.target.value)
-                        handleKeyDown(v.target.value)
-                      }}
-                      value={searchItemList}
-                      className="form-control rounded ms-2" placeholder="Search name" />
+                <div className="d-flex align-items-center">
+                  <span className="f-white">Search:</span>
+                  <input
+                    onChange={(v) => {
+                      setSearchItemList(v.target.value);
+                      handleKeyDown(v.target.value);
+                    }}
+                    value={searchItemList}
+                    className="form-control rounded ms-2"
+                    placeholder="Search name"
+                  />
+                </div>
 
-                    <button onClick={() => window.open('http://000040122.xyz/api/downloadAppointments')} type="button"
-                      class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
-                      style={{ width: "300px" }}>
+                {/* Date Pickers */}
+                <div className="d-flex align-items-center ms-3">
+                  {/* From Date */}
+                    <div className="d-flex align-items-center">
+                      <label className="me-2 f-white">From:</label>
+                      <DatePicker
+                        selected={fromDate}
+                        onChange={(date) => setFromDate(date)}
+                        dateFormat="yyyy-MM-dd"
+                        className="form-control"
+                        placeholderText="yyyy-mm-dd"
+                      />
+                    </div>
 
-                      <i class="bi bi-file-earmark-excel-fill" style={{ fontSize: "28px", color: "green" }}></i>
-                      Download</button>
+                    {/* To Date */}
+                    <div className="d-flex align-items-center ms-3">
+                      <label className="me-2 f-white">To:</label>
+                      <DatePicker
+                        selected={toDate}
+                        onChange={(date) => setToDate(date)}
+                        dateFormat="yyyy-MM-dd"
+                        className="form-control"
+                        placeholderText="yyyy-mm-dd"
+                        minDate={fromDate}
+                      />
+                    </div>
 
+                    {/* Download Button */}
+                    <button onClick={handleDownloadSchedule} className="btn btn-warning ms-3">
+                      Download
+                    </button>
+
+                    {/* Refresh Button */}
+                    <button onClick={resetFilters} className="btn btn-secondary ms-2">
+                      Refresh
+                    </button>
                   </div>
+
+                  {/* Error Message */}
+                  {errorMessage && <div className="text-danger">{errorMessage}</div>}
 
                   {/* <div >
                     <button
@@ -2630,25 +2783,77 @@ export default function Official({ params }) {
                 </div>
 
                 <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
+                  <div className="d-flex align-items-center flex-wrap">
+                    <label className="me-2 f-white">Search:</label>
+                      <input
+                        // onKeyDown={handleKeyDown}
+                        value={searchItemList}
+                        onChange={(v) => {
+                          setSearchItemList(v.target.value)
+                          handleKeyDown(v.target.value)
+                        }}
+                        type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" 
+                          style={{ width: '250px' }}/>
 
-                  <div className="d-flex align-items-center">
-                    <span className="f-white">Search:</span>
-                    <input
-                      // onKeyDown={handleKeyDown}
-                      value={searchItemList}
-                      onChange={(v) => {
-                        setSearchItemList(v.target.value)
-                        handleKeyDown(v.target.value)
-                      }}
-                      type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
+                        {/* Date Pickers */}
+                        <div className="d-flex align-items-center ms-3">
+                          {/* From Date */}
+                          <div className="d-flex align-items-center ms-3">
+                            <label className="me-2 f-white">From:</label>
+                            <DatePicker
+                              selected={fromDate}
+                              onChange={(date) => setFromDate(date)}
+                              dateFormat="yyyy-MM-dd"
+                              className="form-control"
+                              placeholderText="yyyy-mm-dd"
+                              style={{ width: '150px' }}  // Adjust width for better visibility
+                            />
+                          </div>
 
+                          {/* To Date */}
+                          <div className="d-flex align-items-center ms-3">
+                            <label className="me-2 f-white">To:</label>
+                            <DatePicker
+                              selected={toDate}
+                              onChange={(date) => setToDate(date)}
+                              dateFormat="yyyy-MM-dd"
+                              className="form-control"
+                              placeholderText="yyyy-mm-dd"
+                              minDate={fromDate}
+                              style={{ width: '150px' }}  // Adjust width for better visibility
+                            />
+                          </div>
 
-                    <button onClick={() => window.open('https://000040122.xyz/api/downloadBlotters')} type="button"
-                      class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
-                      style={{ width: "300px" }}>
+                          {/* Category Dropdown */}
+                          <div className="d-flex align-items-center ms-3">
+                            <label className="me-2 f-white">Category:</label>
+                            <select 
+                              className="form-select"
+                              value={category}
+                              onChange={(e) => setCategory(e.target.value)}
+                              style={{ width: '150px' }}  // Adjust width as needed
+                            >
+                              <option value="">Select Category</option>
+                              <option value="Noise">Noise</option>
+                              <option value="Theft">Theft</option>
+                              <option value="Test">Test</option>
+                              <option value="Others">Others</option>
+                            </select>
+                          </div>
 
-                      <i class="bi bi-file-earmark-excel-fill" style={{ fontSize: "28px", color: "green" }}></i>
-                      Download</button>
+                          {/* Download Button */}
+                          <button onClick={handleDownloadBlotter} className="btn btn-warning ms-3">
+                            Download
+                          </button>
+
+                          {/* Refresh Button */}
+                          <button onClick={resetFilters} className="btn btn-secondary ms-2">
+                            Refresh
+                          </button>
+                        </div>
+
+                        {/* Error Message */}
+                        {errorMessage && <div className="text-danger">{errorMessage}</div>}
 
                   </div>
 

@@ -302,82 +302,90 @@ export default function Official({ params }) {
     complainant_id: '',
     search: '',
     searchFirst: '',
-    officer_on_duty: ''
+    officer_on_duty: '',
+    category: '',
+    complainant_phone_number: '',
+    complainee_phone_number: '',
+    non_resident_address: ''
   })
 
+  const handleChangeResidentStatus = (type, value) => {
+    if (type === "complainant") {
+        // If selecting non-resident for complainant
+        if (!value) {
+            // Automatically make complainee a resident
+            setBlotter(prevState => ({
+                ...prevState,
+                is_resident_complainant: value, // complainant becomes non-resident
+                is_resident: true // complainee becomes resident
+            }));
+        } else {
+            // Allow both to be residents
+            setBlotter(prevState => ({
+                ...prevState,
+                is_resident_complainant: value // complainant becomes resident
+            }));
+        }
+    } else if (type === "complainee") {
+        // If selecting non-resident for complainee
+        if (!value) {
+            // Automatically make complainant a resident
+            setBlotter(prevState => ({
+                ...prevState,
+                is_resident: value, // complainee becomes non-resident
+                is_resident_complainant: true // complainant becomes resident
+            }));
+        } else {
+            // Allow both to be residents
+            setBlotter(prevState => ({
+                ...prevState,
+                is_resident: value // complainee becomes resident
+            }));
+        }
+    }
+};
+
+
   useEffect(() => {
-    // This effect runs whenever any specified property in the `blotter` object changes
+    const isFormValid = () => {
+        if (blotter.is_resident && blotter.is_resident_complainant) {
+            return (
+                blotter.complainee_id !== "" &&
+                blotter.complainant_id !== "" &&
+                blotter.complaint_remarks !== "" &&
+                blotter.officer_on_duty !== "" &&
+                blotter.status_resolved !== ""
+            );
+        } else if (!blotter.is_resident && blotter.is_resident_complainant) {
+            return (
+                blotter.complainee_name !== "" &&
+                blotter.complainant_id !== "" &&
+                blotter.complaint_remarks !== "" &&
+                blotter.officer_on_duty !== "" &&
+                blotter.status_resolved !== ""
+            );
+        } else if (blotter.is_resident && !blotter.is_resident_complainant) {
+            return (
+                blotter.complainee_id !== "" &&
+                blotter.complainant_name !== "" &&
+                blotter.complaint_remarks !== "" &&
+                blotter.officer_on_duty !== "" &&
+                blotter.status_resolved !== ""
+            );
+        } else {
+            return (
+                blotter.complainant_name !== "" &&
+                blotter.complainee_name !== "" &&
+                blotter.complaint_remarks !== "" &&
+                blotter.officer_on_duty !== "" &&
+                blotter.status_resolved !== ""
+            );
+        }
+    };
 
+    setDisabledBlotterButton(!isFormValid());
 
-    if (blotter.is_resident) {
-
-      if (blotter.complainee_id == "") {
-        setDisabledBlotterButton(true)
-      }
-    }
-    else {
-      if (blotter.complainant_name == "") {
-        setDisabledBlotterButton(true)
-      }
-    }
-
-    if (blotter.is_resident_complainant) {
-
-      if (blotter.complainant_id == "") {
-        setDisabledBlotterButton(true)
-      }
-    }
-    else {
-      if (blotter.complainee_name == "") {
-        setDisabledBlotterButton(true)
-      }
-    }
-
-
-
-
-
-
-    if (blotter.is_resident && blotter.is_resident_complainant) {
-
-      if (blotter.complainant_id != "" && blotter.complainee_id != "" && blotter.complaint_remarks != "" && blotter.officer_on_duty != "" && blotter.status_resolved != "") {
-        setDisabledBlotterButton(false)
-      }
-      else {
-        setDisabledBlotterButton(true)
-      }
-
-    }
-    else if (!blotter.is_resident && blotter.is_resident_complainant) {
-      if (blotter.complainee_name != "" && blotter.complainant_id != "" && blotter.complaint_remarks != "" && blotter.officer_on_duty != "" && blotter.status_resolved != "") {
-        setDisabledBlotterButton(false)
-      }
-      else {
-        setDisabledBlotterButton(true)
-      }
-    }
-
-    else if (blotter.is_resident && !blotter.is_resident_complainant) {
-
-      if (blotter.complainee_id != "" && blotter.complainant_name != "" && blotter.complaint_remarks != "" && blotter.officer_on_duty != "" && blotter.status_resolved != "") {
-        setDisabledBlotterButton(false)
-      }
-      else {
-        setDisabledBlotterButton(true)
-      }
-    }
-
-    else if (!blotter.is_resident && !blotter.is_resident_complainant) {
-      if (blotter.complainant_name != "" && blotter.complainee_name != "" && blotter.complaint_remarks != "" && blotter.officer_on_duty != "" && blotter.status_resolved != "") {
-        setDisabledBlotterButton(false)
-      }
-      else {
-        setDisabledBlotterButton(true)
-      }
-    }
-
-
-  }, [
+}, [
     blotter.complainee_name,
     blotter.complainant_name,
     blotter.status_resolved,
@@ -388,11 +396,14 @@ export default function Official({ params }) {
     blotter.complainant_id,
     blotter.search,
     blotter.searchFirst,
-    blotter.officer_on_duty
-  ]);
+    blotter.officer_on_duty,
+    blotter.category,
+    blotter.complainant_phone_number,
+    blotter.complainee_phone_number,
+    blotter.non_resident_address
+]);
 
-  //0 ongoing 1 solve
-
+  const options = ["Theft", "Vandalism", "Assault", "Harassment", "Fraud", "Rawr"];
 
   const [showBlotter, setShowBlotter] = useState(false)
 
@@ -1250,7 +1261,7 @@ export default function Official({ params }) {
 
 
     window.open(`http://000040122.xyz/api/generatePdf?doc_id=${val.id}&download=0`)
-    // http://000040122.xyz/api/generatePdf?doc_id=14&download=0
+    // http://localhost:3000/api/generatePdf?doc_id=14&download=0
 
   }
 
@@ -2138,7 +2149,7 @@ export default function Official({ params }) {
 
                   <div className="d-flex">
 
-                    <button onClick={() => window.open('https://000040122.xyz/api/downloadUsers')} type="button"
+                    <button onClick={() => window.open('http://000040122.xyz/api/downloadUsers')} type="button"
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "200px" }}>
 
@@ -4035,18 +4046,17 @@ export default function Official({ params }) {
                     <div className="d-flex align-items-center w-100 mb-3">
                       <div class="form-check">
                         <input
-
                           onChange={() => {
-
                             setBlotter({
                               ...blotter, ...{
                                 is_resident_complainant: true,
                                 complainant_name: "",
-                                complainant_id: ''
+                                complainant_id: '',
+                                non_resident_address: blotter.is_resident_complainant ? blotter.non_resident_address : ''
                               }
                             })
                           }}
-                          class="form-check-input" type="radio" name="complainantRadio" id="flexRadioDefault3" />
+                          class="form-check-input" type="radio" name="complainantRadio" id="flexRadioDefault3" checked={blotter.is_resident_complainant === true} />
                         <label class="form-check-label" for="flexRadioDefault3">
                           Resident
                         </label>
@@ -4059,18 +4069,18 @@ export default function Official({ params }) {
                               ...blotter, ...{
                                 is_resident_complainant: false,
                                 complainant_name: "",
-                                complainant_id: ''
+                                complainant_id: '',
+                                is_resident: true
                               }
                             })
                           }}
-                          class="form-check-input" type="radio" name="complainantRadio" id="flexRadioDefault4" />
+                          class="form-check-input" type="radio" name="complainantRadio" id="flexRadioDefault4" checked={blotter.is_resident_complainant === false} />
                         <label class="form-check-label" for="flexRadioDefault4">
                           Non-resident
                         </label>
                       </div>
                     </div>
                   }
-
 
                   <div class="mb-3 w-100" style={{ position: "relative" }}>
                     <label class="form-label">Complainant</label>
@@ -4125,6 +4135,37 @@ export default function Official({ params }) {
 
                   </div>
 
+                  <div className="mb-3 w-100">
+                    <label className="form-label">Complainant Phone Number</label>
+                    <input
+                      value={blotter.complainant_phone_number || ""}
+                      onChange={(val) => {
+                        setBlotter({
+                          ...blotter,
+                            complainant_phone_number: val.target.value
+                        })
+                      }}
+                      className="form-control"
+                    />
+                  </div>
+
+                  {
+                    (blotter.is_complainant_resident === 0 || blotter.is_resident_complainant === false) &&
+                    <div class="mb-3 w-100">
+                      <label class="form-label">Non-resident Complainant Address</label>
+                      <input
+                        value={blotter.non_resident_address || ""}
+                        onChange={(val) => {
+                            setBlotter({
+                              ...blotter,
+                              non_resident_address: val.target.value
+                            });
+                        }}
+                        class="form-control"
+                      />
+                    </div>
+                  }
+
                   {
                     !isViewing &&
 
@@ -4138,11 +4179,12 @@ export default function Official({ params }) {
                               ...blotter, ...{
                                 is_resident: true,
                                 complainee_name: '',
-                                complainee_id: ''
+                                complainee_id: '',
+                                non_resident_address: blotter.is_resident ? blotter.non_resident_address : ''
                               }
                             })
                           }}
-                          class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" />
+                          class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked={blotter.is_resident === true} />
                         <label class="form-check-label" for="flexRadioDefault1">
                           Resident
                         </label>
@@ -4155,11 +4197,12 @@ export default function Official({ params }) {
                               ...blotter, ...{
                                 is_resident: false,
                                 complainee_name: '',
-                                complainee_id: ''
+                                complainee_id: '',
+                                is_resident_complainant: true
                               }
                             })
                           }}
-                          class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                          class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked={blotter.is_resident === false} />
                         <label class="form-check-label" for="flexRadioDefault2">
                           Non-resident
                         </label>
@@ -4216,7 +4259,58 @@ export default function Official({ params }) {
                         }
                       </div>
                     }
+                  </div>
 
+                  <div className="mb-3 w-100">
+                    <label className="form-label">Complainee Phone Number</label>
+                    <input
+                      value={blotter.complainee_phone_number || ""}
+                      onChange={(val) => {
+                        setBlotter({
+                          ...blotter,
+                            complainee_phone_number: val.target.value
+                        })
+                      }}
+                      className="form-control"
+                    />
+                  </div>
+
+                  {
+                    (blotter.is_complainee_resident === 0 || blotter.is_resident === false) &&
+                    <div class="mb-3 w-100">
+                      <label class="form-label">Non-resident Complainee Address</label>
+                      <input
+                        value={blotter.non_resident_address || ""}
+                        onChange={(val) => {
+                          setBlotter({
+                            ...blotter,
+                            non_resident_address: val.target.value
+                          });
+                        }}
+                        class="form-control"
+                      />
+                    </div>
+                  }
+
+                  <div class="mb-3 w-100">
+                    <label class="form-label">Category</label>
+                    <select
+                      className="form-select"
+                      value={blotter.category}
+                      onChange={(e) => {
+                        const selectedCategory = e.target.value;
+                        setBlotter({
+                          ...blotter,
+                          category: selectedCategory
+                        });
+                      }}
+                    >
+                      <option value="">Select a category</option>
+                      {options.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                      <option value="Others">Others</option>
+                    </select>
                   </div>
 
                   <div class="mb-3 w-100">
@@ -4289,7 +4383,7 @@ export default function Official({ params }) {
 
                         let merge = {
                           token: token.token,
-                          ...blotter
+                          ...blotter,
                         }
 
 
@@ -4312,7 +4406,11 @@ export default function Official({ params }) {
                             is_resident: null,
                             complainee_id: '',
                             complainant_id: '',
-                            search: ''
+                            search: '',
+                            category: '',
+                            complainant_phone_number: '',
+                            complainee_phone_number: '',
+                            non_resident_address: ''
                           })
 
                           setLoading(false)

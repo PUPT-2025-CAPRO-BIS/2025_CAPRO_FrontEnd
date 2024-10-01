@@ -210,7 +210,6 @@ export const createAppointmentApi = createAsyncThunk('user/createAppointment', a
 });
 
 export const viewAppointmentListApi = createAsyncThunk('user/viewAppointmentListApi', async (data) => {
-
   const res = await apiClient.get('/viewAppointmentList', {
     headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token
@@ -218,7 +217,9 @@ export const viewAppointmentListApi = createAsyncThunk('user/viewAppointmentList
     }, params: {
       search_value: data.searchItemList,
       page_number: data.currentPage,
-      item_per_page: 10
+      item_per_page: 10,
+      from_date: data.from_date,
+      to_date: data.to_date,
     }
   });
   return res.data;
@@ -234,15 +235,16 @@ export const viewAllBlottersApi = createAsyncThunk('user/viewAllBlotters', async
     }, params: {
       search_value: data.searchItemList,
       page_number: data.currentPage,
-      item_per_page: 10
+      item_per_page: 10,
+      from_date: data.from_date,
+      to_date: data.to_date,
+      category: data.category,
     }
   });
   return res.data;
 });
 
 export const fileBlotterReportApi = createAsyncThunk('user/fileBlotterReport', async (data) => {
-
-  
 
   const res = await apiClient.post('/fileBlotterReport', {
     complainee_name: data.complainee_id == "" ? data.complainee_name : '',
@@ -264,18 +266,29 @@ export const fileBlotterReportApi = createAsyncThunk('user/fileBlotterReport', a
 
 export const editBlotterReportApi = createAsyncThunk('user/editBlotterReport', async (data) => {
 
-  
-
-  const res = await apiClient.post('/editBlotterReport', {
-    complainee_name: data.complainee_name,
-    complainant_name: data.complainant_name,
+  let bodystuff = {
     status_resolved: data.status_resolved,
     complaint_remarks: data.complaint_remarks,
     id: data.id,
     officer_on_duty: data.officer_on_duty
-
-
-  }, {
+  };
+  if(data.complainee_id == null)
+  {
+    bodystuff.complainee_name = data.complainee_name
+  }
+  else
+  {
+    bodystuff.complainee_id = data.complainee_id
+  }
+  if(data.complainant_id == null)
+  {
+    bodystuff.complainant_name = data.complainant_name
+  }
+  else
+  {
+    bodystuff.complainant_id = data.complainant_id
+  }
+  const res = await apiClient.post('/editBlotterReport', bodystuff, {
     headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token
       'Content-Type': 'application/json',
@@ -283,8 +296,6 @@ export const editBlotterReportApi = createAsyncThunk('user/editBlotterReport', a
   });
   return res.data;
 });
-
-
 
 export const importExcelResidentsApi = createAsyncThunk('user/importExcelResidents', async (data) => {
 

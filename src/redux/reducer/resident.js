@@ -253,7 +253,11 @@ export const fileBlotterReportApi = createAsyncThunk('user/fileBlotterReport', a
     complaint_remarks: data.complaint_remarks,
     complainee_id: data.complainee_id,
     complainant_id: data.complainant_id,
-    officer_on_duty: data.officer_on_duty
+    officer_on_duty: data.officer_on_duty,
+    category: data.category,
+    complainant_phone_number: data.complainant_phone_number,
+    complainee_phone_number: data.complainee_phone_number,
+    non_resident_address: ''
 
   }, {
     headers: {
@@ -270,8 +274,11 @@ export const editBlotterReportApi = createAsyncThunk('user/editBlotterReport', a
     status_resolved: data.status_resolved,
     complaint_remarks: data.complaint_remarks,
     id: data.id,
-    officer_on_duty: data.officer_on_duty
-  };
+    officer_on_duty: data.officer_on_duty,
+    category: data.category,
+    complainant_phone_number: data.complainant_phone_number,
+    complainee_phone_number: data.complainee_phone_number,
+    non_resident_address: ''  };
   if(data.complainee_id == null)
   {
     bodystuff.complainee_name = data.complainee_name

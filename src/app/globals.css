@@ -293,12 +293,9 @@ a {
   border-bottom-right-radius: 100px;
 }
 
-
 .schedule-form{
   background-color: white;
 }
-
-
 
 .sidebar {
   height: 100%;
@@ -314,8 +311,6 @@ a {
   transition: 0.5s;
 }
 
-
-
 .mainpage{
   width: 100%;
   padding: 20px;
@@ -330,7 +325,7 @@ a {
 }
 
 .openSidebar-full{
-  width: 40%;
+  width: 30%;
 }
 @media only screen and (max-width: 768px) {
   /* For mobile phones: */

@@ -19,7 +19,8 @@ const initialState = {
     "ongoing": 0,
     "settled": 0,
     "dismissed": 0
-}
+  },
+  dashboard_filter: 'all'
 };
 
 // Create axios instance
@@ -123,6 +124,9 @@ const officialsSlice = createSlice({
       state.user = action.payload;
       state.signedIn = true;  // Use a boolean value here
     },
+    filterData: (state, action) => {
+      state.dashboard_filter = action.payload
+    }
   },
   extraReducers: builder => {
     builder
@@ -208,5 +212,5 @@ const officialsSlice = createSlice({
 });
 
 // Export actions and reducer
-export const { LoadOfficials } = officialsSlice.actions;
+export const { LoadOfficials, filterData  } = officialsSlice.actions;
 export default officialsSlice.reducer;

@@ -1,7 +1,7 @@
 'use client'
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
-import { addOfficials, dashboardViewApi, deleteOffialsApi, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
+import { addOfficials, dashboardViewApi, deleteOffialsApi, filterData, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
 import { addResidentApi, approveNewResidentApi, approveOrRejectAppointmentApi, deleteResidentInformationApi, editBlotterReportApi, editResidentApi, fileBlotterReportApi, importExcelResidentsApi, loadAllUsers, logOutResident, settingPeding, viewAllBlottersApi, viewAppointmentListApi } from "@/redux/reducer/resident";
 import { LogOut, viewAdminLogsApi } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
@@ -32,6 +32,8 @@ export default function Official({ params }) {
 
   const documentList = useSelector(state => state.document)
   const dashboard = useSelector(state => state.officials.dashboardData)
+  const dashboarFilter = useSelector(state => state.officials.dashboard_filter)
+  
   const token = useSelector(state => state.user)
 
   const [openSide, setOpenSide] = useState(false)
@@ -60,7 +62,7 @@ export default function Official({ params }) {
   const [tab, seTab] = useState(10)
 
   const [showAddResident, setShowAddResident] = useState(false)
-
+  const [dashboard_filter, setDashboardFilter] = useState('all')
 
   const [isPending, setIsPending] = useState(0)
 
@@ -257,7 +259,7 @@ export default function Official({ params }) {
     civil_status_id: '',
     male_female: '',
     isPendingResident: 0,
-    supporting_files_obj : [],
+    supporting_files_obj: [],
     current_address: ''
   })
 
@@ -509,7 +511,7 @@ export default function Official({ params }) {
       currentPage,
       searchItemList,
       isPending: alluser.isPending,
-      per_page: 10
+      per_page: 10,
     }
 
 
@@ -560,6 +562,10 @@ export default function Official({ params }) {
     }
     if (tab == 1 || tab == 0) {
 
+      data = {
+        ...data,
+        dashboard_filter: dashboarFilter
+      }
 
       const fetchData = async () => {
 
@@ -659,6 +665,11 @@ export default function Official({ params }) {
 
 
     if (tab == 4) {
+
+      data = {
+        ...data,
+        dashboard_filter: dashboarFilter
+      }
 
       loadAll()
       const fetchData = async () => {
@@ -915,8 +926,6 @@ export default function Official({ params }) {
           position: '',
           status: '',
         })
-
-        setSelectedSearchItem(null)
 
         setCount(count + 1)
         SetMessage('Successfully added a barangay official')
@@ -1266,38 +1275,31 @@ export default function Official({ params }) {
   }
 
 
-
-
-
   const changeTab = (v) => {
 
 
-
-
-
     if (v == 0) {
-      router.push('/Admin/Official/Staff/1')
+      router.replace('/Admin/Official/Staff/1')
     }
     if (v == 1) {
-      router.push('/Admin/Official/Resident/1')
+      router.replace('/Admin/Official/Resident/1')
     }
     if (v == 2) {
-      router.push('/Admin/Official/Schedule/1')
+      router.replace('/Admin/Official/Schedule/1')
     }
     if (v == 3) {
-      router.push('/Admin/Official/Services/1')
+      router.replace('/Admin/Official/Services/1')
     }
     if (v == 4) {
-      router.push('/Admin/Official/Blotter/1')
+      router.replace('/Admin/Official/Blotter/1')
     }
     if (v == 10) {
-      router.push('/Admin/Official/Dashboard')
+      router.replace('/Admin/Official/Dashboard')
     }
     if (v == 6) {
-      router.push('/Admin/Official/Logs/1')
+      router.replace('/Admin/Official/Logs/1')
     }
 
-    // seTab(v)
   }
 
 
@@ -1463,16 +1465,11 @@ export default function Official({ params }) {
             <div id='menu' className="w-100">
               { /* asan */}
 
-            
-              <div  className="col-lg-12 p-5 d-flex flex-column">
+              <div className="col-lg-12 p-5 d-flex flex-column">
               <div
-                  onClick={() => {
+                  onClick={() => {                 
 
-                
-                    
-
-                    if(document.getElementById("menu").classList.contains("openSidebar")){
-
+                    if (document.getElementById("menu").classList.contains("openSidebar")) {
                       document.getElementById("menu").classList.remove("openSidebar");
                       document.getElementById("sidebar").classList.remove("openSidebar-full");
 
@@ -1481,7 +1478,7 @@ export default function Official({ params }) {
                       // document.getElementById("sidebar").style.width = "auto"
                       setOpenSide(false)
                     }
-                    else{
+                    else {
                       document.getElementById("menu").classList.add("openSidebar");
                       document.getElementById("sidebar").classList.add("openSidebar-full");
                       document.getElementById("sidebarbg").classList.add('logo-bg')
@@ -1505,10 +1502,8 @@ export default function Official({ params }) {
 
                 <div className="flex-column mt-5 mb-5">
 
-
-
                   <div onClick={() => changeTab(10)} className={`p-4 w-100 rounded nav-container ${tab == 10 ? 'active-nav' : ''} pointer`}>
-                    <i class="bi bi-person f-white icon"></i>
+                    <i className="bi bi-grid f-white icon"></i>
 
                     {
                       openSide 
@@ -1533,7 +1528,11 @@ export default function Official({ params }) {
                   </div>
 
 
-                  <div onClick={() => changeTab(1)} className={`p-4 w-100 rounded nav-container ${tab == 1 ? 'active-nav' : ''} pointer`}>
+                  <div onClick={() => {
+                    dispatch(filterData('all'))
+                    changeTab(1)
+                  }
+                  } className={`p-4 w-100 rounded nav-container ${tab == 1 ? 'active-nav' : ''} pointer`}>
 
                     <i class="bi bi-people-fill f-white icon"></i>
 
@@ -1562,6 +1561,7 @@ export default function Official({ params }) {
 
                   <div 
                     onClick={() => {
+                      dispatch(filterData('all'))
                       changeTab(4);
                       setIsAppointments(false);  // Switch to Blotter
                     }} 
@@ -1612,13 +1612,14 @@ export default function Official({ params }) {
 
                     }
                   } className={`p-4 w-100 rounded nav-container pointer`}>
-                    {/* <i class="bi bi-activity f-white icon"></i> */}
-                    <span className="f-white nav-item ms-2 fw-bold">
+                    <i className="bi bi-box-arrow-right f-white icon m-2"></i> 
+                    {
+                      openSide  &&
+                      <span className="f-white nav-item ms-2 fw-bold">
                       Log out
-                    </span>
+                      </span>
+                    }
                   </div>
-
-
                   
                 </div>
                 {/* Navigation */}
@@ -1633,20 +1634,15 @@ export default function Official({ params }) {
             <div class="dropdown d-flex align-items-center justify-content-between w-100 " >
 
             <div
-                  onClick={() => {
+                  onClick={() => {                                            
 
-                    
-                    
-                    
-
-                    if(document.getElementById("menu").classList.contains("openSidebar")){
+                    if (document.getElementById("menu").classList.contains("openSidebar")){
                       document.getElementById("menu").classList.remove("openSidebar");
                       document.getElementById("sidebar").classList.remove("openSidebar-full");
                       document.getElementById("sidebarbg").classList.remove('logo-bg')
                       setOpenSide(false)
                     }
-                    else{
-                      
+                    else {                  
                       document.getElementById("menu").classList.add("openSidebar");
                       document.getElementById("sidebar").classList.add("openSidebar-full");
                       document.getElementById("sidebarbg").classList.add('logo-bg')
@@ -1670,7 +1666,7 @@ export default function Official({ params }) {
                   }
 
                   {
-                    tab == 1 && "Barangay Officials"
+                    tab == 1 && "Manage Residents"
                   }
 
                   {
@@ -1725,217 +1721,236 @@ export default function Official({ params }) {
             </div>
 
 
+            <div className="d-flex flex-column align-items-center justify-content-center w-100 p-5 rounded bg-green mt-3 logo-bg-officials" >
+              <h1 className="f-white">
+                BARANGAY CENTRAL BICUTAN
+              </h1>
 
-
-            {
-              tab != 10 ?
-                <div className="d-flex flex-column align-items-center justify-content-center w-100 p-5 rounded bg-green mt-3 logo-bg-officials" >
-                  <h1 className="f-white">
-                    BARANGAY CENTRAL BICUTAN
-                  </h1>
-
-                  <span className="f-white">
-                    Sunflower Street, Taguig City, Metro Manila
-                  </span>
-                </div>
-
-                :
-
-                <div className="col-12 d-flex mt-5">
-
-                  <div className="col-6" >
-                    <img
-                      style={{
-                        height: "300px",
-                        width: "100%",
-                        objectFit: "cover"
-                      }}
-                      // src={require('../assets/')}
-                      src='/images/TaguigSky.jpg'
-                    />
-                  </div>
-
-                  <div className="col-6 bg-green p-5" >
-                    <h4 className="f-white">
-                      DID YOU KNOW?
-                    </h4>
-
-                    <p className="f-white">
-                      Bonifacio Global City (BGC) in Taguig is a modern business and lifestyle district in Metro Manila, known for its upscale shopping centers, trendy restaurants, and vibrant nightlife. Originally a military camp named Fort Bonifacio, it has transformed into a major financial and commercial hub, attracting both local and international businesses.
-                    </p>
-
-                  </div>
-
-                </div>
-            }
+              <span className="f-white">
+                Sunflower Street, Taguig City, Metro Manila
+              </span>
+            </div>
 
             {/* Dashboard */}
             {
               tab == 10 &&
-
               <>
-                <div className="col-12 mt-5 ">
-                  <h4>Resident Information</h4>
-                  <div className="col-12 d-flex">
-
-                    <div className="d-flex bg-green p-3 align-items-center rounded">
-                      <i class="bi bi-house-door f-white" style={{ fontSize: "50px" }}></i>
-                      <div className="flex-column d-flex ms-3 align-items-center">
-                        <span className="f-white">
-                          Count of Residents
-                        </span>
-
-                        <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
-                          {dashboard.count_of_residents}
-                        </span>
-                      </div>
-                    </div>
-
-
-                    <div className="d-flex bg-green p-3 align-items-center rounded ms-3">
-                      <i class="bi bi-gender-male f-white" style={{ fontSize: "50px" }}></i>
-                      <div className="flex-column d-flex ms-3 align-items-center">
-                        <span className="f-white">
-                          Count of Male
-                        </span>
-
-                        <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
-                          {dashboard.males}
+                <div className="container mt-5" style={{ maxWidth: '90%', margin: '0 auto 0 0' }}>
+                  {/* Appointment Schedules Section */}
+                  <h4 className="mb-4">Appointment Schedules</h4>
+                  <div className="row g-3">
+                    <div 
+                      className="col-md-3 d-flex bg-green p-2 align-items-center rounded pointer"
+                      style={{ cursor: 'pointer', height: '130px', justifyContent: 'center' }}
+                      onClick={() => {
+                        router.push('/Admin/Official/Schedule/1/');
+                      }}
+                    >
+                      <i className="ms-3 bi bi-calendar-date f-white" style={{ fontSize: '35px' }}></i>
+                      <div className="ms-3 text-center">
+                        <span className="f-white">Count of total schedules</span>
+                        <span className="f-yellow mt-2 d-block" style={{ fontSize: '24px', fontWeight: 'bold' }}>
+                          {dashboard.schedules}
                         </span>
                       </div>
                     </div>
-
-
-                    <div className="d-flex bg-green p-3 align-items-center rounded ms-3">
-                      <i class="bi bi-gender-female f-white" style={{ fontSize: "50px" }}></i>
-                      <div className="flex-column d-flex ms-3 align-items-center">
-                        <span className="f-white">
-                          Count of Female
-                        </span>
-
-                        <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
-                          {dashboard.females}
-                        </span>
-                      </div>
-                    </div>
-
-
-                    <div className="d-flex bg-green p-3 align-items-center rounded ms-3">
-                      <i class="bi bi-person-wheelchair f-white" style={{ fontSize: "50px" }}></i>
-                      <div className="flex-column d-flex ms-3 align-items-center">
-                        <span className="f-white">
-                          Count of Seniors
-                        </span>
-
-                        <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
-                          {dashboard.count_of_seniors}
-                        </span>
-                      </div>
-                    </div>
-
-
-
                   </div>
-                </div>
 
-                <div className="col-12 d-flex justify-content-start mb-5">
-                  <div className="mt-5 col-5">
-                    <h4>Apointment Schedules</h4>
-                    <div className="col-12 d-flex">
+                  {/* Resident Information Section */}
+                  <div className="mt-5"></div>
+                  <h4 className="mb-4">Resident Information</h4>
+                  <div className="row g-3">
 
-                      <div className="d-flex bg-green p-3 align-items-center rounded">
-                        <i class="bi bi-calendar-date f-white" style={{ fontSize: "50px" }}></i>
-                        <div className="flex-column d-flex ms-3 align-items-center">
-                          <span className="f-white">
-                            Count of total schedules
+                    {/* Count of Residents */}
+                    <div className="col-12 col-sm-6 col-md-2">
+                      <div 
+                        className="d-flex bg-green p-3 align-items-center rounded"
+                        style={{ cursor: 'pointer', height: '130px', justifyContent: 'center' }}
+                        onClick={() => {
+                          dispatch(filterData('all'));
+                          dispatch(settingPeding(0));
+                          router.push('/Admin/Official/Resident/1/');
+                        }}
+                      >
+                        <i className="bi bi-house-door f-white" style={{ fontSize: '30px' }}></i>
+                        <div className="ms-3 text-center">
+                          <span className="f-white">Residents</span>
+                          <span className="f-yellow mt-2 d-block" style={{ fontSize: '20px', fontWeight: 'bold' }}>
+                            {dashboard.non_pending_resident}
                           </span>
+                        </div>
+                      </div>
+                    </div>
 
-                          <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
-                            {dashboard.schedules}
+                    {/* Count of Pending Residents */}
+                    <div className="col-12 col-sm-6 col-md-2">
+                      <div 
+                        className="d-flex bg-green p-3 align-items-center rounded"
+                        style={{ cursor: 'pointer', height: '130px', justifyContent: 'center' }}
+                        onClick={() => {
+                          dispatch(filterData('all'));
+                          dispatch(settingPeding(1));
+                          router.push('/Admin/Official/Resident/1/');
+                        }}
+                      >
+                        <i className="bi bi-house-door f-white" style={{ fontSize: '30px' }}></i>
+                        <div className="ms-3 text-center">
+                          <span className="f-white">Pending Residents</span>
+                          <span className="f-yellow mt-2 d-block" style={{ fontSize: '20px', fontWeight: 'bold' }}>
+                            {dashboard.pending_resident}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Count of Male */}
+                    <div className="col-12 col-sm-6 col-md-2">
+                      <div 
+                        className="d-flex bg-green p-3 align-items-center rounded"
+                        style={{ cursor: 'pointer', height: '130px', justifyContent: 'center' }}
+                        onClick={() => {
+                          dispatch(filterData('male'));
+                          router.push('/Admin/Official/Resident/1/');
+                        }}
+                      >
+                        <i className="bi bi-gender-male f-white" style={{ fontSize: '30px' }}></i>
+                        <div className="ms-3 text-center">
+                          <span className="f-white">Male</span>
+                          <span className="f-yellow mt-2 d-block" style={{ fontSize: '20px', fontWeight: 'bold' }}>
+                            {dashboard.males}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Count of Female */}
+                    <div className="col-12 col-sm-6 col-md-2">
+                      <div 
+                        className="d-flex bg-green p-3 align-items-center rounded"
+                        style={{ cursor: 'pointer', height: '130px', justifyContent: 'center' }}
+                        onClick={() => {
+                          dispatch(filterData('female'));
+                          router.push('/Admin/Official/Resident/1/');
+                        }}
+                      >
+                        <i className="bi bi-gender-female f-white" style={{ fontSize: '30px' }}></i>
+                        <div className="ms-3 text-center">
+                          <span className="f-white">Female</span>
+                          <span className="f-yellow mt-2 d-block" style={{ fontSize: '20px', fontWeight: 'bold' }}>
+                            {dashboard.females}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Count of Seniors */}
+                    <div className="col-12 col-sm-6 col-md-2">
+                      <div 
+                        className="d-flex bg-green p-3 align-items-center rounded"
+                        style={{ cursor: 'pointer', height: '130px', justifyContent: 'center' }}
+                        onClick={() => {
+                          dispatch(filterData('senior'));
+                          router.push('/Admin/Official/Resident/1/');
+                        }}
+                      >
+                        <i className="bi bi-person-wheelchair f-white" style={{ fontSize: '30px' }}></i>
+                        <div className="ms-3 text-center">
+                          <span className="f-white">Seniors</span>
+                          <span className="f-yellow mt-2 d-block" style={{ fontSize: '20px', fontWeight: 'bold' }}>
+                            {dashboard.count_of_seniors}
                           </span>
                         </div>
                       </div>
                     </div>
                   </div>
 
-
+                  {/* Complaints Section */}
                   <div className="mt-5">
-                    <h4>Complaints</h4>
+                    <h4 className="mb-4">Complaints</h4>
+                    <div className="row g-3">
 
-                    <div className="d-flex">
-                      <div className=" d-flex">
-
-                        <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{ width: "200px" }}>
-                          <i class="bi bi-hand-thumbs-down f-white" style={{ fontSize: "50px" }}></i>
-                          <div className="flex-column d-flex ms-3 align-items-center">
-                            <span className="f-white">
-                              Unresolve
-                            </span>
-
-                            <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
+                      {/* Unresolved Complaints */}
+                      <div className="col-md-3">
+                        <div 
+                          className="d-flex bg-green p-3 align-items-center rounded pointer"
+                          style={{ cursor: 'pointer', height: '130px', justifyContent: 'center' }}
+                          onClick={() => {
+                            dispatch(filterData('unresolved'));
+                            router.push('/Admin/Official/Blotter/1/');
+                          }}
+                        >
+                          <i className="bi bi-hand-thumbs-down f-white" style={{ fontSize: '35px' }}></i>
+                          <div className="ms-3 text-center">
+                            <span className="f-white">Unresolved</span>
+                            <span className="f-yellow mt-2 d-block" style={{ fontSize: '24px', fontWeight: 'bold' }}>
                               {dashboard.unresolved}
                             </span>
                           </div>
                         </div>
                       </div>
 
-                      <div className=" d-flex ms-3">
-
-                        <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{ width: "200px" }}>
-                          <i class="bi bi-lightning f-white" style={{ fontSize: "50px" }}></i>
-                          <div className="flex-column d-flex ms-3 align-items-center">
-                            <span className="f-white">
-                              Ongoing
-                            </span>
-
-                            <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
+                      {/* Ongoing Complaints */}
+                      <div className="col-md-3">
+                        <div 
+                          className="d-flex bg-green p-3 align-items-center rounded pointer"
+                          style={{ cursor: 'pointer', height: '130px', justifyContent: 'center' }}
+                          onClick={() => {
+                            dispatch(filterData('ongoing'));
+                            router.push('/Admin/Official/Blotter/1/');
+                          }}
+                        >
+                          <i className="bi bi-lightning f-white" style={{ fontSize: '35px' }}></i>
+                          <div className="ms-3 text-center">
+                            <span className="f-white">Ongoing</span>
+                            <span className="f-yellow mt-2 d-block" style={{ fontSize: '24px', fontWeight: 'bold' }}>
                               {dashboard.ongoing}
                             </span>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-
-                    <div className="d-flex mt-3">
-                      <div className=" d-flex">
-
-                        <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{ width: "200px" }}>
-                          <i class="bi bi-hand-thumbs-up f-white" style={{ fontSize: "50px" }}></i>
-                          <div className="flex-column d-flex ms-3 align-items-center">
-                            <span className="f-white">
-                              Settled
-                            </span>
-
-                            <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
+                      {/* Settled Complaints */}
+                      <div className="col-md-3">
+                        <div 
+                          className="d-flex bg-green p-3 align-items-center rounded pointer"
+                          style={{ cursor: 'pointer', height: '130px', justifyContent: 'center' }}
+                          onClick={() => {
+                            dispatch(filterData('settled'));
+                            router.push('/Admin/Official/Blotter/1/');
+                          }}
+                        >
+                          <i className="bi bi-hand-thumbs-up f-white" style={{ fontSize: '35px' }}></i>
+                          <div className="ms-3 text-center">
+                            <span className="f-white">Settled</span>
+                            <span className="f-yellow mt-2 d-block" style={{ fontSize: '24px', fontWeight: 'bold' }}>
                               {dashboard.settled}
                             </span>
                           </div>
                         </div>
                       </div>
 
-                      <div className=" d-flex ms-3">
-
-                        <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{ width: "200px" }}>
-                          <i class="bi bi-x-octagon-fill f-white" style={{ fontSize: "50px" }}></i>
-                          <div className="flex-column d-flex ms-3 align-items-center">
-                            <span className="f-white">
-                              Dismissed
-                            </span>
-
-                            <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
+                      {/* Dismissed Complaints */}
+                      <div className="col-md-3">
+                        <div 
+                          className="d-flex bg-green p-3 align-items-center rounded pointer"
+                          style={{ cursor: 'pointer', height: '130px', justifyContent: 'center' }}
+                          onClick={() => {
+                            dispatch(filterData('dismissed'));
+                            router.push('/Admin/Official/Blotter/1/');
+                          }}
+                        >
+                          <i className="bi bi-x-octagon-fill f-white" style={{ fontSize: '35px' }}></i>
+                          <div className="ms-3 text-center">
+                            <span className="f-white">Dismissed</span>
+                            <span className="f-yellow mt-2 d-block" style={{ fontSize: '24px', fontWeight: 'bold' }}>
                               {dashboard.dismissed}
                             </span>
                           </div>
                         </div>
                       </div>
                     </div>
-
-
                   </div>
                 </div>
-
-
               </>
             }
 
@@ -1955,7 +1970,7 @@ export default function Official({ params }) {
                 <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
 
                   <div className="d-flex align-items-center">
-                    <span className="f-white">Search:</span>
+                    <span className="fw-bold f-white">Search:</span>
                     <input
                       // onKeyDown={handleKeyDown}
                       value={searchItemList}
@@ -1963,7 +1978,9 @@ export default function Official({ params }) {
                         setSearchItemList(v.target.value)
                         handleKeyDown(v.target.value)
                       }}
-                      type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Official name" />
+                      type="email" className="form-control rounded ms-2" 
+                        id="exampleFormControlInput1" placeholder="Official name" 
+                        style={{ width: '250px' }}/>
                   </div>
 
                   {
@@ -1985,19 +2002,19 @@ export default function Official({ params }) {
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       NAME
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       CHAIRMANSHIP
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       POSITION
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       STATUS
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       ACTION
                     </HeaderItem>
                   </div>
@@ -2091,7 +2108,7 @@ export default function Official({ params }) {
                 <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
 
                   <div className="d-flex align-items-center col-6">
-                    <span className="f-white">Search:</span>
+                    <span className="fw-bold f-white">Search:</span>
                     <input
                       // onKeyDown={handleKeyDown}
                       value={searchItemList}
@@ -2181,32 +2198,32 @@ export default function Official({ params }) {
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Fullname
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Address
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Age
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Civil Status
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Gender
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Voter Status
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       User Status
                     </HeaderItem>
 
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Appointments
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Action
                     </HeaderItem>
                   </div>
@@ -2348,15 +2365,15 @@ export default function Official({ params }) {
                 <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
 
                 <div className="d-flex align-items-center">
-                  <span className="f-white">Search:</span>
+                  <span className="fw-bold f-white">Search:</span>
                   <input
                     onChange={(v) => {
                       setSearchItemList(v.target.value);
                       handleKeyDown(v.target.value);
                     }}
                     value={searchItemList}
-                    className="form-control rounded ms-2"
-                    placeholder="Search name"
+                    type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" 
+                    style={{ width: '250px' }}
                   />
                 </div>
 
@@ -2421,25 +2438,25 @@ export default function Official({ params }) {
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
 
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Queing
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Date
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Name
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Service
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Purpose
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Status
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Action
                     </HeaderItem>
                   </div>
@@ -2635,7 +2652,7 @@ export default function Official({ params }) {
                 <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
 
                   <div className="d-flex align-items-center">
-                    <span className="f-white">Search:</span>
+                    <span className="fw-bold f-white">Search:</span>
                     <input
                       // onKeyDown={handleKeyDown}
                       onChange={(v) => {
@@ -2643,7 +2660,9 @@ export default function Official({ params }) {
                         handleKeyDown(v.target.value)
                       }}
                       value={searchItemList}
-                      type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
+                      type="email" className="form-control rounded ms-2" 
+                        id="exampleFormControlInput1" style={{ width: '250px' }}
+                    />
                   </div>
 
                   <div >
@@ -2674,19 +2693,19 @@ export default function Official({ params }) {
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       No.
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Service
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Date
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Cost
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Action
                     </HeaderItem>
                   </div>
@@ -2795,7 +2814,7 @@ export default function Official({ params }) {
 
                 <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
                   <div className="d-flex align-items-center flex-wrap">
-                    <label className="me-2 f-white">Search:</label>
+                    <label className="me-2 fw-bold f-white">Search:</label>
                       <input
                         // onKeyDown={handleKeyDown}
                         value={searchItemList}
@@ -2805,68 +2824,68 @@ export default function Official({ params }) {
                         }}
                         type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" 
                           style={{ width: '250px' }}/>
-
-                        {/* Date Pickers */}
-                        <div className="d-flex align-items-center ms-3">
-                          {/* From Date */}
-                          <div className="d-flex align-items-center ms-3">
-                            <label className="me-2 f-white">From:</label>
-                            <DatePicker
-                              selected={fromDate}
-                              onChange={(date) => setFromDate(date)}
-                              dateFormat="yyyy-MM-dd"
-                              className="form-control"
-                              placeholderText="yyyy-mm-dd"
-                              style={{ width: '150px' }}  // Adjust width for better visibility
-                            />
-                          </div>
-
-                          {/* To Date */}
-                          <div className="d-flex align-items-center ms-3">
-                            <label className="me-2 f-white">To:</label>
-                            <DatePicker
-                              selected={toDate}
-                              onChange={(date) => setToDate(date)}
-                              dateFormat="yyyy-MM-dd"
-                              className="form-control"
-                              placeholderText="yyyy-mm-dd"
-                              minDate={fromDate}
-                              style={{ width: '150px' }}  // Adjust width for better visibility
-                            />
-                          </div>
-
-                          {/* Category Dropdown */}
-                          <div className="d-flex align-items-center ms-3">
-                            <label className="me-2 f-white">Category:</label>
-                            <select 
-                              className="form-select"
-                              value={category}
-                              onChange={(e) => setCategory(e.target.value)}
-                              style={{ width: '150px' }}  // Adjust width as needed
-                            >
-                              <option value="">Select Category</option>
-                              <option value="Noise">Noise</option>
-                              <option value="Theft">Theft</option>
-                              <option value="Test">Test</option>
-                              <option value="Others">Others</option>
-                            </select>
-                          </div>
-
-                          {/* Download Button */}
-                          <button onClick={handleDownloadBlotter} className="btn btn-warning ms-3">
-                            Download
-                          </button>
-
-                          {/* Refresh Button */}
-                          <button onClick={resetFilters} className="btn btn-secondary ms-2">
-                            Refresh
-                          </button>
-                        </div>
-
-                        {/* Error Message */}
-                        {errorMessage && <div className="text-danger">{errorMessage}</div>}
-
                   </div>
+
+                  {/* Date Pickers */}
+                  <div className="d-flex align-items-center ms-3">
+                    {/* From Date */}
+                    <div className="d-flex align-items-center ms-3">
+                      <label className="me-2 f-white">From:</label>
+                      <DatePicker
+                        selected={fromDate}
+                        onChange={(date) => setFromDate(date)}
+                        dateFormat="yyyy-MM-dd"
+                        className="form-control"
+                        placeholderText="yyyy-mm-dd"
+                        style={{ width: '150px' }}  // Adjust width for better visibility
+                      />
+                    </div>
+
+                    {/* To Date */}
+                    <div className="d-flex align-items-center ms-3">
+                      <label className="me-2 f-white">To:</label>
+                      <DatePicker
+                        selected={toDate}
+                        onChange={(date) => setToDate(date)}
+                        dateFormat="yyyy-MM-dd"
+                        className="form-control"
+                        placeholderText="yyyy-mm-dd"
+                        minDate={fromDate}
+                        style={{ width: '150px' }}  // Adjust width for better visibility
+                      />
+                    </div>
+
+                    {/* Category Dropdown */}
+                    <div className="d-flex align-items-center ms-3">
+                      <label className="me-2 f-white">Category:</label>
+                      <select 
+                        className="form-select"
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        style={{ width: '150px' }}  // Adjust width as needed
+                      >
+                        <option value="">Select Category</option>
+                        <option value="Noise">Noise</option>
+                        <option value="Theft">Theft</option>
+                        <option value="Test">Test</option>
+                        <option value="Others">Others</option>
+                      </select>
+                    </div>
+
+                    {/* Download Button */}
+                    <button onClick={handleDownloadBlotter} className="btn btn-warning ms-3">
+                      Download
+                    </button>
+
+                    {/* Refresh Button */}
+                    <button onClick={resetFilters} className="btn btn-secondary ms-2">
+                      Refresh
+                    </button>
+                  </div>
+
+                  {/* Error Message */}
+                  {errorMessage && <div className="text-danger">{errorMessage}</div>}
+
 
                   <div >
                     <button
@@ -2898,19 +2917,19 @@ export default function Official({ params }) {
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Complainant
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Complainee
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Date
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Status
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold' }}>
                       Action
                     </HeaderItem>
                   </div>
@@ -2969,7 +2988,7 @@ export default function Official({ params }) {
                                     setShowBlotter(true)
                                     setBlotter(i)
                                   }}
-                                  type="button" class="btn btn-warning ms-3">View</button>
+                                  type="button" class="btn btn-primary ms-3">View</button>
 
                                 <button
                                   onClick={() => window.open(`https://000040122.xyz/api/downloadBlotterPDF?blotter_id=${i.id}&download=0`)}
@@ -3018,7 +3037,7 @@ export default function Official({ params }) {
                 <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
 
                   <div className="d-flex align-items-center">
-                    <span className="f-white">Search:</span>
+                    <span className="fw-bold f-white">Search:</span>
                     <input
                       // onKeyDown={handleKeyDown}
                       onChange={(v) => {
@@ -3026,36 +3045,36 @@ export default function Official({ params }) {
                         handleKeyDown(v.target.value)
                       }}
                       value={searchItemList}
-                      type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
+                      type="email" className="form-control rounded ms-2" 
+                        id="exampleFormControlInput1" style={{ width: '250px' }} 
+                    />
                   </div>
-
 
                 </div>
 
-
-                {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
-
-                  {/* Table header */}
+                {/* Table header */}
+                <div className="p-2 pb-4 mt-3">
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold', fontSize: '14px' }}>
                       No.
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold', fontSize: '14px' }}>
                       Action type
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold', fontSize: '14px' }}>
                       Description
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold', fontSize: '14px' }}>
                       Date
                     </HeaderItem>
-                    <HeaderItem>
+                    <HeaderItem style={{ fontWeight: 'bold', fontSize: '14px' }}>
                       Action taker
                     </HeaderItem>
                   </div>
+                </div>
 
-
+                {/*  */}
+                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
 
                   {/* Table body */}
                   { }
@@ -3156,7 +3175,6 @@ export default function Official({ params }) {
               <div class="modal-content">
                 <div class="modal-header">
                   <h1 class="modal-title fs-5" id="exampleModalLabel">Edit</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                   <div class="mb-3">
@@ -3232,7 +3250,6 @@ export default function Official({ params }) {
               <div class="modal-content">
                 <div class="modal-header">
                   <h1 class="modal-title fs-5" id="addOfficialModalLabel">Add</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                   <div class="mb-3">
@@ -3719,7 +3736,6 @@ export default function Official({ params }) {
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title">{isEdit ? "Edit" : "Add"} Barangay Services</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => { setIsEdit(false) }}></button>
                 </div>
                 <div class="modal-body">
 
@@ -3796,15 +3812,15 @@ export default function Official({ params }) {
 
                     <label class="form-label">Legend</label>
 
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{first_name}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{first_name}'} as placeholder</span>
 
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{middle_name}'} as placeholder</span>
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{last_name}'} as placeholder</span>
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{cell_number}'} as placeholder</span>
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{civil_status}'} as placeholder</span>
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{birthday}'} as placeholder</span>
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{gender}'} as placeholder</span>
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{current_address}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{middle_name}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{last_name}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{cell_number}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{civil_status}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{birthday}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{gender}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{current_address}'} as placeholder</span>
 
                   </div>
 
@@ -3830,7 +3846,7 @@ export default function Official({ params }) {
                   </div>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                   <button data-bs-dismiss="modal" onClick={() => addDocumentType()} type="button" class="btn btn-primary bg-green">Save</button>
                 </div>
               </div>

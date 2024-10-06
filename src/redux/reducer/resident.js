@@ -117,7 +117,8 @@ export const loadAllUsers = createAsyncThunk('user/viewAllUsers', async (data) =
       search_value: data.searchItemList,
       page_number: data.currentPage,
       item_per_page: data.per_page,
-      isPendingResident: data.isPending
+      isPendingResident: data.isPending,
+      dashboard_filter: data.dashboard_filter
     }
   });
   return res.data;
@@ -239,6 +240,7 @@ export const viewAllBlottersApi = createAsyncThunk('user/viewAllBlotters', async
       from_date: data.from_date,
       to_date: data.to_date,
       category: data.category,
+      dashboard_filter: data.dashboard_filter,
     }
   });
   return res.data;

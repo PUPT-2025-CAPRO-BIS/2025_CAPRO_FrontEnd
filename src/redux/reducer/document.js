@@ -58,7 +58,7 @@ headers:{
 }, params:{
   search_value: data.searchItemList,
       page_number: data.currentPage,
-      item_per_page: 100
+      item_per_page: 10
 }
 });
 return res.data;

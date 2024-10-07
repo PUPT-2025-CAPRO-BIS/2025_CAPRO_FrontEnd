@@ -59,7 +59,7 @@ export default function Official({ params }) {
   const [category, setCategory] = useState('');
   const [errorMessage, setErrorMessage] = useState("");
   const [isAppointments, setIsAppointments] = useState(true);
-  const [tab, seTab] = useState(10)
+  const [tab, seTab] = useState(null)
 
   const [showAddResident, setShowAddResident] = useState(false)
   const [dashboard_filter, setDashboardFilter] = useState('all')
@@ -548,6 +548,8 @@ export default function Official({ params }) {
 
           if (currentPage > result.total_pages) {
             // alert("Invalid url")
+            let page = result.total_pages
+            router.replace('/Admin/Official/Staff/' + page)
           }
 
           // Handle success, e.g., navigate to another page
@@ -560,7 +562,7 @@ export default function Official({ params }) {
 
       fetchData();
     }
-    if (tab == 1 || tab == 0) {
+    if (tab == 1) {
 
       data = {
         ...data,
@@ -599,7 +601,8 @@ export default function Official({ params }) {
           setTotalPage(result.total_pages)
 
           if (currentPage > result.total_pages) {
-
+            let page = result.total_pages
+            router.replace('/Admin/Official/Logs/' + page)
           }
 
           // Handle success, e.g., navigate to another page
@@ -624,6 +627,8 @@ export default function Official({ params }) {
           setTotalPage(result.total_pages)
 
           if (currentPage > result.total_pages) {
+            let page = result.total_pages
+            router.replace('/Admin/Official/Services/' + page)
 
           }
 
@@ -649,6 +654,8 @@ export default function Official({ params }) {
 
           if (currentPage > result.total_pages) {
             // alert("Invalid url")
+            let page = result.total_pages
+            router.replace('/Admin/Official/Schedule/' + page)
           }
 
           // Handle success, e.g., navigate to another page
@@ -681,6 +688,8 @@ export default function Official({ params }) {
 
           if (currentPage > result.total_pages) {
             // alert("Invalid url")
+            let page = result.total_pages
+            router.replace('/Admin/Official/Blotter/' + page)
           }
 
           // Handle success, e.g., navigate to another page
@@ -774,7 +783,7 @@ export default function Official({ params }) {
       try {
         const result = await dispatch(loadAllUsers(data)).unwrap();
 
-        setTotalPage(result.total_pages)
+        // setTotalPage(result.total_pages)
 
 
         // Handle success, e.g., navigate to another page
@@ -810,7 +819,7 @@ export default function Official({ params }) {
           position: '',
           status: '',
         })
-
+        setCurrentPage
         setSelectedItem(null)
 
         setCount(count + 1)

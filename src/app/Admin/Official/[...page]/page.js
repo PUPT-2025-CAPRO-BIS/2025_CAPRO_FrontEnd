@@ -2883,9 +2883,18 @@ export default function Official({ params }) {
                         style={{ width: '150px' }}  // Adjust width as needed
                       >
                         <option value="">Select Category</option>
-                        <option value="Noise">Noise</option>
-                        <option value="Theft">Theft</option>
-                        <option value="Test">Test</option>
+                        <option value="Noise">Assault</option>
+                        <option value="Theft">Verbal Abuse</option>
+                        <option value="Test">Theft</option>
+                        <option value="Noise">Domestic Violence</option>
+                        <option value="Noise">Vandalism</option>
+                        <option value="Noise">Trespassing</option>
+                        <option value="Noise">Public Disturbance</option>
+                        <option value="Noise">Disorderly Conduct</option>
+                        <option value="Noise">Child Welfare Concern</option>
+                        <option value="Noise">Harassment</option>
+                        <option value="Noise">Property Conflict</option>
+                        <option value="Noise">Neighbor Conflict</option>
                         <option value="Others">Others</option>
                       </select>
                     </div>

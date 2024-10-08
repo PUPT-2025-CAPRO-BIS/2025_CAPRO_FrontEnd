@@ -414,7 +414,20 @@ export default function Official({ params }) {
     }
   }, [isViewing, blotter.category]);
 
-  const options = ["Theft", "Vandalism", "Assault", "Harassment", "Fraud", "Rawr"];
+  const options = [
+    "Theft", 
+    "Vandalism", 
+    "Assault", 
+    "Harassment", 
+    "Verbal Abuse", 
+    "Domestic Violence", 
+    "Trespassing", 
+    "Public Disturbance", 
+    "Disorderly Conduct",
+    "Child Welfare Concern",
+    "Property Conflict",
+    "Neighbor Conflict"
+  ];
 
   const [showBlotter, setShowBlotter] = useState(false)
 

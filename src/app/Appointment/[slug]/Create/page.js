@@ -1,6 +1,6 @@
 'use client'
 import Button from "@/components/Button";
-import { addResidentApi, applyNewResidentApi, createAppointmentApi, generateOTPapi, otpLoginApi } from "@/redux/reducer/resident";
+import { addResidentApi, applyNewResidentApi, checkDateAvailabilityApi, createAppointmentApi, generateOTPapi, otpLoginApi } from "@/redux/reducer/resident";
 import Image from "next/image";
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from "react";
@@ -23,6 +23,7 @@ export default function CreateAppointment() {
 
     // const [birthday, setBirthday] = useState('1992-11-03')
     // const [email, setEmail] = useState('afeil@example.net')
+    const [isDateValid, setIsDateValid] = useState(false);
 
     const [birthday, setBirthday] = useState('')
     const [email, setEmail] = useState('')
@@ -337,7 +338,34 @@ export default function CreateAppointment() {
         fetchData();
     }
 
+    const handleDateChange = async (v) => {
+      const selectedDate = moment(v).format('YYYY-MM-DD');
+      setSelectedDate(selectedDate);
+  
+      try {
+          const result = await dispatch(checkDateAvailabilityApi({ selectedDate, token: accessToken })).unwrap();
+  
+          if (result.error) {
+              setMessage(result.message);
+              setShowSuccess(true);
+              setIsDateValid(false);  
+          } else {
+              setIsDateValid(true);
+          }
+      } catch (error) {
+          console.error('Error checking date availability:', error);
+          setIsDateValid(false);
+      }
+    };
+  
+
     const createAppoint = async () => {
+
+        if (!isDateValid) {
+          setMessage("The selected date is full. Please choose another date.");
+          setShowSuccess(true);
+          return;
+        }
 
         let base64List = []
 
@@ -515,9 +543,7 @@ export default function CreateAppointment() {
                                     <Calendar
                                         minDate={new Date()}
                                         className="mt-3"
-                                        onChange={(v) => {
-                                            setSelectedDate(moment(v).format('YYYY-MM-DD'));
-                                        }}
+                                        onChange={handleDateChange}
                                     />
                                 </div>
 

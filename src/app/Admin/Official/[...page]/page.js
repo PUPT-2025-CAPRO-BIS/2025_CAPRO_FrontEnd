@@ -306,6 +306,7 @@ export default function Official({ params }) {
     searchFirst: '',
     officer_on_duty: '',
     category: '',
+    otherCategory: '',
     complainant_phone_number: '',
     complainee_phone_number: '',
     non_resident_address: ''
@@ -313,29 +314,25 @@ export default function Official({ params }) {
 
   const handleChangeResidentStatus = (type, value) => {
     if (type === "complainant") {
-        // If selecting non-resident for complainant
         if (!value) {
-            // Automatically make complainee a resident
             setBlotter(prevState => ({
                 ...prevState,
-                is_resident_complainant: value, // complainant becomes non-resident
-                is_resident: true // complainee becomes resident
+                is_resident_complainant: value,
+                is_resident: true 
             }));
         } else {
             // Allow both to be residents
             setBlotter(prevState => ({
                 ...prevState,
-                is_resident_complainant: value // complainant becomes resident
+                is_resident_complainant: value
             }));
         }
     } else if (type === "complainee") {
-        // If selecting non-resident for complainee
         if (!value) {
-            // Automatically make complainant a resident
             setBlotter(prevState => ({
                 ...prevState,
-                is_resident: value, // complainee becomes non-resident
-                is_resident_complainant: true // complainant becomes resident
+                is_resident: value, 
+                is_resident_complainant: true
             }));
         } else {
             // Allow both to be residents
@@ -404,6 +401,18 @@ export default function Official({ params }) {
     blotter.complainee_phone_number,
     blotter.non_resident_address
 ]);
+
+  useEffect(() => {
+    // If editing, check if the category is one of the predefined options
+    if (isViewing && blotter.category && !options.includes(blotter.category) && blotter.category !== "Others") {
+      console.log("Setting 'Others' and custom category:", blotter.category);
+      setBlotter({
+        ...blotter,
+        category: "Others", // Set the dropdown to "Others"
+        otherCategory: blotter.category, // Display the actual category in the input field
+      });
+    }
+  }, [isViewing, blotter.category]);
 
   const options = ["Theft", "Vandalism", "Assault", "Harassment", "Fraud", "Rawr"];
 
@@ -4316,26 +4325,51 @@ export default function Official({ params }) {
                     </div>
                   }
 
-                  <div class="mb-3 w-100">
-                    <label class="form-label">Category</label>
+                  <div className="mb-3 w-100">
+                    <label className="form-label">Category</label>
                     <select
                       className="form-select"
                       value={blotter.category}
                       onChange={(e) => {
                         const selectedCategory = e.target.value;
-                        setBlotter({
-                          ...blotter,
-                          category: selectedCategory
+
+                        setBlotter((prevBlotter) => {
+                          return {
+                            ...prevBlotter,
+                            category: selectedCategory,
+                            otherCategory: selectedCategory === "Others" ? prevBlotter.otherCategory || "" : prevBlotter.otherCategory,
+                          };
                         });
                       }}
                     >
                       <option value="">Select a category</option>
                       {options.map((option) => (
-                        <option key={option} value={option}>{option}</option>
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
                       ))}
                       <option value="Others">Others</option>
                     </select>
+
+                    {blotter.category === "Others" && (
+                      <div className="mt-2">
+                        <label className="form-label">Specify</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={blotter.otherCategory} 
+                          onChange={(e) =>
+                            setBlotter((prevBlotter) => ({
+                              ...prevBlotter,
+                              otherCategory: e.target.value,
+                            }))
+                          }
+                          placeholder="Specify the category"
+                        />
+                      </div>
+                    )}
                   </div>
+
 
                   <div class="mb-3 w-100">
                     <label class="form-label">Narration</label>
@@ -4405,9 +4439,12 @@ export default function Official({ params }) {
                         // setShowBlotter(true)
                         setLoading(true)
 
+                        const categoryToSend = blotter.category === "Others" ? blotter.otherCategory : blotter.category;
+
                         let merge = {
                           token: token.token,
                           ...blotter,
+                          category: categoryToSend,
                         }
 
 
@@ -4432,6 +4469,7 @@ export default function Official({ params }) {
                             complainant_id: '',
                             search: '',
                             category: '',
+                            otherCategory: '',
                             complainant_phone_number: '',
                             complainee_phone_number: '',
                             non_resident_address: ''

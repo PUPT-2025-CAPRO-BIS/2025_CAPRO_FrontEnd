@@ -258,6 +258,17 @@ export default function Official({ params }) {
     cell_number: '',
     civil_status_id: '',
     male_female: '',
+    block: '',
+    lot: '',
+    purok: '',
+    street: '',
+    household: '',
+    house_and_lot_ownership: '',
+    living_with_owner: '',
+    renting: '',
+    relationship_to_owner: '',
+    pet_details: '',
+    pet_vaccination: '',
     isPendingResident: 0,
     supporting_files_obj: [],
     current_address: ''
@@ -285,6 +296,17 @@ export default function Official({ params }) {
     cell_number: '',
     civil_status_id: '',
     male_female: '',
+    block: '',
+    lot: '',
+    purok: '',
+    street: '',
+    household: '',
+    house_and_lot_ownership: '',
+    living_with_owner: '',
+    renting: '',
+    relationship_to_owner: '',
+    pet_details: '',
+    pet_vaccination: '',
     isPendingResident: 0
   })
   // male 0 female 1
@@ -1300,8 +1322,8 @@ export default function Official({ params }) {
   const viewCreatedTemplate = (val) => {
 
 
-    window.open(`http://000040122.xyz/api/generatePdf?doc_id=${val.id}&download=0`)
-    // http://localhost:3000/api/generatePdf?doc_id=14&download=0
+    window.open(`https://000040122.xyz/api/generatePdf?doc_id=${val.id}&download=0`)
+    // http://000040122.xyz/api/generatePdf?doc_id=14&download=0
 
   }
 
@@ -2197,7 +2219,7 @@ export default function Official({ params }) {
 
                   <div className="d-flex">
 
-                    <button onClick={() => window.open('http://000040122.xyz/api/downloadUsers')} type="button"
+                    <button onClick={() => window.open('https://000040122.xyz/api/downloadUsers')} type="button"
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "200px" }}>
 
@@ -2395,50 +2417,23 @@ export default function Official({ params }) {
 
                 <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
 
-                <div className="d-flex align-items-center">
-                  <span className="fw-bold f-white">Search:</span>
-                  <input
-                    onChange={(v) => {
-                      setSearchItemList(v.target.value);
-                      handleKeyDown(v.target.value);
-                    }}
-                    value={searchItemList}
-                    type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" 
-                    style={{ width: '250px' }}
-                  />
-                </div>
+                  <div className="d-flex align-items-center">
+                    <span className="f-white">Search:</span>
+                    <input
+                      // onKeyDown={handleKeyDown}
+                      onChange={(v) => {
+                        setSearchItemList(v.target.value)
+                        handleKeyDown(v.target.value)
+                      }}
+                      value={searchItemList}
+                      className="form-control rounded ms-2" placeholder="Search name" />
+ 
+                    <button onClick={() => window.open('https://000040122.xyz/api/downloadAppointments')} type="button"
+                      class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
+                      style={{ width: "300px" }}>
 
-                {/* Date Pickers */}
-                <div className="d-flex align-items-center ms-3">
-                  {/* From Date */}
-                    <div className="d-flex align-items-center">
-                      <label className="me-2 f-white">From:</label>
-                      <DatePicker
-                        selected={fromDate}
-                        onChange={(date) => setFromDate(date)}
-                        dateFormat="yyyy-MM-dd"
-                        className="form-control"
-                        placeholderText="yyyy-mm-dd"
-                      />
-                    </div>
-
-                    {/* To Date */}
-                    <div className="d-flex align-items-center ms-3">
-                      <label className="me-2 f-white">To:</label>
-                      <DatePicker
-                        selected={toDate}
-                        onChange={(date) => setToDate(date)}
-                        dateFormat="yyyy-MM-dd"
-                        className="form-control"
-                        placeholderText="yyyy-mm-dd"
-                        minDate={fromDate}
-                      />
-                    </div>
-
-                    {/* Download Button */}
-                    <button onClick={handleDownloadSchedule} className="btn btn-warning ms-3">
-                      Download
-                    </button>
+                      <i class="bi bi-file-earmark-excel-fill" style={{ fontSize: "28px", color: "green" }}></i>
+                      Download</button>
 
                     {/* Refresh Button */}
                     <button onClick={resetFilters} className="btn btn-secondary ms-2">
@@ -2450,6 +2445,7 @@ export default function Official({ params }) {
                   {errorMessage && <div className="text-danger">{errorMessage}</div>}
 
                   {/* <div >
+                  http://000040122.xyz
                     <button
                       onClick={() => {
                         setShowAddResident(true)
@@ -2636,7 +2632,7 @@ export default function Official({ params }) {
                                         <button
 
                                           onClick={() => {
-                                            window.open(`http://000040122.xyz/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
+                                            window.open(`https://000040122.xyz/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
 
 
                                           }}
@@ -3397,32 +3393,102 @@ export default function Official({ params }) {
                     {
                       isViewing &&
 
-                      <div class="mb-3">
-                        <label class="form-label">Appointment made</label>
-                        <input
-                          id='fnameinput'
-                          disabled={isViewing}
-                          value={resident.appointments_made}
-                          onChange={(val) => {
+                    <div class="mb-3">
+                      <label class="form-label">Appointment made</label>
+                      <input
+                        id='fnameinput'
+                        disabled={isViewing}
+                        value={resident.appointments_made}
+                        onChange={(val) => {
 
-                            if (val.target.value != "") {
-                              document.getElementById('fnameinput').style.border = '1px solid #dee2e6'
+                          if (val.target.value != "") {
+                            document.getElementById('fnameinput').style.border = '1px solid #dee2e6'
+                          }
+                          else {
+                            document.getElementById('fnameinput').style.border = '1px solid red'
+                          }
+
+                          setResident({
+                            ...resident, ...{
+                              first_name: val.target.value
                             }
-                            else {
-                              document.getElementById('fnameinput').style.border = '1px solid red'
-                            }
+                          })
 
-                            setResident({
-                              ...resident, ...{
-                                first_name: val.target.value
-                              }
-                            })
+                        }}
+                        class="form-control" />
 
-                          }}
-                          class="form-control" />
+                    </div>
+                  }
 
-                      </div>
-                    }
+                    <div class="mb-3">
+                      <label class="form-label">Block</label>
+                      <input
+                        disabled={isViewing}
+                        value={resident.block}
+                        onChange={(val) => {
+                          setResident({
+                            ...resident,
+                            block: val.target.value
+                          });
+                        }}
+                        class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Lot</label>
+                      <input
+                        disabled={isViewing}
+                        value={resident.lot}
+                        onChange={(val) => {
+                          setResident({
+                            ...resident,
+                            lot: val.target.value
+                          });
+                        }}
+                        class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Purok</label>
+                      <input
+                        disabled={isViewing}
+                        value={resident.purok}
+                        onChange={(val) => {
+                          setResident({
+                            ...resident,
+                            purok: val.target.value
+                          });
+                        }}
+                        class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Street</label>
+                      <input
+                        disabled={isViewing}
+                        value={resident.street}
+                        onChange={(val) => {
+                          setResident({
+                            ...resident,
+                            street: val.target.value
+                          });
+                        }}
+                        class="form-control" />
+                    </div>  
+
+                    <div class="mb-3">
+                      <label class="form-label">Household No.</label>
+                      <input
+                        disabled={isViewing}
+                        value={resident.household}
+                        onChange={(val) => {
+                          setResident({
+                            ...resident,
+                            household: val.target.value
+                          });
+                        }}
+                        class="form-control" />
+                    </div>
 
                     <div class="mb-3">
                       <label class="form-label">First name</label>
@@ -3495,6 +3561,353 @@ export default function Official({ params }) {
 
                     </div>
 
+                    {/* House and Lot Ownership (Yes/No/Other: Please specify) */}
+                    <div class="mb-3">
+                      <label class="form-label">House and Lot Ownership (Yes/No/Other: Please specify)</label>
+
+                      {/* Check if we are in view mode */}
+                      {isViewing ? (
+                        // Display concatenated value directly when viewing
+                        <input
+                          disabled={true}
+                          value={resident.house_and_lot_ownership || ''} // Display the value directly from the database
+                          class="form-control"
+                        />
+                      ) : (
+                        // Show dropdown and additional input for "Other" option when editing/adding a resident
+                        <>
+                          {/* Dropdown for Yes/No/Other */}
+                          <select
+                            value={
+                              resident.house_and_lot_ownership && resident.house_and_lot_ownership.startsWith('Other')
+                                ? 'Other'
+                                : resident.house_and_lot_ownership || ''
+                            }
+                            onChange={(val) => {
+                              const selectedValue = val.target.value;
+                              if (selectedValue === 'Other') {
+                                // If "Other" is selected, allow input of a reason
+                                setResident({
+                                  ...resident,
+                                  house_and_lot_ownership: 'Other: ', // Placeholder for concatenation with the reason
+                                });
+                              } else {
+                                // For Yes/No, no additional input field is required
+                                setResident({
+                                  ...resident,
+                                  house_and_lot_ownership: selectedValue,
+                                });
+                              }
+                            }}
+                            class="form-select"
+                          >
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="Other">Other</option>
+                          </select>
+
+                          {/* Show input field if "Other" is selected */}
+                          {resident.house_and_lot_ownership &&
+                            resident.house_and_lot_ownership.startsWith('Other') && (
+                              <div class="mb-3 mt-2">
+                                <label class="form-label">Please specify</label>
+                                <input
+                                  type="text"
+                                  placeholder="Specify reason"
+                                  value={resident.house_and_lot_ownership.split(': ')[1] || ''} // Extract the reason part from the string
+                                  onChange={(val) => {
+                                    const newReason = val.target.value;
+                                    setResident({
+                                      ...resident,
+                                      house_and_lot_ownership: `Other: ${newReason}`, // Store concatenated value
+                                    });
+                                  }}
+                                  class="form-control"
+                                />
+                              </div>
+                            )}
+                        </>
+                      )}
+                    </div>
+
+                    {/* Living with House and Lot Owner (Yes/No/Other: Please specify) */}
+                    <div class="mb-3">
+                      <label class="form-label">Living with House and Lot Owner (Yes/No/Other: Please specify)</label>
+
+                      {isViewing ? (
+                        <input
+                          disabled={true}
+                          value={resident.living_with_owner || ''} // Display the value directly from the database
+                          class="form-control"
+                        />
+                      ) : (
+                        <>
+                          <select
+                            value={
+                              resident.living_with_owner && resident.living_with_owner.startsWith('Other')
+                                ? 'Other'
+                                : resident.living_with_owner || '' // Ensure value is always a string
+                            }
+                            onChange={(val) => {
+                              const selectedValue = val.target.value;
+                              if (selectedValue === 'Other') {
+                                setResident({
+                                  ...resident,
+                                  living_with_owner: 'Other: ', // Placeholder for concatenation with the reason
+                                });
+                              } else {
+                                setResident({
+                                  ...resident,
+                                  living_with_owner: selectedValue,
+                                });
+                              }
+                            }}
+                            class="form-select"
+                          >
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="Other">Other</option>
+                          </select>
+
+                          {resident.living_with_owner && resident.living_with_owner.startsWith('Other') && (
+                            <div class="mb-3 mt-2">
+                              <label class="form-label">Please specify</label>
+                              <input
+                                type="text"
+                                placeholder="Specify reason"
+                                value={resident.living_with_owner.split(': ')[1] || ''} // Extract the reason part from the string
+                                onChange={(val) => {
+                                  const newReason = val.target.value;
+                                  setResident({
+                                    ...resident,
+                                    living_with_owner: `Other: ${newReason}`, // Store concatenated value
+                                  });
+                                }}
+                                class="form-control"
+                              />
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+
+                    {/* Renting (Yes/No/Other: Please specify) */}
+                    <div class="mb-3">
+                      <label class="form-label">Renting (Yes/No/Other: Please specify)</label>
+
+                      {isViewing ? (
+                        <input
+                          disabled={true}
+                          value={resident.renting || ''} // Display the value directly from the database
+                          class="form-control"
+                        />
+                      ) : (
+                        <>
+                          <select
+                            value={
+                              resident.renting && resident.renting.startsWith('Other')
+                                ? 'Other'
+                                : resident.renting || '' // Ensure value is always a string
+                            }
+                            onChange={(val) => {
+                              const selectedValue = val.target.value;
+                              if (selectedValue === 'Other') {
+                                setResident({
+                                  ...resident,
+                                  renting: 'Other: ',
+                                });
+                              } else {
+                                setResident({
+                                  ...resident,
+                                  renting: selectedValue,
+                                });
+                              }
+                            }}
+                            class="form-select"
+                          >
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="Other">Other</option>
+                          </select>
+
+                          {resident.renting && resident.renting.startsWith('Other') && (
+                            <div class="mb-3 mt-2">
+                              <label class="form-label">Please specify</label>
+                              <input
+                                type="text"
+                                placeholder="Specify reason"
+                                value={resident.renting.split(': ')[1] || ''} // Extract the reason part from the string
+                                onChange={(val) => {
+                                  const newReason = val.target.value;
+                                  setResident({
+                                    ...resident,
+                                    renting: `Other: ${newReason}`, // Store concatenated value
+                                  });
+                                }}
+                                class="form-control"
+                              />
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+
+                    {/* Relationship to House and Lot Owner */}
+                    <div class="mb-3">
+                      <label class="form-label">Relationship to House and Lot Owner</label>
+                      <input
+                        disabled={isViewing}
+                        value={resident.relationship_to_owner}
+                        onChange={(val) => {
+                          setResident({
+                            ...resident, 
+                            relationship_to_owner: val.target.value
+                          });
+                        }}
+                        class="form-control"
+                        placeholder="Please specify relationship"
+                      />
+                    </div>
+
+                    <div class="mb-3 d-flex flex-column">
+                      <label class="form-label">Birthday</label>
+                      <span className="fw-bold">{moment(resident.birthday).format('YYYY-MM-DD')}</span>
+
+                      {!isViewing &&
+                        <Calendar
+                          id='bdayinput'
+                          className="mt-3"
+                          disabled={isViewing}
+                          value={resident.birthday}
+                          onChange={(v) => {
+                            // document.getElementById('bdayinput').style.border = '1px solid #dee2e6'
+
+                            setResident({
+                              ...resident, ...{
+                                birthday: moment(v).format("YYYY-MM-DD")
+                              }
+                            })
+                            setStartDate(moment(v).format("YYYY-MM-DD"))
+                          }}
+                        />
+                      }
+
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Civil Status</label>
+                      <select
+                        disabled={isViewing}
+                        value={resident.civil_status_id}
+                        id='civilinput'
+                        onChange={(v) => {
+                          document.getElementById('civilinput').style.border = '1px solid #dee2e6'
+                          setResident({
+                            ...resident, ...{
+                              civil_status_id: v.target.value
+                            }
+                          })
+                        }}
+                        class="form-select" aria-label="Default select example">
+                        <option value="null">Civil Status</option>
+                        <option value={1}>Single</option>
+                        <option value={2}>Married</option>
+                        <option value={3}>Widowed</option>
+                        <option value={4}>Legally Separated</option>
+                      </select>
+
+                    </div>
+
+                    {/* Has Pets */}
+                    <div class="mb-3">
+                      <label class="form-label">Has Pets (Specify Type and Number)</label>
+                      <input
+                        disabled={isViewing}
+                        value={resident.pet_details}
+                        onChange={(val) => {
+                          setResident({
+                            ...resident, 
+                            pet_details: val.target.value
+                          });
+                        }}
+                        class="form-control"
+                        placeholder="e.g., 2 Dogs, 1 Cat"
+                      />
+                    </div>
+
+                    {/* Pets Vaccinated (Yes - When / No) */}
+                    <div class="mb-3">
+                      <label class="form-label">Pets Vaccinated (Yes - When / No)</label>
+                      
+                      {/* Check if we are in view mode */}
+                      {isViewing ? (
+                        // Display concatenated value directly when viewing
+                        <input
+                          disabled={true}
+                          value={resident.pet_vaccination || ''} // Display the value directly from the database
+                          class="form-control"
+                        />
+                      ) : (
+                        // Show dropdown and date input for editing/adding a resident
+                        <>
+                          {/* Dropdown for Yes/No */}
+                          <select
+                            value={
+                              resident.pet_vaccination? (resident.pet_vaccination.startsWith('Yes') 
+                                ? 'Yes' 
+                                : 'No') : ''
+                            }
+                            onChange={(val) => {
+                              const selectedValue = val.target.value;
+                              if (selectedValue === 'No') {
+                                // If "No" is selected, clear the vaccination date
+                                setResident({
+                                  ...resident,
+                                  pet_vaccination: 'No',
+                                  vaccination_date: null,
+                                });
+                              } else {
+                                setResident({
+                                  ...resident,
+                                  pet_vaccination: 'Yes',
+                                });
+                              }
+                            }}
+                            class="form-select"
+                          >
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                          </select>
+
+                          {/* Show date input if "Yes" is selected */}
+                          {resident.pet_vaccination && resident.pet_vaccination.startsWith('Yes') && (
+                            <div class="mb-3 mt-2">
+                              <label class="form-label">Vaccination Date</label>
+                              <input
+                                type="text"
+                                placeholder="YYYY/MM/DD"
+                                value={
+                                  resident.pet_vaccination.split(', ')[1] || '' // Extract the date part from the string
+                                }
+                                onChange={(val) => {
+                                  const newDate = val.target.value;
+                                  setResident({
+                                    ...resident,
+                                    pet_vaccination: `Yes, ${newDate}`, // Store concatenated value
+                                  });
+                                }}
+                                class="form-control"
+                              />
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+
                     <div class="mb-3">
                       <label class="form-label">Current address</label>
                       <input
@@ -3542,31 +3955,6 @@ export default function Official({ params }) {
 
                         }}
                         class="form-control" />
-
-                    </div>
-
-                    <div class="mb-3 d-flex flex-column">
-                      <label class="form-label">Birthday</label>
-                      <span className="fw-bold">{moment(resident.birthday).format('YYYY-MM-DD')}</span>
-
-                      {!isViewing &&
-                        <Calendar
-                          id='bdayinput'
-                          className="mt-3"
-                          disabled={isViewing}
-                          value={resident.birthday}
-                          onChange={(v) => {
-                            // document.getElementById('bdayinput').style.border = '1px solid #dee2e6'
-
-                            setResident({
-                              ...resident, ...{
-                                birthday: moment(v).format("YYYY-MM-DD")
-                              }
-                            })
-                            setStartDate(moment(v).format("YYYY-MM-DD"))
-                          }}
-                        />
-                      }
 
                     </div>
 
@@ -3649,31 +4037,6 @@ export default function Official({ params }) {
                           Female
                         </label>
                       </div>
-
-                    </div>
-
-
-                    <div class="mb-3">
-                      <label class="form-label">Civil Status</label>
-                      <select
-                        disabled={isViewing}
-                        value={resident.civil_status_id}
-                        id='civilinput'
-                        onChange={(v) => {
-                          document.getElementById('civilinput').style.border = '1px solid #dee2e6'
-                          setResident({
-                            ...resident, ...{
-                              civil_status_id: v.target.value
-                            }
-                          })
-                        }}
-                        class="form-select" aria-label="Default select example">
-                        <option value="null">Civil Status</option>
-                        <option value={1}>Single</option>
-                        <option value={2}>Married</option>
-                        <option value={3}>Widowed</option>
-                        <option value={4}>Legally Separated</option>
-                      </select>
 
                     </div>
 

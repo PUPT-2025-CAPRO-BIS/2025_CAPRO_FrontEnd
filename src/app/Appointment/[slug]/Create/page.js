@@ -63,7 +63,18 @@ export default function CreateAppointment() {
         current_address: '',
         voter_status: '',
         file_upload: '',
-        current_address: ''
+        current_address: '',
+        block: '',
+        lot: '',
+        purok: '',
+        street: '',
+        household: '',
+        house_and_lot_ownership: '',
+        living_with_owner: '',
+        renting: '',
+        relationship_to_owner: '',
+        pet_details: '',
+        pet_vaccination: ''
     })
 
 
@@ -670,6 +681,62 @@ export default function CreateAppointment() {
                     <h4>
                         Enter your details below:
                     </h4>
+
+                    <div class="mb-3">
+                        <label class="form-label">Block</label>
+                        <input
+                            value={resident.block}
+                            onChange={(val) => {
+                                setResident({ ...resident, block: val.target.value });
+                            }}
+                            class="form-control"
+                        />
+                    </div>
+ 
+                    <div class="mb-3">
+                        <label class="form-label">Lot</label>
+                        <input
+                            value={resident.lot}
+                            onChange={(val) => {
+                                setResident({ ...resident, lot: val.target.value });
+                            }}
+                            class="form-control"
+                        />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Purok</label>
+                        <input
+                            value={resident.purok}
+                            onChange={(val) => {
+                                setResident({ ...resident, purok: val.target.value });
+                            }}
+                            class="form-control"
+                        />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Street</label>
+                        <input
+                            value={resident.street}
+                            onChange={(val) => {
+                                setResident({ ...resident, street: val.target.value });
+                            }}
+                            class="form-control"
+                        />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Household No.</label>
+                        <input
+                            value={resident.household}
+                            onChange={(val) => {
+                                setResident({ ...resident, household: val.target.value });
+                            }}
+                            class="form-control"
+                        />
+                    </div>
+
                     <div class="mb-3">
                         <label class="form-label">First name</label>
                         <input
@@ -737,6 +804,115 @@ export default function CreateAppointment() {
 
                     </div>
 
+                    {/* House and Lot Ownership (Yes/No/Other: Please specify) */}
+                    <div class="mb-3">
+                        <label class="form-label">House and Lot Ownership (Yes/No/Other: Please specify)</label>
+                        <select
+                            value={resident.house_and_lot_ownership.startsWith('Other') ? 'Other' : resident.house_and_lot_ownership}
+                            onChange={(val) => {
+                                if (val.target.value === 'Other') {
+                                    setResident({ ...resident, house_and_lot_ownership: 'Other, ' });
+                                } else {
+                                    setResident({ ...resident, house_and_lot_ownership: val.target.value });
+                                }
+                            }}
+                            class="form-select"
+                        >
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        {resident.house_and_lot_ownership.startsWith('Other') && (
+                            <input
+                                type="text"
+                                placeholder="Please specify"
+                                value={resident.house_and_lot_ownership.split(', ')[1] || ''}
+                                onChange={(val) => {
+                                    setResident({ ...resident, house_and_lot_ownership: `Other, ${val.target.value}` });
+                                }}
+                                class="form-control mt-2"
+                            />
+                        )}
+                    </div>
+
+                    {/* Living with Owner (Yes/No/Other: Please specify) */}
+                    <div class="mb-3">
+                        <label class="form-label">Living with Owner (Yes/No/Other: Please specify)</label>
+                        <select
+                            value={resident.living_with_owner.startsWith('Other') ? 'Other' : resident.living_with_owner}
+                            onChange={(val) => {
+                                if (val.target.value === 'Other') {
+                                    setResident({ ...resident, living_with_owner: 'Other, ' });
+                                } else {
+                                    setResident({ ...resident, living_with_owner: val.target.value });
+                                }
+                            }}
+                            class="form-select"
+                        >
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        {resident.living_with_owner.startsWith('Other') && (
+                            <input
+                                type="text"
+                                placeholder="Please specify"
+                                value={resident.living_with_owner.split(', ')[1] || ''}
+                                onChange={(val) => {
+                                    setResident({ ...resident, living_with_owner: `Other, ${val.target.value}` });
+                                }}
+                                class="form-control mt-2"
+                            />
+                        )}
+                    </div>
+
+                    {/* Renting (Yes/No/Other: Please specify) */}
+                    <div class="mb-3">
+                        <label class="form-label">Renting (Yes/No/Other: Please specify)</label>
+                        <select
+                            value={resident.renting.startsWith('Other') ? 'Other' : resident.renting}
+                            onChange={(val) => {
+                                if (val.target.value === 'Other') {
+                                    setResident({ ...resident, renting: 'Other, ' });
+                                } else {
+                                    setResident({ ...resident, renting: val.target.value });
+                                }
+                            }}
+                            class="form-select"
+                        >
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        {resident.renting.startsWith('Other') && (
+                            <input
+                                type="text"
+                                placeholder="Please specify"
+                                value={resident.renting.split(', ')[1] || ''}
+                                onChange={(val) => {
+                                    setResident({ ...resident, renting: `Other, ${val.target.value}` });
+                                }}
+                                class="form-control mt-2"
+                            />
+                        )}
+                    </div>
+
+                    {/* Relationship to House and Lot Owner */}
+                    <div class="mb-3">
+                        <label class="form-label">Relationship to House and Lot Owner</label>
+                        <input
+                            value={resident.relationship_to_owner}
+                            onChange={(val) => {
+                                setResident({ ...resident, relationship_to_owner: val.target.value });
+                            }}
+                            class="form-control"
+                            placeholder="Please specify relationship"
+                        />
+                    </div>
+
                     <div class="mb-3">
                         <label class="form-label">Email</label>
                         <input
@@ -758,6 +934,57 @@ export default function CreateAppointment() {
                             }}
                             class="form-control" />
 
+                    </div>
+
+                    {/* Pet Details */}
+                    <div class="mb-3">
+                        <label class="form-label">Pet Details</label>
+                        <input
+                            value={resident.pet_details}
+                            onChange={(val) => {
+                                setResident({ ...resident, pet_details: val.target.value });
+                            }}
+                            class="form-control"
+                        />
+                    </div>
+
+                    {/* Pet Vaccination */}
+                    <div class="mb-3">
+                        <label class="form-label">Pets Vaccinated (Yes - When / No)</label>
+                            <>
+                                <select
+                                    value={resident.pet_vaccination ? (resident.pet_vaccination.startsWith('Yes') ? 'Yes' : 'No') : ''}
+                                    onChange={(val) => {
+                                        const selectedValue = val.target.value;
+                                        if (selectedValue === 'No') {
+                                            setResident({ ...resident, pet_vaccination: 'No', vaccination_date: null });
+                                        } else {
+                                            setResident({ ...resident, pet_vaccination: 'Yes' });
+                                        }
+                                    }}
+                                    class="form-select"
+                                >
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+
+                                {resident.pet_vaccination.startsWith('Yes') && (
+                                    <div class="mb-3 mt-2">
+                                        <label class="form-label">Vaccination Date</label>
+                                        <input
+                                            type="text"
+                                            placeholder="YYYY/MM/DD"
+                                            value={resident.pet_vaccination.split(', ')[1] || ''} 
+                                            onChange={(val) => {
+                                                const newDate = val.target.value;
+                                                setResident({ ...resident, pet_vaccination: `Yes, ${newDate}` });
+                                            }}
+                                            class="form-control"
+                                        />
+                                    </div>
+                                )}
+                            </>
                     </div>
 
                     <div class="mb-3 d-flex flex-column">

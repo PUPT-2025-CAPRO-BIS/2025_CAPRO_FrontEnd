@@ -433,3 +433,16 @@ a {
   /* background-color: yellow; */
   transform: scale(1.1);
 }
+
+.table-container:hover {
+  scrollbar-width: auto; /* Show scrollbar when hovered */
+  scrollbar-color: rgba(0, 0, 0, 0.5) rgba(255, 255, 255, 0.1); /* Visible when hovered */
+}
+
+.table-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.5); /* Visible only on hover */
+}

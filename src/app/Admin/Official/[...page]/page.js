@@ -1970,9 +1970,9 @@ export default function Official({ params }) {
             {/* BO */}
             {tab == 0 &&
 
-              <div className="mt-3 min-w-table flex-column  justify-content-center w-100 p-5 rounded bg-green" >
+              <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" > 
 
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3">
                   <h2 className="f-white">Current Barangay Officials</h2>
                 </div>
 
@@ -2007,7 +2007,7 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3 table-container" style={{ overflowY: "auto"}}>
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
@@ -2110,7 +2110,7 @@ export default function Official({ params }) {
               tab == 1 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3">
                   <h2 className="f-white">Resident Records</h2>
                 </div>
 
@@ -2203,7 +2203,7 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3 table-container" style={{ overflowY: "auto"}}>
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
@@ -2367,7 +2367,7 @@ export default function Official({ params }) {
               tab == 2 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3">
                   <h2 className="f-white">Schedule</h2>
                 </div>
 
@@ -2442,7 +2442,7 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3 table-container" style={{ overflowY: "auto"}}>
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
@@ -2654,7 +2654,7 @@ export default function Official({ params }) {
               tab == 3 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3">
                   <h2 className="f-white">List of Document Type</h2>
                 </div>
 
@@ -2698,7 +2698,7 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3 table-container" style={{ overflowY: "auto"}}>
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
@@ -2817,7 +2817,7 @@ export default function Official({ params }) {
               tab == 4 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3">
                   <h2 className="f-white">Blotter</h2>
                 </div>
 
@@ -2922,7 +2922,7 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3 table-container" style={{ overflowY: "auto"}}>
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
@@ -3039,7 +3039,7 @@ export default function Official({ params }) {
               tab == 6 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3">
                   <h2 className="f-white fw-bold">Admin logs</h2>
                 </div>
 
@@ -3061,6 +3061,9 @@ export default function Official({ params }) {
 
                 </div>
 
+                {/*  */}
+                <div className="border-bottom p-2 pb-4 mt-3 table-container" style={{ overflowY: "auto"}}>
+                  
                 {/* Table header */}
                 <div className="p-2 pb-4 mt-3">
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
@@ -3082,8 +3085,6 @@ export default function Official({ params }) {
                   </div>
                 </div>
 
-                {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
 
                   {/* Table body */}
                   { }
@@ -3134,11 +3135,9 @@ export default function Official({ params }) {
                   {/* Table body */}
                 </div>
 
-
-
-
               </div>
             }
+            
 
             {
               tab != 10 &&

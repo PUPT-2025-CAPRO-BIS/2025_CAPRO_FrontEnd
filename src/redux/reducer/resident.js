@@ -190,6 +190,19 @@ export const otpLoginApi = createAsyncThunk('user/otpLogin', async (data) => {
   return res.data;
 });
 
+export const checkDateAvailabilityApi = createAsyncThunk('user/checkDateAvailability', async (data) => {
+  const res = await apiClient.post('/checkDateAvailability', {
+    schedule_date: data.selectedDate
+  }, {
+    headers: {
+      'Authorization': `Bearer ${data.token}`,
+      'Content-Type': 'application/json',
+    }
+  });
+  return res.data;
+});
+
+
 export const createAppointmentApi = createAsyncThunk('user/createAppointment', async (data) => {
 
 

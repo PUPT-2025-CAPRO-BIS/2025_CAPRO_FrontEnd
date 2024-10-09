@@ -2417,23 +2417,50 @@ export default function Official({ params }) {
 
                 <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
 
-                  <div className="d-flex align-items-center">
-                    <span className="f-white">Search:</span>
-                    <input
-                      // onKeyDown={handleKeyDown}
-                      onChange={(v) => {
-                        setSearchItemList(v.target.value)
-                        handleKeyDown(v.target.value)
-                      }}
-                      value={searchItemList}
-                      className="form-control rounded ms-2" placeholder="Search name" />
- 
-                    <button onClick={() => window.open('https://000040122.xyz/api/downloadAppointments')} type="button"
-                      class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
-                      style={{ width: "300px" }}>
+                <div className="d-flex align-items-center">
+                  <span className="fw-bold f-white">Search:</span>
+                  <input
+                    onChange={(v) => {
+                      setSearchItemList(v.target.value);
+                      handleKeyDown(v.target.value);
+                    }}
+                    value={searchItemList}
+                    type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" 
+                    style={{ width: '250px' }}
+                  />
+                </div>
 
-                      <i class="bi bi-file-earmark-excel-fill" style={{ fontSize: "28px", color: "green" }}></i>
-                      Download</button>
+                {/* Date Pickers */}
+                <div className="d-flex align-items-center ms-3">
+                  {/* From Date */}
+                    <div className="d-flex align-items-center">
+                      <label className="me-2 f-white">From:</label>
+                      <DatePicker
+                        selected={fromDate}
+                        onChange={(date) => setFromDate(date)}
+                        dateFormat="yyyy-MM-dd"
+                        className="form-control"
+                        placeholderText="yyyy-mm-dd"
+                      />
+                    </div>
+
+                    {/* To Date */}
+                    <div className="d-flex align-items-center ms-3">
+                      <label className="me-2 f-white">To:</label>
+                      <DatePicker
+                        selected={toDate}
+                        onChange={(date) => setToDate(date)}
+                        dateFormat="yyyy-MM-dd"
+                        className="form-control"
+                        placeholderText="yyyy-mm-dd"
+                        minDate={fromDate}
+                      />
+                    </div>
+
+                    {/* Download Button */}
+                    <button onClick={handleDownloadSchedule} className="btn btn-warning ms-3">
+                      Download
+                    </button>
 
                     {/* Refresh Button */}
                     <button onClick={resetFilters} className="btn btn-secondary ms-2">
@@ -2445,7 +2472,6 @@ export default function Official({ params }) {
                   {errorMessage && <div className="text-danger">{errorMessage}</div>}
 
                   {/* <div >
-                  http://000040122.xyz
                     <button
                       onClick={() => {
                         setShowAddResident(true)

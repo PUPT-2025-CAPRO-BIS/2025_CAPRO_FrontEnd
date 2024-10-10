@@ -1638,6 +1638,16 @@ export default function Official({ params }) {
                   
                   </div>
 
+                  <div onClick={() => changeTab(0)} className={`p-4 w-100 rounded nav-container ${tab == 0 ? 'active-nav' : ''} pointer`}>
+                    <i class="bi bi-cash-stack f-white icon"></i>
+                    {
+                        openSide  &&
+                      <span className="f-white ms-2 nav-item">
+                      Cashier
+                    </span>
+                    }
+               
+                  </div>
 
                   <div onClick={() => changeTab(6)} className={`p-4 w-100 rounded nav-container ${tab == 6 ? 'active-nav' : ''} pointer`}>
                     <i class="bi bi-activity f-white icon"></i>
@@ -4152,7 +4162,7 @@ export default function Official({ params }) {
                 </div>
                 <div class="modal-body">
 
-                  <div id='certificateinput' class="mb-3">
+                  {/* <div id='certificateinput' class="mb-3">
                     <label class="form-label">Is this a certificate?</label>
                     <div class="form-check">
                       <input
@@ -4189,7 +4199,7 @@ export default function Official({ params }) {
                       </label>
                     </div>
 
-                  </div>
+                  </div> */}
 
                   <div class="mb-3">
                     <label class="form-label">Document Title</label>

@@ -4234,17 +4234,23 @@ export default function Official({ params }) {
                   <div className="mb-3">
 
                     <label class="form-label">Legend</label>
-
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{first_name}'} as placeholder</span>
-
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{middle_name}'} as placeholder</span>
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{last_name}'} as placeholder</span>
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{cell_number}'} as placeholder</span>
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{civil_status}'} as placeholder</span>
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{birthday}'} as placeholder</span>
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{gender}'} as placeholder</span>
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{current_address}'} as placeholder</span>
-
+                    
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'name'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'first_name'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'middle_name'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'last_name'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'cell_number'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'email'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'civil_status'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'birthday'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'gender'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'address'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'household'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'house_and_lot_status'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'day'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'month'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'year'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "black" }}> as placeholder</span>
                   </div>
 
                   {/* <div className="mb-3">

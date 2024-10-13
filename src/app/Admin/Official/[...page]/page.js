@@ -555,7 +555,7 @@ export default function Official({ params }) {
       currentPage,
       searchItemList,
       isPending: alluser.isPending,
-      per_page: 10,
+      per_page: tab == 0 ? 100000 : 10,
     }
 
 
@@ -606,7 +606,7 @@ export default function Official({ params }) {
 
       fetchData();
     }
-    if (tab == 1) {
+    if (tab == 1 || tab == 0) {
 
       data = {
         ...data,

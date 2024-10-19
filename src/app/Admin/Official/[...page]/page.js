@@ -622,6 +622,11 @@ export default function Official({ params }) {
 
           setTotalPage(result.total_pages)
 
+          if (currentPage > result.total_pages) {
+            let page = result.total_pages
+            router.replace('/Admin/Official/Resident/' + page)
+          }
+
           // Handle success, e.g., navigate to another page
         } catch (error) {
 

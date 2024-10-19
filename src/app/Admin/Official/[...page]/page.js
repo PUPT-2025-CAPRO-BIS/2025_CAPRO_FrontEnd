@@ -1638,17 +1638,6 @@ export default function Official({ params }) {
                   
                   </div>
 
-                  <div onClick={() => changeTab(0)} className={`p-4 w-100 rounded nav-container ${tab == 0 ? 'active-nav' : ''} pointer`}>
-                    <i class="bi bi-cash-stack f-white icon"></i>
-                    {
-                        openSide  &&
-                      <span className="f-white ms-2 nav-item">
-                      Cashier
-                    </span>
-                    }
-               
-                  </div>
-
                   <div onClick={() => changeTab(6)} className={`p-4 w-100 rounded nav-container ${tab == 6 ? 'active-nav' : ''} pointer`}>
                     <i class="bi bi-activity f-white icon"></i>
 

@@ -2296,7 +2296,7 @@ export default function Official({ params }) {
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-                                {i.current_address}
+                                {`${i.block || ''} ${i.lot || ''} ${i.purok || ''} ${i.street || ''}`}
                               </span>
                             </RowItem>
                             <RowItem>

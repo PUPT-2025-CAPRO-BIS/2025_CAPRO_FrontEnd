@@ -26,6 +26,7 @@ export default function CreateAppointment() {
     const [isDateValid, setIsDateValid] = useState(false);
 
     const [birthday, setBirthday] = useState('')
+    const [showCalendar, setShowCalendar] = useState(false);
     const [email, setEmail] = useState('')
     const [purpose, setPurpose] = useState('')
     const [otp, setOTP] = useState('')
@@ -154,7 +155,10 @@ export default function CreateAppointment() {
 
     }
 
-
+    const handleBirthdateChange = (date) => {
+      setBirthday(moment(date).format('YYYY-MM-DD'));
+      setShowCalendar(false);
+    };
 
     const submit = () => {
 
@@ -515,13 +519,21 @@ export default function CreateAppointment() {
                                 </div>
 
                                 <div className="d-flex flex-column mt-3">
-                                    <span>Birthday</span>
-                                    <input
-                                        value={birthday}
-                                        onChange={(v) => setBirthday(v.target.value)}
-                                        className="form-control rounded mt-3"
-                                        placeholder="YYYY-MM-DD"
-                                    />
+                                  <span>Birthday</span>
+                                  <input
+                                      value={birthday || ''}
+                                      onFocus={() => setShowCalendar(true)} 
+                                      className="form-control rounded mt-3"
+                                      placeholder="YYYY-MM-DD"
+                                      readOnly
+                                  />
+                                  {showCalendar && (
+                                      <Calendar
+                                          onChange={handleBirthdateChange}
+                                          value={birthday ? new Date(birthday) : new Date()}
+                                          className="mt-3"
+                                      />
+                                  )}
                                 </div>
                             </div>
                         )}

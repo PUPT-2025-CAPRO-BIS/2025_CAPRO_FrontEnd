@@ -481,7 +481,7 @@ export default function CreateAppointment() {
                                 src={require('../../../../assets/sk.png')} />
                         </div>
 
-                        <div className="d-flex flex-column align-items-center justify-content-center w-100 p-5 rounded bg-green mt-3 mb-5">
+                        <div className="d-flex flex-column align-items-center justify-content-center w-100 p-2 rounded bg-green mt-3 mb-5">
                             <h1 className="f-white">BARANGAY CENTRAL BICUTAN</h1>
                             <span className="f-white">Sunflower Street, Taguig City, Metro Manila</span>
                         </div>
@@ -489,210 +489,230 @@ export default function CreateAppointment() {
                 )}
 
                 {newResident === null && (
-                    <div className="d-flex flex-column justify-content-center align-items-center mt-5">
-                        <div className="logo-bg col-lg-7" style={{height: "350px", width: "100%"}}></div>
-                        <button 
-                            onClick={() => setNewResident(false)}  // Change state to show form
-                            type="button" 
-                            className="btn fw-bold f-white w-100 bg-yellow d-flex align-items-center justify-content-center"
-                            style={{ padding: "20px 40px", fontSize: "24px" }}  // Increase padding and font size
-                        >
-                            <i className="bi bi-calendar-month me-3" style={{fontSize: "40px"}}></i>  
-                            SCHEDULE AN APPOINTMENT
-                        </button>
+                  <div className="container mt-5">
+                    <div className="row justify-content-center">
+                        <div className="col-12 col-md-8 col-lg-7">
+                            <div className="logo-bg" style={{ height: "350px", width: "100%" }}></div>
+                        </div>
                     </div>
+                    <div className="row justify-content-center mt-3">
+                        <div className="col-12 col-md-8 col-lg-7">
+                            <button
+                                onClick={() => setNewResident(false)}  // Change state to show form
+                                type="button"
+                                className="btn fw-bold f-white w-100 bg-yellow d-flex align-items-center justify-content-center"
+                                style={{ padding: "10px", fontSize: "1rem" }}  // Use rem units for font size
+                            >
+                                <i className="bi bi-calendar-month me-3" style={{ fontSize: "2rem" }}></i>  
+                                SCHEDULE AN APPOINTMENT
+                            </button>
+                        </div>
+                    </div>
+                  </div>              
                 )}
 
                 {/* Registered Form (default) */}
                 {newResident === false && (
-                    <div className="schedule-form p-4 col-6 rounded">
-                        <h4>Scheduling Form</h4>
-
-                        {!success && (
+                  <div className="container mb-5">
+                    <div className="row justify-content-center">
+                      <div className="col-12 col-md-8 col-lg-6">
+                        <div className="schedule-form p-2 p-md-4 rounded">
+                          <h4>Scheduling Form</h4>
+          
+                          {!success && (
                             <div>
-                                <div className="d-flex flex-column mt-5">
-                                    <span>Email address</span>
-                                    <input
-                                        onChange={(v) => setEmail(v.target.value)}
-                                        value={email}
-                                        type="email"
-                                        className="form-control rounded mt-3"
-                                        placeholder="Enter your email"
-                                    />
-                                </div>
-
-                                <div className="d-flex flex-column mt-3">
-                                  <span>Birthday</span>
+                              <div className="d-flex flex-column mt-4">
+                                  <label>Email address</label>
+                                  <input
+                                      onChange={(v) => setEmail(v.target.value)}
+                                      value={email}
+                                      type="email"
+                                      className="form-control rounded mt-2"
+                                      placeholder="Enter your email"
+                                  />
+                              </div>
+            
+                              <div className="d-flex flex-column mt-3">
+                                  <label>Birthday</label>
                                   <input
                                       value={birthday || ''}
-                                      onFocus={() => setShowCalendar(true)} 
-                                      className="form-control rounded mt-3"
+                                      onFocus={() => setShowCalendar(true)}
+                                      className="form-control rounded mt-2"
                                       placeholder="YYYY-MM-DD"
                                       readOnly
                                   />
                                   {showCalendar && (
-                                      <Calendar
-                                          onChange={handleBirthdateChange}
-                                          value={birthday ? new Date(birthday) : new Date()}
-                                          className="mt-3"
-                                      />
-                                  )}
-                                </div>
+                                      <div className="w-100 mt-3">
+                                          <Calendar
+                                              onChange={handleBirthdateChange}
+                                              value={birthday ? new Date(birthday) : new Date()}
+                                              className="calendar-component"
+                                          />
+                              </div>
+                                        )}
                             </div>
-                        )}
-
-                        {success && !successOTP && (
-                            <div className="d-flex flex-column mt-5">
-                                <span>OTP</span>
-                                <input
-                                    onChange={(v) => {
-                                        if (v.target.value !== '') {
-                                            setIsButtonDisabled(false);
-                                        } else {
-                                            setIsButtonDisabled(true);
-                                        }
-                                        setOTP(v.target.value);
-                                    }}
-                                    value={otp}
-                                    type="email"
-                                    className="form-control rounded mt-3"
-                                    placeholder="Enter OTP received in your email address"
-                                />
-                            </div>
-                        )}
-
-                        {success && successOTP && (
-                            <div>
-                                <div className="d-flex flex-column">
-                                    <label>Select date</label>
-                                    <label className="fw-bold mt-3">{selectedDate}</label>
-                                    <Calendar
-                                        minDate={new Date()}
-                                        className="mt-3"
-                                        onChange={handleDateChange}
-                                    />
-                                </div>
-
-                                <div className="d-flex flex-column mt-3">
-                                    <span>Purpose</span>
+                          </div>
+                            )}
+            
+                            {success && !successOTP && (
+                                <div className="d-flex flex-column mt-4">
+                                    <label>OTP</label>
                                     <input
-                                        onChange={(v) => setPurpose(v.target.value)}
-                                        value={purpose}
-                                        className="form-control rounded mt-3"
-                                        placeholder="Enter your purpose"
+                                        onChange={(v) => {
+                                            if (v.target.value !== '') {
+                                                setIsButtonDisabled(false);
+                                            } else {
+                                                setIsButtonDisabled(true);
+                                            }
+                                            setOTP(v.target.value);
+                                        }}
+                                        value={otp}
+                                        type="text"
+                                        className="form-control rounded mt-2"
+                                        placeholder="Enter OTP received in your email address"
                                     />
                                 </div>
-
-                                <div className="mt-3">
-                                    <label>Select service</label>
-                                    <select
-                                        onChange={(v) => setSelectedDoc(v.target.value)}
-                                        className="form-select"
-                                        aria-label="Default select example"
-                                    >
-                                        {documentList.map((i, k) => (
-                                            <option value={i.id} key={k}>
-                                                {i.service}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                <div {...getRootProps()} className="mt-5" style={{ borderStyle: 'dotted' }}>
-                                    <input {...getInputProps()} />
-                                    {isDragActive ? (
-                                        <p>Drop the files here ...</p>
-                                    ) : (
-                                        <p>Drag 'n' drop some files here, or click to select files</p>
-                                    )}
-                                </div>
-
-                                <div className="mt-3">
-                                    {files.length !== 0 &&
-                                        files.map((i, k) => (
-                                            <div
-                                                className="d-flex align-items-center justify-content-between mt-2"
-                                                key={k}
-                                            >
-                                                <span
-                                                    className="pointer"
-                                                    onClick={() => {
-                                                        setSelectedFileForViewing(i);
-                                                        setShowImage(true);
-                                                    }}
-                                                >
-                                                    {i.fileName}
-                                                </span>
+                            )}
+            
+                            {success && successOTP && (
+                                <div>
+                                    <div className="d-flex flex-column mt-4">
+                                        <label>Select date</label>
+                                        <label className="fw-bold mt-2">{selectedDate}</label>
+                                        <Calendar
+                                            minDate={new Date()}
+                                            className="calendar-component mt-3"
+                                            onChange={handleDateChange}
+                                        />
+                                    </div>
+            
+                                    <div className="d-flex flex-column mt-3">
+                                        <label>Purpose</label>
+                                        <input
+                                            onChange={(v) => setPurpose(v.target.value)}
+                                            value={purpose}
+                                            className="form-control rounded mt-2"
+                                            placeholder="Enter your purpose"
+                                        />
+                                    </div>
+            
+                                    <div className="mt-3">
+                                        <label>Select service</label>
+                                        <select
+                                            onChange={(v) => setSelectedDoc(v.target.value)}
+                                            className="form-select"
+                                            aria-label="Default select example"
+                                        >
+                                            {documentList.map((i, k) => (
+                                                <option value={i.id} key={k}>
+                                                    {i.service}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+            
+                                    <div {...getRootProps()} className="mt-4 p-3" style={{ borderStyle: 'dotted', width: '100%' }}>
+                                        <input {...getInputProps()} />
+                                        {isDragActive ? (
+                                            <p>Drop the files here ...</p>
+                                        ) : (
+                                            <p>Drag 'n' drop some files here, or click to select files</p>
+                                        )}
+                                    </div>
+            
+                                    <div className="mt-3">
+                                        {files.length !== 0 &&
+                                            files.map((i, k) => (
                                                 <div
-                                                    className="pointer"
-                                                    onClick={() => {
-                                                        let tmpArr = [...files];
-                                                        tmpArr.splice(k, 1);
-                                                        setFiles(tmpArr);
-                                                    }}
+                                                    className="d-flex align-items-center justify-content-between mt-2"
+                                                    key={k}
                                                 >
-                                                    <i className="bi bi-trash" style={{ fontSize: '30px', color: 'red' }}></i>
+                                                    <span
+                                                        className="pointer"
+                                                        onClick={() => {
+                                                            setSelectedFileForViewing(i);
+                                                            setShowImage(true);
+                                                        }}
+                                                    >
+                                                        {i.fileName}
+                                                    </span>
+                                                    <div
+                                                        className="pointer"
+                                                        onClick={() => {
+                                                            let tmpArr = [...files];
+                                                            tmpArr.splice(k, 1);
+                                                            setFiles(tmpArr);
+                                                        }}
+                                                    >
+                                                        <i className="bi bi-trash" style={{ fontSize: '30px', color: 'red' }}></i>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            ))}
+                                    </div>
                                 </div>
+                            )}
+            
+                            {!success && !successOTP && (
+                                <button
+                                    disabled={isButtonDisabled}
+                                    onClick={(v) => {
+                                        submit();
+                                        v.preventDefault();
+                                    }}
+                                    type="button"
+                                    className="btn btn-primary bg-green mt-4 col-12"
+                                >
+                                    Request OTP
+                                </button>
+                            )}
+            
+                            {success && !successOTP && (
+                                <button
+                                    disabled={isButtonDisabled}
+                                    onClick={(v) => {
+                                        submitOTP();
+                                        v.preventDefault();
+                                    }}
+                                    type="button"
+                                    className="btn btn-primary bg-green mt-4 col-12"
+                                >
+                                    Verify OTP
+                                </button>
+                            )}
+            
+                            {success && successOTP && (
+                                <button
+                                    disabled={isButtonDisabled}
+                                    onClick={() => {
+                                        createAppoint();
+                                    }}
+                                    type="button"
+                                    className="btn btn-primary bg-green mt-4 col-12"
+                                >
+                                    Create appointment
+                                </button>
+                            )}
+            
+                            <div className="mt-5">
+                                <p>
+                                    Not registered yet?{' '}
+                                    <a 
+                                      className="text-primary" 
+                                      //onTouchStart={() => console.log('Touched')}
+                                      onClick={(e) => { e.preventDefault(); setNewResident(true); }}>
+                                      Please register here
+                                    </a>
+                                </p>
                             </div>
-                        )}
-
-                        {!success && !successOTP && (
-                            <button
-                                disabled={isButtonDisabled}
-                                onClick={(v) => {
-                                    submit();
-                                    v.preventDefault();
-                                }}
-                                type="button"
-                                className="btn btn-primary bg-green mt-5 col-12"
-                            >
-                                Request OTP
-                            </button>
-                        )}
-
-                        {success && !successOTP && (
-                            <button
-                                disabled={isButtonDisabled}
-                                onClick={(v) => {
-                                    submitOTP();
-                                    v.preventDefault();
-                                }}
-                                type="button"
-                                className="btn btn-primary bg-green mt-5 col-12"
-                            >
-                                Verify OTP
-                            </button>
-                        )}
-
-                        {success && successOTP && (
-                            <button
-                                disabled={isButtonDisabled}
-                                onClick={() => {
-                                    createAppoint();
-                                }}
-                                type="button"
-                                className="btn btn-primary bg-green mt-5 col-12"
-                            >
-                                Create appointment
-                            </button>
-                        )}
-
-                        <div className="mt-3">
-                            <p>
-                                Not registered yet?{' '}
-                                <a href="#" className="text-primary" onClick={(e) => { e.preventDefault(); setNewResident(true); }}>
-                                    Please register here
-                                </a>
-                            </p>
                         </div>
+                      </div>
                     </div>
+                  </div>
+                
                 )}
 
                 {newResident && (
-                    <div className=" schedule-form p-4 col-6 rounded" style={{}}>
+                    <div className="new-resident-form mb-5 p-4 col-6 rounded">
                     <h4>
                         Enter your details below:
                     </h4>
@@ -1231,6 +1251,199 @@ export default function CreateAppointment() {
 
 
                 </div>
+                // <div className="container mt-5">
+                //   <div className="row justify-content-center">
+                //       <div className="col-12 col-md-8 col-lg-6">
+                //           <div className="schedule-form p-2 p-md-4 rounded">
+                //               <h4>Scheduling Form</h4>
+
+                //               {!success && (
+                //                   <div>
+                //                       <div className="d-flex flex-column mt-4">
+                //                           <label>Email address</label>
+                //                           <input
+                //                               onChange={(v) => setEmail(v.target.value)}
+                //                               value={email}
+                //                               type="email"
+                //                               className="form-control rounded mt-2"
+                //                               placeholder="Enter your email"
+                //                           />
+                //                       </div>
+
+                //                       <div className="d-flex flex-column mt-3">
+                //                           <label>Birthday</label>
+                //                           <input
+                //                               value={birthday || ''}
+                //                               onFocus={() => setShowCalendar(true)}
+                //                               className="form-control rounded mt-2"
+                //                               placeholder="YYYY-MM-DD"
+                //                               readOnly
+                //                           />
+                //                           {showCalendar && (
+                //                               <div className="w-100 mt-3">
+                //                                   <Calendar
+                //                                       onChange={handleBirthdateChange}
+                //                                       value={birthday ? new Date(birthday) : new Date()}
+                //                                       className="calendar-component"
+                //                                   />
+                //                               </div>
+                //                           )}
+                //                       </div>
+                //                   </div>
+                //               )}
+
+                //               {success && !successOTP && (
+                //                   <div className="d-flex flex-column mt-4">
+                //                       <label>OTP</label>
+                //                       <input
+                //                           onChange={(v) => {
+                //                               if (v.target.value !== '') {
+                //                                   setIsButtonDisabled(false);
+                //                               } else {
+                //                                   setIsButtonDisabled(true);
+                //                               }
+                //                               setOTP(v.target.value);
+                //                           }}
+                //                           value={otp}
+                //                           type="text"
+                //                           className="form-control rounded mt-2"
+                //                           placeholder="Enter OTP received in your email address"
+                //                       />
+                //                   </div>
+                //               )}
+
+                //               {success && successOTP && (
+                //                   <div>
+                //                       <div className="d-flex flex-column mt-4">
+                //                           <label>Select date</label>
+                //                           <label className="fw-bold mt-2">{selectedDate}</label>
+                //                           <Calendar
+                //                               minDate={new Date()}
+                //                               className="calendar-component mt-3"
+                //                               onChange={handleDateChange}
+                //                           />
+                //                       </div>
+
+                //                       <div className="d-flex flex-column mt-3">
+                //                           <label>Purpose</label>
+                //                           <input
+                //                               onChange={(v) => setPurpose(v.target.value)}
+                //                               value={purpose}
+                //                               className="form-control rounded mt-2"
+                //                               placeholder="Enter your purpose"
+                //                           />
+                //                       </div>
+
+                //                       <div className="mt-3">
+                //                           <label>Select service</label>
+                //                           <select
+                //                               onChange={(v) => setSelectedDoc(v.target.value)}
+                //                               className="form-select"
+                //                               aria-label="Default select example"
+                //                           >
+                //                               {documentList.map((i, k) => (
+                //                                   <option value={i.id} key={k}>
+                //                                       {i.service}
+                //                                   </option>
+                //                               ))}
+                //                           </select>
+                //                       </div>
+
+                //                       <div {...getRootProps()} className="mt-4 p-3" style={{ borderStyle: 'dotted', width: '100%' }}>
+                //                           <input {...getInputProps()} />
+                //                           {isDragActive ? (
+                //                               <p>Drop the files here ...</p>
+                //                           ) : (
+                //                               <p>Drag 'n' drop some files here, or click to select files</p>
+                //                           )}
+                //                       </div>
+
+                //                       <div className="mt-3">
+                //                           {files.length !== 0 &&
+                //                               files.map((i, k) => (
+                //                                   <div
+                //                                       className="d-flex align-items-center justify-content-between mt-2"
+                //                                       key={k}
+                //                                   >
+                //                                       <span
+                //                                           className="pointer"
+                //                                           onClick={() => {
+                //                                               setSelectedFileForViewing(i);
+                //                                               setShowImage(true);
+                //                                           }}
+                //                                       >
+                //                                           {i.fileName}
+                //                                       </span>
+                //                                       <div
+                //                                           className="pointer"
+                //                                           onClick={() => {
+                //                                               let tmpArr = [...files];
+                //                                               tmpArr.splice(k, 1);
+                //                                               setFiles(tmpArr);
+                //                                           }}
+                //                                       >
+                //                                           <i className="bi bi-trash" style={{ fontSize: '30px', color: 'red' }}></i>
+                //                                       </div>
+                //                                   </div>
+                //                               ))}
+                //                       </div>
+                //                   </div>
+                //               )}
+
+                //               {!success && !successOTP && (
+                //                   <button
+                //                       disabled={isButtonDisabled}
+                //                       onClick={(v) => {
+                //                           submit();
+                //                           v.preventDefault();
+                //                       }}
+                //                       type="button"
+                //                       className="btn btn-primary bg-green mt-4 col-12"
+                //                   >
+                //                       Request OTP
+                //                   </button>
+                //               )}
+
+                //               {success && !successOTP && (
+                //                   <button
+                //                       disabled={isButtonDisabled}
+                //                       onClick={(v) => {
+                //                           submitOTP();
+                //                           v.preventDefault();
+                //                       }}
+                //                       type="button"
+                //                       className="btn btn-primary bg-green mt-4 col-12"
+                //                   >
+                //                       Verify OTP
+                //                   </button>
+                //               )}
+
+                //               {success && successOTP && (
+                //                   <button
+                //                       disabled={isButtonDisabled}
+                //                       onClick={() => {
+                //                           createAppoint();
+                //                       }}
+                //                       type="button"
+                //                       className="btn btn-primary bg-green mt-4 col-12"
+                //                   >
+                //                       Create appointment
+                //                   </button>
+                //               )}
+
+                //               <div className="mt-3">
+                //                   <p>
+                //                       Not registered yet?{' '}
+                //                       <a href="#" className="text-primary" onClick={(e) => { e.preventDefault(); setNewResident(true); }}>
+                //                           Please register here
+                //                       </a>
+                //                   </p>
+                //               </div>
+                //           </div>
+                //       </div>
+                //   </div>
+                // </div>
+
                 )}
 
                     {

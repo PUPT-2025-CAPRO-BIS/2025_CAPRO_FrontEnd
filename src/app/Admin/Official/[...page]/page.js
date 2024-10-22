@@ -4797,22 +4797,25 @@ export default function Official({ params }) {
 
                   </div>
 
-                  <div class="mb-3 w-100">
-                    <label class="form-label">Remarks</label>
-                    <textarea
-                      id='remarks'
-                      // value={cost}
-                      value={blotter.remarks}
-                      onChange={(val) => {
-                        setBlotter({
-                          ...blotter, ...{
-                            remarks: val.target.value
-                          }
-                        })
-                      }}
-                      class="form-control" />
+                  {
+                    isViewing &&
 
-                  </div>
+                    <div class="mb-3 w-100">
+                      <label class="form-label">Remarks</label>
+                      <textarea
+                        id='remarks'
+                        // value={cost}
+                        value={blotter.remarks}
+                        onChange={(val) => {
+                          setBlotter({
+                            ...blotter, ...{
+                              remarks: val.target.value
+                            }
+                          })
+                        }}
+                        class="form-control" />
+                    </div>
+                  }
 
                   <div >
                     <button

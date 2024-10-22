@@ -61,10 +61,8 @@ export default function CreateAppointment() {
         cell_number: '',
         civil_status_id: '',
         male_female: '',
-        current_address: '',
         voter_status: '',
         file_upload: '',
-        current_address: '',
         block: '',
         lot: '',
         purok: '',
@@ -221,13 +219,6 @@ export default function CreateAppointment() {
         if (resident.cell_number == "" || !validateNumber) {
             document.getElementById('phoneinput').style.border = '1px solid red'
         }
-        if (resident.current_address == "") {
-            document.getElementById('addressinput').style.border = '1px solid red'
-        }
-
-        if (resident.current_address == "") {
-            document.getElementById('addressinput').style.border = '1px solid red'
-        }
 
         if (resident.voter_status === "") {
             document.getElementById('voterinput').style.border = '1px solid red'
@@ -237,13 +228,8 @@ export default function CreateAppointment() {
             document.getElementById('civilinput').style.border = '1px solid red'
         }
 
-       
-        if (resident.current_address == "") {
-            document.getElementById('currentinput').style.border = '1px solid red'
-        }
-
         if (resident.first_name != "" && resident.last_name != "" && resident.birthday != "" && resident.cell_number != ""
-            && resident.male_female !== "" && resident.civil_status_id != "" && validateEmail && validateNumber && resident.current_address != ""
+            && resident.male_female !== "" && resident.civil_status_id != "" && validateEmail && validateNumber != ""
 
         ) {
 
@@ -288,10 +274,8 @@ export default function CreateAppointment() {
                         cell_number: '',
                         civil_status_id: '',
                         male_female: '',
-                        current_address: '',
                         voter_status: 0,
-                        file_upload: '',
-                        current_address: ''
+                        file_upload: ''
                     })
                     setFiles([])
                     setNewResident(null)
@@ -1038,32 +1022,6 @@ export default function CreateAppointment() {
                         />
 
                     </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Current Address</label>
-                        <input
-                            id='addressinput'
-                            value={resident.current_address}
-                            onChange={(val) => {
-
-                                if (val.target.value != "") {
-                                    document.getElementById('addressinput').style.border = '1px solid #dee2e6'
-                                }
-                                else {
-                                    document.getElementById('addressinput').style.border = '1px solid red'
-                                }
-
-                                setResident({
-                                    ...resident, ...{
-                                        current_address: val.target.value
-                                    }
-                                })
-
-                            }}
-                            class="form-control" />
-
-                    </div>
-
 
                     <div class="mb-3">
                         <label class="form-label">Phone number</label>

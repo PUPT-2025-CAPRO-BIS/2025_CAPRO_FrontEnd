@@ -160,7 +160,7 @@ export default function Official({ params }) {
     setErrorMessage("");
 
     // Construct the dynamic URL for downloading appointments based on fromDate and toDate
-    let url = 'https://000040122.xyz/api/downloadAppointments?';
+    let url = 'http://000040122.xyz/api/downloadAppointments?';
 
     if (fromDate && toDate) {
       // Append both from_date and to_date to the URL
@@ -171,7 +171,7 @@ export default function Official({ params }) {
   };
 
   const handleDownloadBlotter = () => {
-    let url = 'https://000040122.xyz/api/downloadBlotters?';
+    let url = 'http://000040122.xyz/api/downloadBlotters?';
 
     if (fromDate && toDate) {
       // Append both from_date and to_date to the URL
@@ -270,8 +270,7 @@ export default function Official({ params }) {
     pet_details: '',
     pet_vaccination: '',
     isPendingResident: 0,
-    supporting_files_obj: [],
-    current_address: ''
+    supporting_files_obj: []
   })
 
   const [selectedSchedule, setSelectedSchedule] = useState({
@@ -1048,12 +1047,8 @@ export default function Official({ params }) {
       document.getElementById('civilinput').style.border = '1px solid red'
     }
 
-    if (resident.current_address == "") {
-      document.getElementById('addressinput').style.border = '1px solid red'
-    }
-
     if (resident.first_name != "" && resident.last_name != "" && resident.birthday != "" && resident.cell_number != ""
-      && resident.male_female !== "" && resident.civil_status_id != "" && validateEmail && validateNumber && resident.current_address != ""
+      && resident.male_female !== "" && resident.civil_status_id != "" && validateEmail && validateNumber != ""
 
     ) {
 
@@ -1081,9 +1076,7 @@ export default function Official({ params }) {
               birthday: '',
               cell_number: '',
               civil_status_id: '',
-              male_female: '',
-              current_address: ''
-              
+              male_female: ''
             })
             setCount(count + 1)
             setShowAddResident(false)
@@ -1116,8 +1109,7 @@ export default function Official({ params }) {
               birthday: '',
               cell_number: '',
               civil_status_id: '',
-              male_female: '',
-              current_address: ''
+              male_female: ''
             })
             setShowAddResident(false)
             setCount(count + 1)
@@ -1322,7 +1314,7 @@ export default function Official({ params }) {
   const viewCreatedTemplate = (val) => {
 
 
-    window.open(`https://000040122.xyz/api/generatePdf?doc_id=${val.id}&download=0`)
+    window.open(`http://000040122.xyz/api/generatePdf?doc_id=${val.id}&download=0`)
     // http://000040122.xyz/api/generatePdf?doc_id=14&download=0
 
   }
@@ -1432,8 +1424,7 @@ export default function Official({ params }) {
           cell_number: '',
           civil_status_id: '',
           male_female: '',
-          isPendingResident: 0,
-          current_address: ''
+          isPendingResident: 0
         })
         setCount(count + 1)
       }
@@ -1485,8 +1476,7 @@ export default function Official({ params }) {
           cell_number: '',
           civil_status_id: '',
           male_female: '',
-          isPendingResident: 0,
-          current_address: ''
+          isPendingResident: 0
         })
         setCount(count + 1)
       }
@@ -2642,7 +2632,7 @@ export default function Official({ params }) {
                                         <button
 
                                           onClick={() => {
-                                            window.open(`https://000040122.xyz/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
+                                            window.open(`http://000040122.xyz/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
 
 
                                           }}
@@ -3037,7 +3027,7 @@ export default function Official({ params }) {
                                   type="button" class="btn btn-primary ms-3">View</button>
 
                                 <button
-                                  onClick={() => window.open(`https://000040122.xyz/api/downloadBlotterPDF?blotter_id=${i.id}&download=0`)}
+                                  onClick={() => window.open(`http://000040122.xyz/api/downloadBlotterPDF?blotter_id=${i.id}&download=0`)}
                                   type="button" class="btn btn-warning ms-3">Download
                                 </button>
 
@@ -3916,32 +3906,6 @@ export default function Official({ params }) {
                           )}
                         </>
                       )}
-                    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Current address</label>
-                      <input
-                        id='addressinput'
-                        disabled={isViewing}
-                        value={resident.current_address}
-                        onChange={(val) => {
-
-                          if (val.target.value != "") {
-                            document.getElementById('addressinput').style.border = '1px solid #dee2e6'
-                          }
-                          else {
-                            document.getElementById('addressinput').style.border = '1px solid red'
-                          }
-
-                          setResident({
-                            ...resident, ...{
-                              current_address: val.target.value
-                            }
-                          })
-
-                        }}
-                        class="form-control" />
-
                     </div>
 
                     <div class="mb-3">

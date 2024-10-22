@@ -330,7 +330,8 @@ export default function Official({ params }) {
     otherCategory: '',
     complainant_phone_number: '',
     complainee_phone_number: '',
-    non_resident_address: ''
+    non_resident_address: '',
+    remarks: ''
   })
 
   const handleChangeResidentStatus = (type, value) => {
@@ -420,7 +421,8 @@ export default function Official({ params }) {
     blotter.category,
     blotter.complainant_phone_number,
     blotter.complainee_phone_number,
-    blotter.non_resident_address
+    blotter.non_resident_address,
+    blotter.remarks
 ]);
 
   useEffect(() => {
@@ -4795,6 +4797,23 @@ export default function Official({ params }) {
 
                   </div>
 
+                  <div class="mb-3 w-100">
+                    <label class="form-label">Remarks</label>
+                    <textarea
+                      id='remarks'
+                      // value={cost}
+                      value={blotter.remarks}
+                      onChange={(val) => {
+                        setBlotter({
+                          ...blotter, ...{
+                            remarks: val.target.value
+                          }
+                        })
+                      }}
+                      class="form-control" />
+
+                  </div>
+
                   <div >
                     <button
 
@@ -4837,7 +4856,8 @@ export default function Official({ params }) {
                             otherCategory: '',
                             complainant_phone_number: '',
                             complainee_phone_number: '',
-                            non_resident_address: ''
+                            non_resident_address: '',
+                            remarks: ''
                           })
 
                           setLoading(false)

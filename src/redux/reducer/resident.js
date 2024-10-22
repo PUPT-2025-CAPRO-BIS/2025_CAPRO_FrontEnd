@@ -272,7 +272,8 @@ export const fileBlotterReportApi = createAsyncThunk('user/fileBlotterReport', a
     category: data.category,
     complainant_phone_number: data.complainant_phone_number,
     complainee_phone_number: data.complainee_phone_number,
-    non_resident_address: data.non_resident_address
+    non_resident_address: data.non_resident_address,
+    remarks: data.remarks
 
   }, {
     headers: {
@@ -293,7 +294,8 @@ export const editBlotterReportApi = createAsyncThunk('user/editBlotterReport', a
     category: data.category,
     complainant_phone_number: data.complainant_phone_number,
     complainee_phone_number: data.complainee_phone_number,
-    non_resident_address: data.non_resident_address  };
+    non_resident_address: data.non_resident_address,
+    remarks: data.remarks  };
   if(data.complainee_id == null)
   {
     bodystuff.complainee_name = data.complainee_name

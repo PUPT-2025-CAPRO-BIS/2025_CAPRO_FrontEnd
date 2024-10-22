@@ -554,7 +554,7 @@ export default function Official({ params }) {
       currentPage,
       searchItemList,
       isPending: alluser.isPending,
-      per_page: 10,
+      per_page: tab == 0 ? 100000 : 10,
     }
 
 
@@ -605,7 +605,7 @@ export default function Official({ params }) {
 
       fetchData();
     }
-    if (tab == 1) {
+    if (tab == 1 || tab == 0) {
 
       data = {
         ...data,
@@ -1628,7 +1628,6 @@ export default function Official({ params }) {
                   
                   </div>
 
-
                   <div onClick={() => changeTab(6)} className={`p-4 w-100 rounded nav-container ${tab == 6 ? 'active-nav' : ''} pointer`}>
                     <i class="bi bi-activity f-white icon"></i>
 
@@ -2142,7 +2141,7 @@ export default function Official({ params }) {
 
             {
               tab == 1 &&
-              <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
+              <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green">
 
                 <div className="border-bottom p-2 pb-4 mt-3">
                   <h2 className="f-white">Resident Records</h2>
@@ -2153,16 +2152,13 @@ export default function Official({ params }) {
                   <div className="d-flex align-items-center col-6">
                     <span className="fw-bold f-white">Search:</span>
                     <input
-                      // onKeyDown={handleKeyDown}
                       value={searchItemList}
                       onChange={(v) => {
                         setSearchItemList(v.target.value)
                         handleKeyDown(v.target.value)
                       }}
                       type="email" className="form-control rounded ms-2" placeholder="Search name" />
-
-
-
+                    
                     <div className="col-6 ms-3 d-flex">
                       <button
                         onClick={() => {
@@ -2170,61 +2166,63 @@ export default function Official({ params }) {
                         }}
                         className="primary bg-yellow p-2 rounded d-flex align-items-center justify-content-center" style={{ border: "0px" }}
                       >
-                        {/* <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i> */}
-                        <i class="bi bi-cloud-upload f-white" style={{ fontSize: "20px" }}></i>
+                        <i className="bi bi-cloud-upload f-white" style={{ fontSize: "20px" }}></i>
                         <span className="fw-bold f-white ms-2">Import</span>
                       </button>
 
                       <button
                         onClick={() => {
-
                           dispatch(settingPeding(alluser.isPending == 0 ? 1 : 0))
                           setCurrentPage(1)
                           setCount(count + 1)
                         }}
                         className="ms-3 primary bg-yellow p-2 rounded d-flex align-items-center justify-content-center" style={{ border: "0px" }}
                       >
-                        {/* <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i> */}
-                        {/* <i class="bi bi-cloud-upload f-white" style={{ fontSize: "20px" }}></i> */}
-
                         {
                           isPending == 1 ?
-                            <i class="bi bi-person-check-fill" style={{ fontSize: "25px" }}></i>
-                            :
-                            <i class="bi bi-person-exclamation" style={{ fontSize: "25px" }}></i>
+                          <i className="bi bi-person-check-fill" style={{ fontSize: "25px" }}></i>
+                          :
+                          <i className="bi bi-person-exclamation" style={{ fontSize: "25px" }}></i>
                         }
-
-
-                        <span className="fw-bold f-white ms-2"
-                          style={{
-                            // color: isPending == 1 ? "#057350" : "white"
-                          }}
-                        >{alluser.isPending == 0 ? "View Pending Resident" : "View Registered Resident"}</span>
+                        <span className="fw-bold f-white ms-2">
+                          {alluser.isPending == 0 ? "View Pending Resident" : "View Registered Resident"}
+                        </span>
                       </button>
-
-
                     </div>
-
                   </div>
 
                   <div className="d-flex">
+                    {
+                      alluser.isPending == 0 && (
+                        <button onClick={() => window.open('https://000040122.xyz/api/downloadUsers')} type="button"
+                          className="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
+                          style={{ width: "200px" }}>
 
-                    <button onClick={() => window.open('http://000040122.xyz/api/downloadUsers')} type="button"
-                      class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
-                      style={{ width: "200px" }}>
-
-                      <i class="bi bi-file-earmark-excel-fill" style={{ fontSize: "28px", color: "green" }}></i>
-                      Download</button>
+                          <i className="bi bi-file-earmark-excel-fill" style={{ fontSize: "28px", color: "green" }}></i>
+                          Download Residents
+                        </button>
+                      )
+                    }
 
                     {
+                      alluser.isPending == 1 && (
+                        <button onClick={() => window.open('https://000040122.xyz/api/downloadPendingResidents')} type="button"
+                          className="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
+                          style={{ width: "200px" }}>
 
+                          <i className="bi bi-file-earmark-excel-fill" style={{ fontSize: "28px", color: "green" }}></i>
+                          Download Pending Residents
+                        </button>
+                      )
+                    }
+
+                    {
                       alluser.isPending == 0 &&
                       <button
                         onClick={() => {
                           setIsEdit(false)
                           setIsViewing(false)
                           setShowAddResident(true)
-                       
                         }}
                         className="primary bg-yellow p-2 rounded ms-3" style={{ border: "0px" }}
                       >
@@ -2235,12 +2233,11 @@ export default function Official({ params }) {
                   </div>
                 </div>
 
-
-                {/*  */}
+                {/* Resident Table */}
                 <div className="border-bottom p-2 pb-4 mt-3 table-container" style={{ overflowY: "auto"}}>
 
                   {/* Table header */}
-                  <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
+                  <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh">
                     <HeaderItem style={{ fontWeight: 'bold' }}>
                       Fullname
                     </HeaderItem>
@@ -2262,7 +2259,6 @@ export default function Official({ params }) {
                     <HeaderItem style={{ fontWeight: 'bold' }}>
                       User Status
                     </HeaderItem>
-
                     <HeaderItem style={{ fontWeight: 'bold' }}>
                       Appointments
                     </HeaderItem>
@@ -2270,8 +2266,6 @@ export default function Official({ params }) {
                       Action
                     </HeaderItem>
                   </div>
-
-
 
                   {/* Table body */}
 
@@ -2285,16 +2279,14 @@ export default function Official({ params }) {
 
                           // Put dynamic className
                           <div className='nav-container d-flex col-lg-12 justify-content-around row-item-container w-100'>
-                            <RowItem
-
-                            >
+                            <RowItem>
                               <span className="f-white">
                                 {i.first_name + " " + i.middle_name + " " + i.last_name}
                               </span>
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-                                {i.current_address}
+                                {`${i.block || ''} ${i.lot || ''} ${i.purok || ''} ${i.street || ''}`}
                               </span>
                             </RowItem>
                             <RowItem>
@@ -2317,15 +2309,11 @@ export default function Official({ params }) {
                                 {i.voter_status == 0 ? "Voter" : "Non-Voter"}
                               </span>
                             </RowItem>
-
-                            <RowItem
-
-                            >
+                            <RowItem>
                               <span className="f-white pointer" style={{ fontWeight: i.isPendingResident == 1 ? "bold" : "normal", color: i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                                 {i.isPendingResident == 1 ? "Pending" : "Registered"}
                               </span>
                             </RowItem>
-
                             <RowItem>
                               <span className="f-white">
                                 {i.appointments_made}
@@ -2349,8 +2337,6 @@ export default function Official({ params }) {
                                   }}
                                   type="button" class="btn btn-primary"><i class="bi bi-eye"></i></button>
 
-                               
-
                                 <button
 
                                   onClick={() => {
@@ -2370,7 +2356,6 @@ export default function Official({ params }) {
 
                                   onClick={() => {
 
-
                                     setSelectedItem(i)
                                     setResident(i)
                                   }}
@@ -2386,8 +2371,7 @@ export default function Official({ params }) {
                     }
 
                   </div>
-
-                  {/* Table body */}
+                  
                 </div>
 
               </div>
@@ -2407,23 +2391,50 @@ export default function Official({ params }) {
 
                 <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
 
-                  <div className="d-flex align-items-center">
-                    <span className="f-white">Search:</span>
-                    <input
-                      // onKeyDown={handleKeyDown}
-                      onChange={(v) => {
-                        setSearchItemList(v.target.value)
-                        handleKeyDown(v.target.value)
-                      }}
-                      value={searchItemList}
-                      className="form-control rounded ms-2" placeholder="Search name" />
- 
-                    <button onClick={() => window.open('http://000040122.xyz/api/downloadAppointments')} type="button"
-                      class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
-                      style={{ width: "300px" }}>
+                <div className="d-flex align-items-center">
+                  <span className="fw-bold f-white">Search:</span>
+                  <input
+                    onChange={(v) => {
+                      setSearchItemList(v.target.value);
+                      handleKeyDown(v.target.value);
+                    }}
+                    value={searchItemList}
+                    type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" 
+                    style={{ width: '250px' }}
+                  />
+                </div>
 
-                      <i class="bi bi-file-earmark-excel-fill" style={{ fontSize: "28px", color: "green" }}></i>
-                      Download</button>
+                {/* Date Pickers */}
+                <div className="d-flex align-items-center ms-3">
+                  {/* From Date */}
+                    <div className="d-flex align-items-center">
+                      <label className="me-2 f-white">From:</label>
+                      <DatePicker
+                        selected={fromDate}
+                        onChange={(date) => setFromDate(date)}
+                        dateFormat="yyyy-MM-dd"
+                        className="form-control"
+                        placeholderText="yyyy-mm-dd"
+                      />
+                    </div>
+
+                    {/* To Date */}
+                    <div className="d-flex align-items-center ms-3">
+                      <label className="me-2 f-white">To:</label>
+                      <DatePicker
+                        selected={toDate}
+                        onChange={(date) => setToDate(date)}
+                        dateFormat="yyyy-MM-dd"
+                        className="form-control"
+                        placeholderText="yyyy-mm-dd"
+                        minDate={fromDate}
+                      />
+                    </div>
+
+                    {/* Download Button */}
+                    <button onClick={handleDownloadSchedule} className="btn btn-warning ms-3">
+                      Download
+                    </button>
 
                     {/* Refresh Button */}
                     <button onClick={resetFilters} className="btn btn-secondary ms-2">
@@ -2435,7 +2446,6 @@ export default function Official({ params }) {
                   {errorMessage && <div className="text-danger">{errorMessage}</div>}
 
                   {/* <div >
-                  http://000040122.xyz
                     <button
                       onClick={() => {
                         setShowAddResident(true)
@@ -2882,18 +2892,18 @@ export default function Official({ params }) {
                         style={{ width: '150px' }}  // Adjust width as needed
                       >
                         <option value="">Select Category</option>
-                        <option value="Noise">Assault</option>
-                        <option value="Theft">Verbal Abuse</option>
-                        <option value="Test">Theft</option>
-                        <option value="Noise">Domestic Violence</option>
-                        <option value="Noise">Vandalism</option>
-                        <option value="Noise">Trespassing</option>
-                        <option value="Noise">Public Disturbance</option>
-                        <option value="Noise">Disorderly Conduct</option>
-                        <option value="Noise">Child Welfare Concern</option>
-                        <option value="Noise">Harassment</option>
-                        <option value="Noise">Property Conflict</option>
-                        <option value="Noise">Neighbor Conflict</option>
+                        <option value="Assault">Assault</option>
+                        <option value="Verbal Abuse">Verbal Abuse</option>
+                        <option value="Theft">Theft</option>
+                        <option value="Domestic Violence">Domestic Violence</option>
+                        <option value="Vandalism">Vandalism</option>
+                        <option value="Trespassing">Trespassing</option>
+                        <option value="Public Disturbance">Public Disturbance</option>
+                        <option value="Disorderly Conduct">Disorderly Conduct</option>
+                        <option value="Child Welfare Concern">Child Welfare Concern</option>
+                        <option value="Harassment">Harassment</option>
+                        <option value="Property Conflict">Property Conflict</option>
+                        <option value="Neighbor Conflict">Neighbor Conflict</option>
                         <option value="Others">Others</option>
                       </select>
                     </div>
@@ -4105,7 +4115,7 @@ export default function Official({ params }) {
                 </div>
                 <div class="modal-body">
 
-                  <div id='certificateinput' class="mb-3">
+                  {/* <div id='certificateinput' class="mb-3">
                     <label class="form-label">Is this a certificate?</label>
                     <div class="form-check">
                       <input
@@ -4142,7 +4152,7 @@ export default function Official({ params }) {
                       </label>
                     </div>
 
-                  </div>
+                  </div> */}
 
                   <div class="mb-3">
                     <label class="form-label">Document Title</label>
@@ -4177,17 +4187,23 @@ export default function Official({ params }) {
                   <div className="mb-3">
 
                     <label class="form-label">Legend</label>
-
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{first_name}'} as placeholder</span>
-
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{middle_name}'} as placeholder</span>
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{last_name}'} as placeholder</span>
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{cell_number}'} as placeholder</span>
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{civil_status}'} as placeholder</span>
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{birthday}'} as placeholder</span>
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{gender}'} as placeholder</span>
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'{current_address}'} as placeholder</span>
-
+                    
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'name'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'first_name'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'middle_name'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'last_name'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'cell_number'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'email'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'civil_status'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'birthday'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'gender'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'address'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'household'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'house_and_lot_status'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'day'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'month'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'year'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "black" }}> as placeholder</span>
                   </div>
 
                   {/* <div className="mb-3">

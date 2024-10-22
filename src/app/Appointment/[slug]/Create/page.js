@@ -26,6 +26,7 @@ export default function CreateAppointment() {
     const [isDateValid, setIsDateValid] = useState(false);
 
     const [birthday, setBirthday] = useState('')
+    const [showCalendar, setShowCalendar] = useState(false);
     const [email, setEmail] = useState('')
     const [purpose, setPurpose] = useState('')
     const [otp, setOTP] = useState('')
@@ -152,7 +153,10 @@ export default function CreateAppointment() {
 
     }
 
-
+    const handleBirthdateChange = (date) => {
+      setBirthday(moment(date).format('YYYY-MM-DD'));
+      setShowCalendar(false);
+    };
 
     const submit = () => {
 
@@ -463,25 +467,44 @@ export default function CreateAppointment() {
     return (
         <main>
             <div className="d-flex bg-3 bg-white align-items-center flex-column" style={{ overflow: "scroll" }}>
-                <div>
-                    <Image 
-                        className="logo-size" 
-                        src={require('../../../../assets/central.png')} />
-                    <Image 
-                        className="logo-size" 
-                        src={require('../../../../assets/taguig.png')} />
-                    <Image 
-                        className="logo-size" 
-                        src={require('../../../../assets/sk.png')} />
-                </div>
+                {newResident !== null && (
+                    <>
+                        <div>
+                            <Image 
+                                className="logo-size" 
+                                src={require('../../../../assets/central.png')} />
+                            <Image 
+                                className="logo-size" 
+                                src={require('../../../../assets/taguig.png')} />
+                            <Image 
+                                className="logo-size" 
+                                src={require('../../../../assets/sk.png')} />
+                        </div>
 
-                <div className="d-flex flex-column align-items-center justify-content-center w-100 p-5 rounded bg-green mt-3 mb-5">
-                    <h1 className="f-white">BARANGAY CENTRAL BICUTAN</h1>
-                    <span className="f-white">Sunflower Street, Taguig City, Metro Manila</span>
-                </div>
+                        <div className="d-flex flex-column align-items-center justify-content-center w-100 p-5 rounded bg-green mt-3 mb-5">
+                            <h1 className="f-white">BARANGAY CENTRAL BICUTAN</h1>
+                            <span className="f-white">Sunflower Street, Taguig City, Metro Manila</span>
+                        </div>
+                    </>
+                )}
+
+                {newResident === null && (
+                    <div className="d-flex flex-column justify-content-center align-items-center mt-5">
+                        <div className="logo-bg col-lg-7" style={{height: "350px", width: "100%"}}></div>
+                        <button 
+                            onClick={() => setNewResident(false)}  // Change state to show form
+                            type="button" 
+                            className="btn fw-bold f-white w-100 bg-yellow d-flex align-items-center justify-content-center"
+                            style={{ padding: "20px 40px", fontSize: "24px" }}  // Increase padding and font size
+                        >
+                            <i className="bi bi-calendar-month me-3" style={{fontSize: "40px"}}></i>  
+                            SCHEDULE AN APPOINTMENT
+                        </button>
+                    </div>
+                )}
 
                 {/* Registered Form (default) */}
-                {!newResident && (
+                {newResident === false && (
                     <div className="schedule-form p-4 col-6 rounded">
                         <h4>Scheduling Form</h4>
 
@@ -499,13 +522,21 @@ export default function CreateAppointment() {
                                 </div>
 
                                 <div className="d-flex flex-column mt-3">
-                                    <span>Birthday</span>
-                                    <input
-                                        value={birthday}
-                                        onChange={(v) => setBirthday(v.target.value)}
-                                        className="form-control rounded mt-3"
-                                        placeholder="YYYY-MM-DD"
-                                    />
+                                  <span>Birthday</span>
+                                  <input
+                                      value={birthday || ''}
+                                      onFocus={() => setShowCalendar(true)} 
+                                      className="form-control rounded mt-3"
+                                      placeholder="YYYY-MM-DD"
+                                      readOnly
+                                  />
+                                  {showCalendar && (
+                                      <Calendar
+                                          onChange={handleBirthdateChange}
+                                          value={birthday ? new Date(birthday) : new Date()}
+                                          className="mt-3"
+                                      />
+                                  )}
                                 </div>
                             </div>
                         )}

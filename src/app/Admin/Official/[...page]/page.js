@@ -2,7 +2,7 @@
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
 import { addOfficials, dashboardViewApi, deleteOffialsApi, filterData, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
-import { addResidentApi, approveNewResidentApi, approveOrRejectAppointmentApi, deleteResidentInformationApi, editBlotterReportApi, editResidentApi, fileBlotterReportApi, importExcelResidentsApi, loadAllUsers, logOutResident, settingPeding, viewAllBlottersApi, viewAppointmentListApi } from "@/redux/reducer/resident";
+import { addResidentApi, approveNewResidentApi, approveOrRejectAppointmentApi, markAsPaidApi, deleteResidentInformationApi, editBlotterReportApi, editResidentApi, fileBlotterReportApi, importExcelResidentsApi, loadAllUsers, logOutResident, settingPeding, viewAllBlottersApi, viewAppointmentListApi } from "@/redux/reducer/resident";
 import { LogOut, viewAdminLogsApi } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
 import Image from "next/image";
@@ -481,6 +481,7 @@ export default function Official({ params }) {
 
   // Barangay services
 
+  //Barangay Paid Handler
 
   const [sss, setSSS] = useState({
     service: '',
@@ -1317,7 +1318,7 @@ export default function Official({ params }) {
 
 
     window.open(`https://000040122.xyz/api/generatePdf?doc_id=${val.id}&download=0`)
-    // http://000040122.xyz/api/generatePdf?doc_id=14&download=0
+    // https://000040122.xyz/api/generatePdf?doc_id=14&download=0
 
   }
 
@@ -2498,6 +2499,8 @@ export default function Official({ params }) {
 
                     {
                       alluser.list.length != 0 && alluser.list.data.map((i, k) => {
+                        const paymentStatus = i.payment_status ? i.payment_status : 'Unpaid';
+                        const combinedStatus = `${i.status}/${paymentStatus}`;
                         return (
 
                           // Put dynamic className
@@ -2529,7 +2532,7 @@ export default function Official({ params }) {
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-                                {i.status}
+                                {combinedStatus}
                               </span>
                             </RowItem>
                             { }
@@ -2639,6 +2642,36 @@ export default function Official({ params }) {
 
                                           }}
                                           type="button" class="btn btn-primary">View</button>
+
+                                        <button
+                                          onClick={() => {
+                                            if (i.payment_status !== "Paid") {  // Prevent clicking if already paid
+                                              setLoading();  // Show a loading state if you have it
+                                              dispatch(markAsPaidApi({ id: i.appointment_id, token: token.token }))
+                                                .then((result) => {
+                                                  if (result.meta.requestStatus === 'fulfilled') {
+                                                    setCount(count + 1);  // Update count if needed
+                                                    setLoading(false);    // Stop loading
+                                                    setSuccess(true);     // Show success state
+                                                    setShowSuccess(true); // If you have a success modal or notification
+                                                    SetMessage("Success in marking document as Paid."); // Set success message
+                                                  } else {
+                                                    SetMessage("Failed to mark the document as Paid.");
+                                                  }
+                                                })
+                                                .catch(error => {
+                                                  setLoading(false);
+                                                  console.error('Error marking appointment as paid:', error);
+                                                  SetMessage("An error occurred while marking as Paid.");
+                                                });
+                                            }
+                                          }}
+                                          type="button"
+                                          className="btn btn-warning ms-3"
+                                          disabled={i.payment_status === "Paid"}  // Disable button if already paid
+                                        >
+                                          {i.payment_status === "Paid" ? "Paid" : "Paid"}
+                                        </button>
 
                                       </div>
                                   }

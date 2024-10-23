@@ -293,9 +293,43 @@ a {
   border-bottom-right-radius: 100px;
 }
 
-.schedule-form{
+.schedule-form {
   background-color: white;
 }
+
+.new-resident-form {
+  background-color: white;
+  width: 320px;
+}
+
+@media (max-width: 576px) {
+  .new-resident-form {
+    width: 90%;
+    max-width: 320px;
+  }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+  .new-resident-form {
+    width: 70%;
+    max-width: 400px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+  .new-resident-form {
+    width: 60%;
+    max-width: 500px;
+  }
+}
+
+@media (min-width: 993px) {
+  .new-resident-form {
+    width: 40%;
+    max-width: 600px; 
+  }
+}
+
 
 .sidebar {
   height: 100%;
@@ -446,3 +480,12 @@ a {
 .table-container::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.5); /* Visible only on hover */
 }
+
+.blotter-form {
+ height: auto;
+}
+
+/* .blotter-form div:nth-child(2) {
+  overflow-y: auto;
+  border: 2px solid red;
+} */

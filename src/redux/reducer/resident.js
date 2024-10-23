@@ -364,6 +364,18 @@ export const approveOrRejectAppointmentApi = createAsyncThunk('user/approveOrRej
   return res.data;
 });
 
+export const markAsPaidApi = createAsyncThunk('user/markAsPaid', async (data) => {
+  const res = await apiClient.post('/markAsPaid', {
+    appointment_id: data.id
+  }, {
+    headers: {
+      'Authorization': `Bearer ${data.token}`, // Token for authorization
+      'Content-Type': 'application/json',
+    }
+  });
+  return res.data;
+});
+
 
 // Create slice
 const usersSlice = createSlice({

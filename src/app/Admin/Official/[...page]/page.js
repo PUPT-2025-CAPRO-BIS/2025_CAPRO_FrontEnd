@@ -3947,8 +3947,8 @@ export default function Official({ params }) {
                       <label class="form-label">Email</label>
                       <input
                         id='emailinput'
-                        // disabled={isViewing}
-                        value={resident.Email == undefined ? resident.email : resident.Email}
+                        disabled={isViewing}
+                        value={resident.email == undefined ? resident.email : resident.email}
                         onChange={(val) => {
                           if (val.target.value != "") {
                             document.getElementById('emailinput').style.border = '1px solid #dee2e6'

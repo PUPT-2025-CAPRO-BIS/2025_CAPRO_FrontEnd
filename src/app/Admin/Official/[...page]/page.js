@@ -2024,7 +2024,7 @@ export default function Official({ params }) {
                         handleKeyDown(v.target.value)
                       }}
                       type="email" className="form-control rounded ms-2" 
-                        id="exampleFormControlInput1" placeholder="Official name" 
+                        id="exampleFormControlInput1" placeholder="Search Official name" 
                         style={{ width: '250px' }}/>
                   </div>
 
@@ -2160,7 +2160,7 @@ export default function Official({ params }) {
                         setSearchItemList(v.target.value)
                         handleKeyDown(v.target.value)
                       }}
-                      type="email" className="form-control rounded ms-2" placeholder="Search name" />
+                      type="email" className="form-control rounded ms-2" placeholder="Search Name" />
                     
                     <div className="col-6 ms-3 d-flex">
                       <button
@@ -2402,7 +2402,8 @@ export default function Official({ params }) {
                       handleKeyDown(v.target.value);
                     }}
                     value={searchItemList}
-                    type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" 
+                    type="email" className="form-control rounded ms-2" 
+                    id="exampleFormControlInput1"  placeholder="Search Name"
                     style={{ width: '250px' }}
                   />
                 </div>
@@ -2723,7 +2724,8 @@ export default function Official({ params }) {
                       }}
                       value={searchItemList}
                       type="email" className="form-control rounded ms-2" 
-                        id="exampleFormControlInput1" style={{ width: '250px' }}
+                        id="exampleFormControlInput1" placeholder=" Search Document Type"
+                        style={{ width: '250px' }} 
                     />
                   </div>
 
@@ -2884,7 +2886,8 @@ export default function Official({ params }) {
                           setSearchItemList(v.target.value)
                           handleKeyDown(v.target.value)
                         }}
-                        type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" 
+                        type="email" className="form-control rounded ms-2" 
+                          id="exampleFormControlInput1" placeholder=" Search Name"
                           style={{ width: '250px' }}/>
                   </div>
 
@@ -3237,9 +3240,7 @@ export default function Official({ params }) {
 
           </div>
 
-          {/* Modal */
-
-          }
+          {/* Modal */}
           <div class="modal fade" id="exampleModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
@@ -3249,17 +3250,6 @@ export default function Official({ params }) {
                 <div class="modal-body">
                   <div class="mb-3">
                     <label class="form-label fw-bold">{selectedItem != null && selectedItem.full_name}</label>
-                    {/* <input
-                      value={selectedItem != null && selectedItem.full_name}
-                      onChange={(val) => {
-                        if (selectedItem != null) {
-                          setSelectedItem({
-                            ...selectedItem,
-                            full_name: val.target.value
-                          })
-                        }
-                      }}
-                      class="form-control" /> */}
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Chairmanship</label>
@@ -3267,10 +3257,8 @@ export default function Official({ params }) {
                       value={selectedItem != null ? selectedItem.chairmanship : ''}
                       onChange={(val) => {
                         if (selectedItem != null) {
-                          setSelectedItem({
-                            ...selectedItem,
-                            chairmanship: val.target.value
-                          })
+                          const updatedItem = { ...selectedItem, chairmanship: val.target.value };
+                          setSelectedItem(updatedItem);
                         }
                       }}
                       class="form-control" />
@@ -3281,40 +3269,31 @@ export default function Official({ params }) {
                       value={selectedItem != null ? selectedItem.position : ''}
                       onChange={(val) => {
                         if (selectedItem != null) {
-                          setSelectedItem({
-                            ...selectedItem,
-                            position: val.target.value
-                          })
+                          const updatedItem = { ...selectedItem, position: val.target.value };
+                          setSelectedItem(updatedItem);
                         }
                       }}
                       class="form-control" />
                   </div>
-                  {/* <div class="mb-3">
-                    <label class="form-label">Status</label>
-                    <input
-                      value={selectedItem != null && selectedItem.status}
-                      onChange={(val) => {
-                        if (selectedItem != null) {
-                          setSelectedItem({
-                            ...selectedItem,
-                            status: val.target.value
-                          })
-                        }
-                      }}
-                      class="form-control" />
-                  </div> */}
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button onClick={() => updateOfficial()} type="button" class="btn btn-primary bg-green" data-bs-dismiss="modal">Save change</button>
+                  <button
+                    onClick={() => updateOfficial()}
+                    type="button"
+                    class="btn btn-primary bg-green"
+                    data-bs-dismiss="modal"
+                    disabled={!selectedItem?.chairmanship || !selectedItem?.position} // Disable if required fields are empty
+                  >
+                    Save changes
+                  </button>
                 </div>
               </div>
             </div>
           </div>
 
-
-
           {/* Add official */}
+          
           <div class="modal fade" id="addOfficialModal" tabindex="-1" aria-labelledby="addOfficialModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
@@ -3326,32 +3305,28 @@ export default function Official({ params }) {
                     <label class="form-label">Search name</label>
                     <input
                       id='selctednameadd'
-                      // value={selectedItem != null && selectedItem.full_name}
                       value={searchItemList}
                       onChange={(val) => {
-
-                        searchAddOfficial(val.target.value)
+                        searchAddOfficial(val.target.value);
                       }}
                       class="form-control" />
                     {
-                      searchVal != "" &&
+                      searchVal !== "" &&
                       <div className="box position-absolute col-lg-12" style={{ maxHeight: "300px", overflow: "scroll" }}>
                         {
-                          searchOfficial.map((i, k) => {
-                            return (
-                              <div
-                                onClick={() => {
-                                  document.getElementById('selctednameadd').value = i.first_name + " " + i.middle_name + " " + i.last_name
-                                  setSearchVal('')
-                                  setSelectedSearchItem(i)
-                                }}
-                                className="search-item pointer">
-                                <span>
-                                  {i.first_name + " " + i.middle_name + " " + i.last_name}
-                                </span>
-                              </div>
-                            )
-                          })
+                          searchOfficial.map((i, k) => (
+                            <div
+                              key={k}
+                              onClick={() => {
+                                document.getElementById('selctednameadd').value = `${i.first_name} ${i.middle_name} ${i.last_name}`;
+                                setSearchVal('');
+                                setSelectedSearchItem(i);
+                              }}
+                              className="search-item pointer"
+                            >
+                              <span>{`${i.first_name} ${i.middle_name} ${i.last_name}`}</span>
+                            </div>
+                          ))
                         }
                       </div>
                     }
@@ -3359,13 +3334,11 @@ export default function Official({ params }) {
                   <div class="mb-3">
                     <label class="form-label">Chairmanship</label>
                     <input
-                      value={selectedSearchItem != null && selectedSearchItem.chairmanship}
+                      value={selectedSearchItem != null ? selectedSearchItem.chairmanship : ''}
                       onChange={(val) => {
                         if (selectedSearchItem != null) {
-                          setSelectedSearchItem({
-                            ...selectedSearchItem,
-                            chairmanship: val.target.value
-                          })
+                          const updatedItem = { ...selectedSearchItem, chairmanship: val.target.value };
+                          setSelectedSearchItem(updatedItem);
                         }
                       }}
                       class="form-control" />
@@ -3373,35 +3346,27 @@ export default function Official({ params }) {
                   <div class="mb-3">
                     <label class="form-label">Position</label>
                     <input
-                      value={selectedSearchItem != null && selectedSearchItem.position}
+                      value={selectedSearchItem != null ? selectedSearchItem.position : ''}
                       onChange={(val) => {
                         if (selectedSearchItem != null) {
-                          setSelectedSearchItem({
-                            ...selectedSearchItem,
-                            position: val.target.value
-                          })
+                          const updatedItem = { ...selectedSearchItem, position: val.target.value };
+                          setSelectedSearchItem(updatedItem);
                         }
                       }}
                       class="form-control" />
                   </div>
-                  {/* <div class="mb-3">
-                    <label class="form-label">Status</label>
-                    <input
-                      value={selectedSearchItem != null && selectedSearchItem.status}
-                      onChange={(val) => {
-                        if (selectedSearchItem != null) {
-                          setSelectedSearchItem({
-                            ...selectedSearchItem,
-                            status: val.target.value
-                          })
-                        }
-                      }}
-                      class="form-control" />
-                  </div> */}
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" data-bs-dismiss="modal" onClick={() => addOfficial()} class="btn btn-primary bg-green">Save changes!!</button>
+                  <button
+                    type="button"
+                    data-bs-dismiss="modal"
+                    onClick={() => addOfficial()}
+                    class="btn btn-primary bg-green"
+                    disabled={!selectedSearchItem?.chairmanship || !selectedSearchItem?.position} // Disable if required fields are empty
+                  >
+                    Save changes!!
+                  </button>
                 </div>
               </div>
             </div>
@@ -4140,8 +4105,7 @@ export default function Official({ params }) {
           {/* Add Resident */}
 
 
-          {/* Add barangay services */}
-
+          {/* Add Barangay Services */}
           <div id="addBarangayServices" class="modal" tabindex="-1">
             <div class="modal-dialog">
               <div class="modal-content">
@@ -4149,46 +4113,6 @@ export default function Official({ params }) {
                   <h5 class="modal-title">{isEdit ? "Edit" : "Add"} Barangay Services</h5>
                 </div>
                 <div class="modal-body">
-
-                  {/* <div id='certificateinput' class="mb-3">
-                    <label class="form-label">Is this a certificate?</label>
-                    <div class="form-check">
-                      <input
-                        checked={isCert == 1 ? true : false}
-                        onChange={() => {
-
-
-                          // document.getElementById('genderinput').style.border = '0px solid #dee2e6'
-
-
-                          setIsCert(1)
-                        }}
-                        class="form-check-input" type="radio" name="isCertificate" id="isCertificate" />
-                      <label class="form-check-label" for="flexRadioDefault2">
-                        Yes
-                      </label>
-                    </div>
-
-                    <div class="form-check">
-                      <input
-                        checked={isCert == 0 ? true : false}
-                        onChange={() => {
-
-
-
-                          // document.getElementById('genderinput').style.border = '0px solid #dee2e6'
-
-                          setIsCert(0)
-
-                        }}
-                        class="form-check-input" type="radio" name="isCertificate" id="isCertificate" />
-                      <label class="form-check-label" for="flexRadioDefault2">
-                        No
-                      </label>
-                    </div>
-
-                  </div> */}
-
                   <div class="mb-3">
                     <label class="form-label">Document Title</label>
                     <input
@@ -4196,33 +4120,29 @@ export default function Official({ params }) {
                       value={sss.service}
                       onChange={(val) => {
                         setSSS({
-                          ...sss, ...{
-                            service: val.target.value
-                          }
-                        })
-
+                          ...sss,
+                          service: val.target.value
+                        });
                       }}
                       class="form-control" />
-
                   </div>
 
                   <div class="mb-3">
                     <label class="form-label">Cost</label>
                     <input
-                      id='serviceinput'
+                      id='costinput'
                       value={cost}
                       onChange={(val) => {
-                        setCost(val.target.value)
-
+                        setCost(val.target.value);
                       }}
                       class="form-control" />
-
                   </div>
 
                   <div className="mb-3">
 
                     <label class="form-label">Legend</label>
                     
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'honorifics'}</span>
                     <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'name'}</span>
                     <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'first_name'}</span>
                     <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'middle_name'}</span>
@@ -4232,6 +4152,7 @@ export default function Official({ params }) {
                     <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'civil_status'}</span>
                     <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'birthday'}</span>
                     <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'gender'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'gender_pronoun'}</span>
                     <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'address'}</span>
                     <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'household'}</span>
                     <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'house_and_lot_status'}</span>
@@ -4241,35 +4162,32 @@ export default function Official({ params }) {
                     <span className="ms-3" style={{ fontSize: "12px", color: "black" }}> as placeholder</span>
                   </div>
 
-                  {/* <div className="mb-3">
-                    <label class="form-label">For Barangay ID</label>
-
-                    <span className="ms-3">Ex. {'{first_name}'}  {'{middle_name}'} {'{last_name'} {'{address}'}as placeholder</span>
-                  </div> */}
-
                   <div class="mb-3">
                     <label class="form-label">Description</label>
-
                     <ReactQuill
-                      //  value={formik.values.message}
                       value={serviceDesc}
                       onChange={(val) => {
-                        setServiceDesc(val)
+                        setServiceDesc(val);
                       }}
                       placeholder="Enter the message..........."
                     />
-
-
                   </div>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button data-bs-dismiss="modal" onClick={() => addDocumentType()} type="button" class="btn btn-primary bg-green">Save</button>
+                  <button
+                    data-bs-dismiss="modal"
+                    onClick={() => addDocumentType()}
+                    type="button"
+                    class="btn btn-primary bg-green"
+                    disabled={!sss.service || !cost || !serviceDesc} // Disable if any required field is empty
+                  >
+                    Save
+                  </button>
                 </div>
               </div>
             </div>
           </div>
-
           {/* Add barangay services */}
 
 
@@ -4850,14 +4768,25 @@ export default function Official({ params }) {
                     </div>
                   }
 
-                  <div >
+                  <div>
                     <button
-
-                      // disabled={false}
-                      disabled={disabledBlotterButton}
+                      disabled={
+                        !(
+                          blotter.complainee_name &&
+                          blotter.complainant_name &&
+                          blotter.status_resolved &&
+                          blotter.complaint_remarks &&
+                          blotter.category &&
+                          blotter.officer_on_duty &&
+                          blotter.complainant_phone_number &&
+                          blotter.complainee_phone_number &&
+                          (blotter.is_resident === false || blotter.non_resident_address) &&
+                          (blotter.category !== "Others" || blotter.otherCategory) &&
+                          (isViewing ? blotter.remarks : true) // Remarks required only if viewing
+                        )
+                      }
                       onClick={async () => {
-                        // setShowBlotter(true)
-                        setLoading(true)
+                        setLoading(true);
 
                         const categoryToSend = blotter.category === "Others" ? blotter.otherCategory : blotter.category;
 
@@ -4865,20 +4794,20 @@ export default function Official({ params }) {
                           token: token.token,
                           ...blotter,
                           category: categoryToSend,
-                        }
-
+                        };
 
                         try {
                           let result;
+                          result = !isViewing
+                            ? await dispatch(fileBlotterReportApi(merge)).unwrap()
+                            : await dispatch(editBlotterReportApi(merge)).unwrap();
 
-                          result = !isViewing ? await dispatch(fileBlotterReportApi(merge)).unwrap() : await dispatch(editBlotterReportApi(merge)).unwrap();
-
-                          setIsViewing(false)
-                          setShowBlotter(false)
-                          setSuccess(true)
-                          setShowSuccess(true)
-                          SetMessage(!isViewing ? 'Blotter successfully created' : "Blotter successfully updated")
-                          setCount(count + 1)
+                          setIsViewing(false);
+                          setShowBlotter(false);
+                          setSuccess(true);
+                          setShowSuccess(true);
+                          SetMessage(!isViewing ? 'Blotter successfully created' : "Blotter successfully updated");
+                          setCount(count + 1);
                           setBlotter({
                             complainee_name: '',
                             complainant_name: '',
@@ -4894,19 +4823,15 @@ export default function Official({ params }) {
                             complainee_phone_number: '',
                             non_resident_address: '',
                             remarks: ''
-                          })
+                          });
 
-                          setLoading(false)
-                          // Handle success, e.g., navigate to another page
+                          setLoading(false);
                         } catch (error) {
-                          setLoading(false)
-                          setSuccess(false)
-                          setShowSuccess(true)
-                          setShowBlotter(false)
-                          // Handle error, e.g., show an error message
+                          setLoading(false);
+                          setSuccess(false);
+                          setShowSuccess(true);
+                          setShowBlotter(false);
                         }
-
-
                       }}
                       className="primary bg-yellow p-2 rounded border-0"
                     >

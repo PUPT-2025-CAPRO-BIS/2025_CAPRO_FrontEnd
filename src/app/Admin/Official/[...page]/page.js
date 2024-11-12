@@ -257,6 +257,7 @@ export default function Official({ params }) {
     birthday: '',
     cell_number: '',
     civil_status_id: '',
+    voter_status: '',
     male_female: '',
     block: '',
     lot: '',
@@ -3965,7 +3966,52 @@ export default function Official({ params }) {
 
                     </div>
 
+                    <div id='voter_status_input' class="mb-3">
+                      <label class="form-label">Voter Status</label>
+                      <div class="form-check">
+                        <input
+                          disabled={isViewing}
+                          checked={resident.voter_status === 0 ? true : false}
+                          onChange={() => {
 
+
+                            document.getElementById('voter_status_input').style.border = '0px solid #dee2e6'
+
+
+                            setResident({
+                              ...resident, ...{
+                                voter_status: 0
+                              }
+                            })
+                          }}
+                          class="form-check-input" type="radio" name="voterStatus" id="voterRadioVoter" />
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          Voter
+                        </label>
+                      </div>
+                      { }
+                      <div class="form-check">
+                        <input
+                          disabled={isViewing}
+                          checked={resident.voter_status === 1 ? true : false}
+                          onChange={() => {
+
+
+                            document.getElementById('voter_status_input').style.border = '0px solid #dee2e6'
+
+                            setResident({
+                              ...resident, ...{
+                                voter_status: 1
+                              }
+                            })
+                          }}
+                          class="form-check-input" type="radio" name="voterStatus" id="voterRadioNonVoter" />
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          Non-Voter
+                        </label>
+                      </div>
+
+                    </div>
 
                     <div id='genderinput' class="mb-3">
                       <label class="form-label">Gender</label>

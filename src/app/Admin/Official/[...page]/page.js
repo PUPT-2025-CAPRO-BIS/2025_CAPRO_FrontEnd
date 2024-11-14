@@ -4872,7 +4872,6 @@ export default function Official({ params }) {
                           blotter.officer_on_duty &&
                           blotter.complainant_phone_number &&
                           blotter.complainee_phone_number &&
-                          (blotter.is_resident === false || blotter.non_resident_address) &&
                           (blotter.category !== "Others" || blotter.otherCategory) &&
                           (isViewing ? blotter.remarks : true) // Remarks required only if viewing
                         )

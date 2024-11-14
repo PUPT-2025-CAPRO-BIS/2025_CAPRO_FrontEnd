@@ -721,9 +721,20 @@ export default function CreateAppointment() {
                     <div class="mb-3">
                         <label class="form-label">Block</label>
                         <input
+                            id='blockinput'
                             value={resident.block}
                             onChange={(val) => {
-                                setResident({ ...resident, block: val.target.value });
+                                if (val.target.value != "") {
+                                    document.getElementById('blockinput').style.border = '1px solid #dee2e6'
+                                  }
+                                  else {
+                                    document.getElementById('blockinput').style.border = '1px solid red'
+                                  }
+                                setResident({ 
+                                    ...resident, ...{
+                                        block: val.target.value 
+                                    }
+                                });
                             }}
                             class="form-control"
                         />
@@ -732,9 +743,20 @@ export default function CreateAppointment() {
                     <div class="mb-3">
                         <label class="form-label">Lot</label>
                         <input
+                            id='lotinput'
                             value={resident.lot}
                             onChange={(val) => {
-                                setResident({ ...resident, lot: val.target.value });
+                                if (val.target.value != "") {
+                                    document.getElementById('lotinput').style.border = '1px solid #dee2e6'
+                                  }
+                                  else {
+                                    document.getElementById('lotinput').style.border = '1px solid red'
+                                  }
+                                setResident({ 
+                                    ...resident, ...{
+                                        lot: val.target.value
+                                    }
+                                });
                             }}
                             class="form-control"
                         />
@@ -743,9 +765,20 @@ export default function CreateAppointment() {
                     <div class="mb-3">
                         <label class="form-label">Purok</label>
                         <input
+                            id='purokinput'
                             value={resident.purok}
                             onChange={(val) => {
-                                setResident({ ...resident, purok: val.target.value });
+                                if (val.target.value != "") {
+                                    document.getElementById('purokinput').style.border = '1px solid #dee2e6'
+                                  }
+                                  else {
+                                    document.getElementById('purokinput').style.border = '1px solid red'
+                                  }
+                                setResident({ 
+                                    ...resident, ...{
+                                        purok: val.target.value 
+                                    }
+                                });
                             }}
                             class="form-control"
                         />
@@ -754,9 +787,20 @@ export default function CreateAppointment() {
                     <div class="mb-3">
                         <label class="form-label">Street</label>
                         <input
+                            id='streetinput'
                             value={resident.street}
                             onChange={(val) => {
-                                setResident({ ...resident, street: val.target.value });
+                                if (val.target.value != "") {
+                                    document.getElementById('streetinput').style.border = '1px solid #dee2e6'
+                                  }
+                                  else {
+                                    document.getElementById('streetinput').style.border = '1px solid red'
+                                  }
+                                setResident({ 
+                                    ...resident, ...{
+                                        street: val.target.value 
+                                    }
+                                });
                             }}
                             class="form-control"
                         />
@@ -765,9 +809,20 @@ export default function CreateAppointment() {
                     <div class="mb-3">
                         <label class="form-label">Household No.</label>
                         <input
+                            id='housenoinput'
                             value={resident.household}
                             onChange={(val) => {
-                                setResident({ ...resident, household: val.target.value });
+                                if (val.target.value != "") {
+                                    document.getElementById('housenoinput').style.border = '1px solid #dee2e6'
+                                  }
+                                  else {
+                                    document.getElementById('housenoinput').style.border = '1px solid red'
+                                  }
+                                setResident({ 
+                                    ...resident, ...{
+                                        household: val.target.value 
+                                    }
+                                });
                             }}
                             class="form-control"
                         />
@@ -782,10 +837,10 @@ export default function CreateAppointment() {
 
                                 if (val.target.value != "") {
                                     document.getElementById('fnameinput').style.border = '1px solid #dee2e6'
-                                }
-                                else {
+                                  }
+                                  else {
                                     document.getElementById('fnameinput').style.border = '1px solid red'
-                                }
+                                  }
 
                                 setResident({
                                     ...resident, ...{
@@ -940,9 +995,20 @@ export default function CreateAppointment() {
                     <div class="mb-3">
                         <label class="form-label">Relationship to House and Lot Owner</label>
                         <input
+                            id='relationinput'
                             value={resident.relationship_to_owner}
                             onChange={(val) => {
-                                setResident({ ...resident, relationship_to_owner: val.target.value });
+                                if (val.target.value != "") {
+                                    document.getElementById('relationinput').style.border = '1px solid #dee2e6'
+                                  }
+                                  else {
+                                    document.getElementById('relationinput').style.border = '1px solid red'
+                                  }
+                                setResident({ 
+                                    ...resident, ...{
+                                        relationship_to_owner: val.target.value 
+                                    }
+                                });
                             }}
                             class="form-control"
                             placeholder="Please specify relationship"
@@ -974,14 +1040,26 @@ export default function CreateAppointment() {
 
                     {/* Pet Details */}
                     <div class="mb-3">
-                        <label class="form-label">Pet Details</label>
-                        <input
-                            value={resident.pet_details}
-                            onChange={(val) => {
-                                setResident({ ...resident, pet_details: val.target.value });
-                            }}
-                            class="form-control"
-                        />
+                      <label class="form-label">Has Pets (Specify Type and Number)</label>
+                      <input
+                        id='haspetsinput'
+                        value={resident.pet_details}
+                        onChange={(val) => {
+                          if (val.target.value != "") {
+                            document.getElementById('haspetsinput').style.border = '1px solid #dee2e6'
+                          }
+                          else {
+                            document.getElementById('haspetsinput').style.border = '1px solid red'
+                          }
+                          setResident({
+                            ...resident, ...{ 
+                            pet_details: val.target.value
+                            }
+                          });
+                        }}
+                        class="form-control"
+                        placeholder="e.g., 2 Dogs, 1 Cat"
+                      />
                     </div>
 
                     {/* Pet Vaccination */}

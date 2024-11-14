@@ -3397,18 +3397,9 @@ export default function Official({ params }) {
                     <div class="mb-3">
                       <label class="form-label">Appointment made</label>
                       <input
-                        id='fnameinput'
                         disabled={isViewing}
                         value={resident.appointments_made}
                         onChange={(val) => {
-
-                          if (val.target.value != "") {
-                            document.getElementById('fnameinput').style.border = '1px solid #dee2e6'
-                          }
-                          else {
-                            document.getElementById('fnameinput').style.border = '1px solid red'
-                          }
-
                           setResident({
                             ...resident, ...{
                               first_name: val.target.value
@@ -3424,12 +3415,20 @@ export default function Official({ params }) {
                     <div class="mb-3">
                       <label class="form-label">Block</label>
                       <input
+                        id='blockinput'
                         disabled={isViewing}
                         value={resident.block}
                         onChange={(val) => {
+                          if (val.target.value != "") {
+                            document.getElementById('blockinput').style.border = '1px solid #dee2e6'
+                          }
+                          else {
+                            document.getElementById('blockinput').style.border = '1px solid red'
+                          }
                           setResident({
-                            ...resident,
+                            ...resident, ...{
                             block: val.target.value
+                            }
                           });
                         }}
                         class="form-control" />
@@ -3438,12 +3437,20 @@ export default function Official({ params }) {
                     <div class="mb-3">
                       <label class="form-label">Lot</label>
                       <input
+                        id='lotinput'
                         disabled={isViewing}
                         value={resident.lot}
                         onChange={(val) => {
+                          if (val.target.value != "") {
+                            document.getElementById('lotinput').style.border = '1px solid #dee2e6'
+                          }
+                          else {
+                            document.getElementById('lotinput').style.border = '1px solid red'
+                          }
                           setResident({
-                            ...resident,
+                            ...resident, ...{
                             lot: val.target.value
+                            }
                           });
                         }}
                         class="form-control" />
@@ -3452,12 +3459,22 @@ export default function Official({ params }) {
                     <div class="mb-3">
                       <label class="form-label">Purok</label>
                       <input
+                        id='purokinput'
                         disabled={isViewing}
                         value={resident.purok}
                         onChange={(val) => {
+
+                          if (val.target.value != "") {
+                            document.getElementById('purokinput').style.border = '1px solid #dee2e6'
+                          }
+                          else {
+                            document.getElementById('purokinput').style.border = '1px solid red'
+                          }
+
                           setResident({
-                            ...resident,
+                            ...resident, ...{
                             purok: val.target.value
+                            }
                           });
                         }}
                         class="form-control" />
@@ -3466,12 +3483,22 @@ export default function Official({ params }) {
                     <div class="mb-3">
                       <label class="form-label">Street</label>
                       <input
+                        id='streetinput'
                         disabled={isViewing}
                         value={resident.street}
                         onChange={(val) => {
+
+                          if (val.target.value != "") {
+                            document.getElementById('streetinput').style.border = '1px solid #dee2e6'
+                          }
+                          else {
+                            document.getElementById('streetinput').style.border = '1px solid red'
+                          }
+
                           setResident({
-                            ...resident,
+                            ...resident, ...{
                             street: val.target.value
+                            }
                           });
                         }}
                         class="form-control" />
@@ -3480,12 +3507,22 @@ export default function Official({ params }) {
                     <div class="mb-3">
                       <label class="form-label">Household No.</label>
                       <input
+                        id='housenoinput'
                         disabled={isViewing}
                         value={resident.household}
                         onChange={(val) => {
+
+                          if (val.target.value != "") {
+                            document.getElementById('housenoinput').style.border = '1px solid #dee2e6'
+                          }
+                          else {
+                            document.getElementById('housenoinput').style.border = '1px solid red'
+                          }
+
                           setResident({
-                            ...resident,
+                            ...resident, ...{
                             household: val.target.value
+                            }
                           });
                         }}
                         class="form-control" />
@@ -3598,6 +3635,7 @@ export default function Official({ params }) {
                                   ...resident,
                                   house_and_lot_ownership: selectedValue,
                                 });
+                                
                               }
                             }}
                             class="form-select"
@@ -3826,12 +3864,20 @@ export default function Official({ params }) {
                     <div class="mb-3">
                       <label class="form-label">Has Pets (Specify Type and Number)</label>
                       <input
+                        id='haspetsinput'
                         disabled={isViewing}
                         value={resident.pet_details}
                         onChange={(val) => {
+                          if (val.target.value != "") {
+                            document.getElementById('haspetsinput').style.border = '1px solid #dee2e6'
+                          }
+                          else {
+                            document.getElementById('haspetsinput').style.border = '1px solid red'
+                          }
                           setResident({
-                            ...resident, 
+                            ...resident, ...{ 
                             pet_details: val.target.value
+                            }
                           });
                         }}
                         class="form-control"

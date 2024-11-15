@@ -221,6 +221,10 @@ export default function CreateAppointment() {
             document.getElementById('phoneinput').style.border = '1px solid red'
         }
 
+        if (resident.male_female === "") {
+            document.getElementById('genderinput').style.border = '1px solid red';
+        }
+
         if (resident.voter_status === "") {
             document.getElementById('voterinput').style.border = '1px solid red'
         }
@@ -229,9 +233,68 @@ export default function CreateAppointment() {
             document.getElementById('civilinput').style.border = '1px solid red'
         }
 
-        if (resident.first_name != "" && resident.last_name != "" && resident.birthday != "" && resident.cell_number != ""
-            && resident.male_female !== "" && resident.civil_status_id != "" && validateEmail && validateNumber != ""
+        if (resident.block == "") {
+            document.getElementById('blockinput').style.border = '1px solid red';
+        }
+    
+        if (resident.lot == "") {
+            document.getElementById('lotinput').style.border = '1px solid red';
+        }
+    
+        if (resident.purok == "") {
+            document.getElementById('purokinput').style.border = '1px solid red';
+        }
+    
+        if (resident.street == "") {
+            document.getElementById('streetinput').style.border = '1px solid red';
+        }
+    
+        if (resident.household == "") {
+            document.getElementById('housenoinput').style.border = '1px solid red';
+        }
+    
+        if (resident.relationship_to_owner == "") {
+            document.getElementById('relationinput').style.border = '1px solid red';
+        }
+    
+        if (resident.pet_details == "") {
+            document.getElementById('haspetsinput').style.border = '1px solid red';
+        }
+    
+        if (resident.house_and_lot_ownership == "") {
+            alert("Please select House and Lot Ownership.");
+        }
+    
+        if (resident.living_with_owner == "") {
+            alert("Please select Living with Owner.");
+        }
+    
+        if (resident.renting == "") {
+            alert("Please select Renting.");
+        }
 
+        if (
+            resident.first_name != "" &&
+            resident.last_name != "" &&
+            resident.email != "" &&
+            validateEmail &&
+            resident.birthday != "" &&
+            resident.cell_number != "" &&
+            validateNumber &&
+            resident.block != "" &&
+            resident.lot != "" &&
+            resident.purok != "" &&
+            resident.street != "" &&
+            resident.household != "" &&
+            resident.relationship_to_owner != "" &&
+            resident.pet_details != "" &&
+            resident.civil_status_id != "" &&
+            resident.voter_status !== "" &&
+            resident.male_female !== "" &&
+            resident.house_and_lot_ownership != "" &&
+            resident.living_with_owner != "" &&
+            resident.renting != "" &&
+            files.length > 0
         ) {
 
             let base64List = []
@@ -276,7 +339,17 @@ export default function CreateAppointment() {
                         civil_status_id: '',
                         male_female: '',
                         voter_status: 0,
-                        file_upload: ''
+                        file_upload: '',
+                        block: "",
+                        lot: "",
+                        purok: "",
+                        street: "",
+                        household: "",
+                        relationship_to_owner: "",
+                        pet_details: "",
+                        house_and_lot_ownership: "",
+                        living_with_owner: "",
+                        renting: "",
                     })
                     setFiles([])
                     setNewResident(null)
@@ -866,6 +939,7 @@ export default function CreateAppointment() {
                                 })
 
                             }}
+                            placeholder="Optional"
                             class="form-control" />
 
                     </div>
@@ -1040,7 +1114,7 @@ export default function CreateAppointment() {
 
                     {/* Pet Details */}
                     <div class="mb-3">
-                      <label class="form-label">Has Pets (Specify Type and Number)</label>
+                      <label class="form-label">Has Pets (Specify Type and Number - if none N/A)</label>
                       <input
                         id='haspetsinput'
                         value={resident.pet_details}

@@ -1051,10 +1051,72 @@ export default function Official({ params }) {
       document.getElementById('civilinput').style.border = '1px solid red'
     }
 
-    if (resident.first_name != "" && resident.last_name != "" && resident.birthday != "" && resident.cell_number != ""
-      && resident.male_female !== "" && resident.civil_status_id != "" && validateEmail && validateNumber != ""
+    if (resident.block == "") {
+        document.getElementById('blockinput').style.border = '1px solid red';
+    }
 
-    ) {
+    if (resident.lot == "") {
+        document.getElementById('lotinput').style.border = '1px solid red';
+    }
+
+    if (resident.purok == "") {
+        document.getElementById('purokinput').style.border = '1px solid red';
+    }
+
+    if (resident.street == "") {
+        document.getElementById('streetinput').style.border = '1px solid red';
+    }
+
+    if (resident.household == "") {
+        document.getElementById('housenoinput').style.border = '1px solid red';
+    }
+
+    if (resident.relationship_to_owner == "") {
+        document.getElementById('relationinput').style.border = '1px solid red';
+    }
+
+    if (resident.pet_details == "") {
+        document.getElementById('haspetsinput').style.border = '1px solid red';
+    }
+
+    if (resident.voter_status === "") {
+      document.getElementById('voter_status_input').style.border = '1px solid red'
+    }
+
+    if (resident.house_and_lot_ownership == "") {
+        alert("Please select House and Lot Ownership.");
+    }
+
+    if (resident.living_with_owner == "") {
+        alert("Please select Living with Owner.");
+    }
+
+    if (resident.renting == "") {
+        alert("Please select Renting.");
+    }
+
+    if (
+      resident.first_name != "" &&
+      resident.last_name != "" &&
+      resident.email != "" &&
+      validateEmail &&
+      resident.birthday != "" &&
+      resident.cell_number != "" &&
+      validateNumber &&
+      resident.block != "" &&
+      resident.lot != "" &&
+      resident.purok != "" &&
+      resident.street != "" &&
+      resident.household != "" &&
+      resident.relationship_to_owner != "" &&
+      resident.pet_details != "" &&
+      resident.civil_status_id != "" &&
+      resident.voter_status !== "" &&
+      resident.male_female !== "" &&
+      resident.house_and_lot_ownership != "" &&
+      resident.living_with_owner != "" &&
+      resident.renting != ""
+  ) {
 
       let merge = {
         resident,
@@ -1080,7 +1142,19 @@ export default function Official({ params }) {
               birthday: '',
               cell_number: '',
               civil_status_id: '',
-              male_female: ''
+              male_female: '',
+              voter_status: 0,
+              file_upload: '',
+              block: "",
+              lot: "",  
+              purok: "",
+              street: "",
+              household: "",
+              relationship_to_owner: "",
+              pet_details: "",
+              house_and_lot_ownership: "",
+              living_with_owner: "",
+              renting: "",
             })
             setCount(count + 1)
             setShowAddResident(false)
@@ -1113,7 +1187,19 @@ export default function Official({ params }) {
               birthday: '',
               cell_number: '',
               civil_status_id: '',
-              male_female: ''
+              male_female: '',
+              voter_status: 0,
+              file_upload: '',
+              block: "",
+              lot: "",
+              purok: "",
+              street: "",
+              household: "",
+              relationship_to_owner: "",
+              pet_details: "",
+              house_and_lot_ownership: "",
+              living_with_owner: "",
+              renting: "",
             })
             setShowAddResident(false)
             setCount(count + 1)
@@ -3798,12 +3884,20 @@ export default function Official({ params }) {
                     <div class="mb-3">
                       <label class="form-label">Relationship to House and Lot Owner</label>
                       <input
+                        id='relationinput'
                         disabled={isViewing}
                         value={resident.relationship_to_owner}
                         onChange={(val) => {
+                          if (val.target.value != "") {
+                            document.getElementById('relationinput').style.border = '1px solid #dee2e6'
+                          }
+                          else {
+                            document.getElementById('relationinput').style.border = '1px solid red'
+                          }
                           setResident({
-                            ...resident, 
+                            ...resident, ...{
                             relationship_to_owner: val.target.value
+                            }
                           });
                         }}
                         class="form-control"
@@ -3862,7 +3956,7 @@ export default function Official({ params }) {
 
                     {/* Has Pets */}
                     <div class="mb-3">
-                      <label class="form-label">Has Pets (Specify Type and Number)</label>
+                      <label class="form-label">Has Pets (Specify Type and Number - if none N/A)</label>
                       <input
                         id='haspetsinput'
                         disabled={isViewing}

@@ -345,6 +345,66 @@ a {
   background-color: #5a6268; 
 }
 
+.nda-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.nda-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  max-width: 550px;
+  width: 100%;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+}
+
+.nda-content h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.nda-content p {
+  margin-bottom: 20px;
+  line-height: 1.6;
+  font-size: 1.25rem;
+}
+
+.nda-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.nda-actions .btn {
+  margin-left: 10px;
+}
+
+.pointer {
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+  color: #0056b3;
+}
+
+.pointer:hover {
+  text-decoration: underline;
+}
+
+.bi {
+  cursor: pointer;
+}
+
+
 @media (max-width: 576px) {
   .new-resident-form {
     width: 90%;

@@ -54,6 +54,7 @@ export default function Official({ params }) {
   const [totalPage, setTotalPage] = useState(0)
 
   const [searchItemList, setSearchItemList] = useState('')
+  const [showModal, setShowModal] = useState(false);
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
   const [category, setCategory] = useState('');
@@ -170,6 +171,29 @@ export default function Official({ params }) {
     window.open(url);
   };
 
+  const NonDisclosureModal = ({ show, onClose, onConfirm }) => {
+    if (!show) return null;
+  
+    return (
+      <div className="nda-overlay">
+        <div className="nda-content">
+          <h4>Non-Disclosure Notice</h4>
+          <p>
+            By downloading blotter records, you acknowledge that this information is confidential and 
+            protected under the Data Privacy Act of 2012 and other Philippine laws. 
+            The data must only be used for its intended, lawful purpose and should not be shared or 
+            disclosed to unauthorized parties. Any misuse of this information may result in 
+            legal consequences. By proceeding, you agree to comply with these terms.
+          </p>
+          <div className="nda-actions">
+            <button onClick={onConfirm} className="btn btn-primary">I Agree</button>
+            <button onClick={onClose} className="btn btn-secondary">Cancel</button>
+          </div>
+        </div>
+      </div>
+    );
+  };  
+
   const handleDownloadBlotter = () => {
     let url = 'https://000040122.xyz/api/downloadBlotters?';
 
@@ -184,6 +208,22 @@ export default function Official({ params }) {
     }
     // Open the dynamically constructed URL
     window.open(url);
+  };
+
+  // Function to show the Non-Disclosure modal before downloading
+  const handleDownloadClick = () => {
+    setShowModal(true); // Show the Non-Disclosure modal
+  };
+
+  // Confirm download after user accepts the notice
+  const handleConfirm = () => {
+    setShowModal(false);  // Close the modal
+    handleDownloadBlotter();  // Proceed with download
+  };
+
+  // Close modal without downloading
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
 
   const typingTimeoutRef = useRef(null);
@@ -1818,7 +1858,7 @@ export default function Official({ params }) {
 
 
 
-                  <span className="f-white ms-3">
+                  <span className="f-white ms-3" style={{ color: "black" }}>
                     Administrator
                   </span>
                 </button>
@@ -2118,11 +2158,11 @@ export default function Official({ params }) {
                   {
                     <div >
                       <button
-                        className="primary bg-yellow p-2 rounded" style={{ border: "0px" }}
+                        className="primary bg-yellow p-2 rounded" style={{ border: "0px", color: "black" }}
                         data-bs-toggle="modal" data-bs-target="#addOfficialModal"
                       >
-                        <i className="bi bi-plus fw-bold f-white" style={{ fontSize: "20px" }}></i>
-                        <span className="fw-bold f-white">Add official</span>
+                        <i className="bi bi-plus fw-bold" style={{ fontSize: "20px", color: "black" }}></i>
+                        <span className="fw-bold" style={{ color: "black" }}>Add official</span>
                       </button>
                     </div>
                   }
@@ -2256,8 +2296,8 @@ export default function Official({ params }) {
                         }}
                         className="primary bg-yellow p-2 rounded d-flex align-items-center justify-content-center" style={{ border: "0px" }}
                       >
-                        <i className="bi bi-cloud-upload f-white" style={{ fontSize: "20px" }}></i>
-                        <span className="fw-bold f-white ms-2">Import</span>
+                        <i className="bi bi-cloud-upload f-white" style={{ fontSize: "20px", color: "black" }}></i>
+                        <span className="fw-bold f-white ms-2" style={{ color: "black" }}>Import</span>
                       </button>
 
                       <button
@@ -2274,7 +2314,7 @@ export default function Official({ params }) {
                           :
                           <i className="bi bi-person-exclamation" style={{ fontSize: "25px" }}></i>
                         }
-                        <span className="fw-bold f-white ms-2">
+                        <span className="fw-bold f-white ms-2" style={{ color: "black" }}>
                           {alluser.isPending == 0 ? "View Pending Resident" : "View Registered Resident"}
                         </span>
                       </button>
@@ -2285,11 +2325,11 @@ export default function Official({ params }) {
                     {
                       alluser.isPending == 0 && (
                         <button onClick={() => window.open('https://000040122.xyz/api/downloadUsers')} type="button"
-                          className="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
+                          className="btn btn-warning bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                           style={{ width: "200px" }}>
 
                           <i className="bi bi-file-earmark-excel-fill" style={{ fontSize: "28px", color: "green" }}></i>
-                          Download Residents
+                          <span style={{ fontWeight: "bold" }}>Download Residents</span>
                         </button>
                       )
                     }
@@ -2297,11 +2337,11 @@ export default function Official({ params }) {
                     {
                       alluser.isPending == 1 && (
                         <button onClick={() => window.open('https://000040122.xyz/api/downloadPendingResidents')} type="button"
-                          className="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
+                          className="btn btn-warning bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                           style={{ width: "200px" }}>
 
-                          <i className="bi bi-file-earmark-excel-fill" style={{ fontSize: "28px", color: "green" }}></i>
-                          Download Pending Residents
+                          <i className="bi bi-file-earmark-excel-fill" style={{ fontSize: "28px", color: "green", textDecoration: "bold" }}></i>
+                          <span style={{ fontWeight: "bold" }}>Download Pending Residents</span>
                         </button>
                       )
                     }
@@ -2314,10 +2354,10 @@ export default function Official({ params }) {
                           setIsViewing(false)
                           setShowAddResident(true)
                         }}
-                        className="primary bg-yellow p-2 rounded ms-3" style={{ border: "0px" }}
+                        className="primary bg-yellow p-2 rounded ms-3" style={{ border: "0px", color: "black" }}
                       >
-                        <i className="bi bi-plus fw-bold f-white" style={{ fontSize: "20px" }}></i>
-                        <span className="fw-bold f-white">Add Resident</span>
+                        <i className="bi bi-plus fw-bold" style={{ fontSize: "20px", color: "black" }}></i>
+                        <span className="fw-bold" style={{ color: "black" }}>Add Resident</span>
                       </button>
                     }
                   </div>
@@ -2523,13 +2563,13 @@ export default function Official({ params }) {
                     </div>
 
                     {/* Download Button */}
-                    <button onClick={handleDownloadSchedule} className="btn btn-warning ms-3">
-                      Download
+                    <button onClick={handleDownloadSchedule} className="btn btn-warning bg-yellow ms-3">
+                    <span style={{ fontWeight: "bold" }}>Download</span>
                     </button>
 
                     {/* Refresh Button */}
                     <button onClick={resetFilters} className="btn btn-secondary ms-2">
-                      Refresh
+                      <span style={{ fontWeight: "bold" }}>Refresh</span>
                     </button>
                   </div>
 
@@ -2832,8 +2872,8 @@ export default function Official({ params }) {
                       data-bs-toggle="modal" data-bs-target="#addBarangayServices"
                       className="primary bg-yellow p-2 rounded border-0"
                     >
-                      <i className="bi bi-plus fw-bold f-white" style={{ fontSize: "20px" }}></i>
-                      <span className="fw-bold f-white">Document Type</span>
+                      <i className="bi bi-plus fw-bold f-white" style={{ fontSize: "20px", color: "black" }}></i>
+                      <span className="fw-bold f-white" style={{ color: "black" }}>Document Type</span>
                     </button>
                   </div>
                 </div>
@@ -3034,13 +3074,20 @@ export default function Official({ params }) {
                     </div>
 
                     {/* Download Button */}
-                    <button onClick={handleDownloadBlotter} className="btn btn-warning ms-3">
-                      Download
+                    <button onClick={handleDownloadClick} className="btn btn-warning bg-yellow ms-3">
+                    <span style={{ fontWeight: "bold" }}>Download</span>
                     </button>
+
+                    {/* Non-Disclosure Notice Modal */}
+                    <NonDisclosureModal
+                      show={showModal}
+                      onClose={handleCloseModal}
+                      onConfirm={handleConfirm}
+                    />
 
                     {/* Refresh Button */}
                     <button onClick={resetFilters} className="btn btn-secondary ms-2">
-                      Refresh
+                    <span style={{ fontWeight: "bold" }}>Refresh</span>
                     </button>
                   </div>
 
@@ -4203,23 +4250,28 @@ export default function Official({ params }) {
                     {
                       isViewing && (
                         <div className="mb-3 d-flex flex-column">
-                          <label className="form-label">Supporting documents</label>
+                          <label className="form-label fw-bold">Supporting documents</label>
                           {resident.supporting_files_obj &&
                             resident.supporting_files_obj.length > 0 &&
                             resident.supporting_files_obj.map((i, k) => (
-                              <span
-                                key={k}
-                                onClick={() => {
-                                  setSelectedFileForViewing({
-                                    fileName: i.file_name,
-                                    base64: i.base64_file,
-                                  });
-                                  setShowImage(true);
-                                }}
-                                className="pointer"
-                              >
-                                {i.file_name}
-                              </span>
+                              <div key={k} className="d-flex align-items-center mb-2">
+                              <i className="bi bi-file-earmark-text me-2" style={{ fontSize: "1.2rem", color: "#007bff" }}></i>
+                                <span
+                                  key={k}
+                                  onClick={() => {
+                                    setSelectedFileForViewing({
+                                      fileName: i.file_name,
+                                      base64: i.base64_file,
+                                    });
+                                    setShowImage(true);
+                                  }}
+                                  className="pointer"
+                                  style={{
+                                    fontSize: "1.01rem"}}
+                                >
+                                  {i.file_name}
+                                </span>
+                              </div>
                             ))}
                         </div>
                       )

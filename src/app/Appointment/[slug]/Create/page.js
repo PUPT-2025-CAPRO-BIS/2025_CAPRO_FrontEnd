@@ -21,8 +21,6 @@ export default function CreateAppointment() {
     const dispatch = useDispatch()
     const router = useRouter()
 
-    // const [birthday, setBirthday] = useState('1992-11-03')
-    // const [email, setEmail] = useState('afeil@example.net')
     const [isDateValid, setIsDateValid] = useState(false);
 
     const [birthday, setBirthday] = useState('')
@@ -48,7 +46,8 @@ export default function CreateAppointment() {
 
     const [newResident, setNewResident] = useState(null)
 
-
+    const [hasAgreedToPrivacy, setHasAgreedToPrivacy] = useState(false);
+    const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
 
     const [startDate, setStartDate] = useState();
     const [resident, setResident] = useState({
@@ -84,6 +83,10 @@ export default function CreateAppointment() {
             getDocumentList()
         }
     }, [accessToken])
+
+    const handlePrivacyChange = () => {
+        setHasAgreedToPrivacy(!hasAgreedToPrivacy); // Toggle checkbox state
+    };
 
 
     const onDrop = useCallback((acceptedFiles) => {
@@ -204,10 +207,18 @@ export default function CreateAppointment() {
             document.getElementById('fnameinput').style.border = '1px solid red'
         }
 
+        if (resident.middle_name == "") {
+            document.getElementById('mnameinput').style.border = '1px solid red'
+        }
+
         if (resident.last_name == "") {
             document.getElementById('lnameinput').style.border = '1px solid red'
         }
 
+        if (!hasAgreedToPrivacy) { // Check if privacy statement is agreed upon
+            alert("You must agree to the privacy policy before proceeding.");
+            return;
+        }
 
         if (resident.email == "" || !validateEmail) {
             document.getElementById('emailinput').style.border = '1px solid red'
@@ -275,6 +286,7 @@ export default function CreateAppointment() {
 
         if (
             resident.first_name != "" &&
+            resident.middle_name != "" &&
             resident.last_name != "" &&
             resident.email != "" &&
             validateEmail &&
@@ -785,7 +797,7 @@ export default function CreateAppointment() {
                 
                 )}
 
-                {newResident && (
+                {newResident && !showPrivacyPolicy && (
                     <div className="new-resident-form mb-5 p-4 col-6 rounded">
                     <h4>
                         Enter your details below:
@@ -929,8 +941,16 @@ export default function CreateAppointment() {
                     <div class="mb-3">
                         <label class="form-label">Middle name</label>
                         <input
+                             id='mnameinput'
                             value={resident.middle_name}
                             onChange={(val) => {
+
+                                if (val.target.value != "") {
+                                    document.getElementById('mnameinput').style.border = '1px solid #dee2e6'
+                                  }
+                                  else {
+                                    document.getElementById('mnameinput').style.border = '1px solid red'
+                                  }
 
                                 setResident({
                                     ...resident, ...{
@@ -939,7 +959,6 @@ export default function CreateAppointment() {
                                 })
 
                             }}
-                            placeholder="Optional"
                             class="form-control" />
 
                     </div>
@@ -1346,7 +1365,7 @@ export default function CreateAppointment() {
                     </div>
 
 
-                    <div className="mt-5 mb-5" >
+                    <div className="mt-4 mb-4" >
                         <label class="form-label">Supporting Documents: <span className="fw-bold" style={{ color: "red" }}>Valid ID</span></label>
                         <div {...getRootProps()} style={{ borderStyle: "dotted" }}>
                             <input {...getInputProps()} />
@@ -1394,7 +1413,33 @@ export default function CreateAppointment() {
                                 })
                             }
                         </div>
+                        
                     </div>
+
+                    {/* Add privacy statement checkbox */}
+                    <div className="form-check mt-3 mb-4">
+                        <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id="privacyCheck"
+                            checked={hasAgreedToPrivacy}
+                            onChange={handlePrivacyChange}
+                        />
+                        <label className="form-check-label" htmlFor="privacyCheck">
+                            By submitting your registration form, you confirm that you have read, understood, and agree to this 
+                            <span
+                                className="text-primary"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setShowPrivacyPolicy(true); 
+                                }}
+                                style={{ cursor: "pointer", textDecoration: "underline" }}
+                            >
+                                Data Privacy Policy
+                            </span>.
+                        </label>
+                    </div>
+
 
                     <button
                         disabled={files.length == 0 ? true : false}
@@ -1452,6 +1497,146 @@ export default function CreateAppointment() {
                     </div>
                 }
 
+                {showPrivacyPolicy && (
+                    <div className="data-privacy-wrapper">
+                    <div className="data-privacy-container">
+                        {/* Privacy Policy Section */}
+                        <h2>Data Privacy Policy</h2>
+                        <section>
+                            <h3>1. Introduction</h3>
+                            <p>
+                                This Data Privacy Policy is in accordance with the Data Privacy Act of 2012 (RA 10173) of the 
+                                Philippines. At Barangay Central Bicutan, we are committed to protecting your personal data and ensuring 
+                                that it is processed in accordance with the principles of transparency, legitimate purpose, and 
+                                proportionality.
+                            </p>
+                        </section>
+                        <section>
+                            <h3>2. Information We Collect</h3>
+                            <p>
+                                In compliance with the Data Privacy Act, we collect only the necessary personal information for 
+                                legitimate purposes. These may include:
+                            </p>
+                            <ul>
+                                <li>Full Name</li>
+                                <li>Date of Birth</li>
+                                <li>Address (Block, Lot, Purok, Street, Barangay)</li>
+                                <li>Contact Information (Phone Number, Email Address)</li>
+                                <li>Household Information (Household ID, Relationship to Owner)</li>
+                                <li>Pet Details (if applicable)</li>
+                                <li>Other information necessary to fulfill barangay services</li>
+                            </ul>
+                        </section>
+                        <section>
+                            <h3>3. Purpose of Data Collection</h3>
+                            <p>
+                                The personal data collected will be used for the following purposes:
+                            </p>
+                            <ul>
+                                <li>Verification of residency and household composition</li>
+                                <li>Processing of barangay services (e.g., certifications, document requests, appointments)</li>
+                                <li>Compliance with legal and regulatory obligations</li>
+                                <li>Statistical purposes to improve barangay operations</li>
+                            </ul>
+                            <p>
+                                Your personal data will not be used for purposes other than those declared, unless you provide 
+                                your explicit consent.
+                            </p>
+                        </section>
+                        <section>
+                            <h3>4. Legal Basis for Data Processing</h3>
+                            <p>
+                                We process personal data based on any of the following legal bases as required by the Data Privacy Act:
+                            </p>
+                            <ul>
+                                <li>Your explicit consent</li>
+                                <li>Compliance with legal or regulatory requirements</li>
+                                <li>Performance of public authority or legitimate public interest</li>
+                                <li>Fulfillment of contractual obligations</li>
+                            </ul>
+                        </section>
+                        <section>
+                            <h3>5. Data Sharing and Disclosure</h3>
+                            <p>
+                                Your personal data will be kept confidential. We will share your data only under the following circumstances:
+                            </p>
+                            <ul>
+                                <li>When required by law (e.g., court orders, law enforcement authorities)</li>
+                                <li>To service providers under a data-sharing agreement ensuring compliance with the Data Privacy Act</li>
+                                <li>For legitimate public interest purposes or when necessary for public safety</li>
+                            </ul>
+                        </section>
+                        <section>
+                            <h3>6. Data Retention</h3>
+                            <p>
+                                Your personal data will be retained only for as long as necessary to fulfill the stated purposes 
+                                or as required by applicable laws. Once the retention period expires, data will be securely deleted 
+                                or anonymized.
+                            </p>
+                        </section>
+                        <section>
+                            <h3>7. Your Rights as a Data Subject</h3>
+                            <p>
+                                As stipulated in the Data Privacy Act of 2012, you have the following rights concerning your personal data:
+                            </p>
+                            <ul>
+                                <li>
+                                    <strong>Right to Be Informed:</strong> You have the right to know how your data will be collected, used, and stored.
+                                </li>
+                                <li>
+                                    <strong>Right to Access:</strong> You can request access to the personal data we hold about you.
+                                </li>
+                                <li>
+                                    <strong>Right to Rectification:</strong> You can request corrections to your data if it is inaccurate or incomplete.
+                                </li>
+                                <li>
+                                    <strong>Right to Erasure:</strong> You can request that your personal data be deleted under certain conditions.
+                                </li>
+                                <li>
+                                    <strong>Right to Object:</strong> You can object to the processing of your personal data.
+                                </li>
+                                <li>
+                                    <strong>Right to Data Portability:</strong> You can request that your data be transferred to another entity in a commonly used format.
+                                </li>
+                                <li>
+                                    <strong>Right to File a Complaint:</strong> You can file a complaint with the National Privacy Commission (NPC) if your rights are violated.
+                                </li>
+                            </ul>
+                        </section>
+                        <section>
+                            <h3>8. Data Security Measures</h3>
+                            <p>
+                                We implement appropriate physical, organizational, and technical security measures to protect 
+                                your personal data. This includes secure storage, access control, encryption, and regular security 
+                                assessments.
+                            </p>
+                        </section>
+                        <section>
+                            <h3>9. Updates to This Privacy Policy</h3>
+                            <p>
+                                We may update this policy to reflect changes in legal requirements or operational procedures. 
+                                Any updates will be communicated to you through our website or other appropriate channels.
+                            </p>
+                        </section>
+                        <section>
+                            <h3>10. Contact Information</h3>
+                            <p>
+                                For any concerns or inquiries, please reach out to us via:
+                            </p>
+                            <ul>
+                                <li><strong>Email:</strong> bistaguig@gmail.com</li>
+                                <li><strong>Address:</strong> Barangay Central Bicutan, Taguig, Philippines</li>
+                            </ul>
+                        </section>
+                        <button
+                            className="btn btn-secondary"
+                            onClick={() => setShowPrivacyPolicy(false)}
+                        >
+                            Back
+                        </button>
+                    </div>
+                </div>
+                )}
 
             </div>
         </main>

@@ -302,6 +302,49 @@ a {
   width: 320px;
 }
 
+.data-privacy-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.data-privacy-container {
+  background-color: #ffffff; 
+  padding: 20px 30px;
+  border-radius: 8px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  max-width: 800px;
+  width: 100%;
+  overflow-y: auto;
+}
+
+.data-privacy-container h2, .data-privacy-container h3 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #333333;
+}
+
+.data-privacy-container ul {
+  list-style: disc inside;
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+.data-privacy-container button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #6c757d; 
+  color: #ffffff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.data-privacy-container button:hover {
+  background-color: #5a6268; 
+}
+
 @media (max-width: 576px) {
   .new-resident-form {
     width: 90%;

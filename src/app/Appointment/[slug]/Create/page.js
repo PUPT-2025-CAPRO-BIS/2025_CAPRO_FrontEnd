@@ -1,6 +1,6 @@
 'use client'
 import Button from "@/components/Button";
-import { addResidentApi, applyNewResidentApi, checkDateAvailabilityApi, createAppointmentApi, generateOTPapi, otpLoginApi } from "@/redux/reducer/resident";
+import { addResidentApi, applyNewResidentApi, checkDateAvailabilityApi, createAppointmentApi, generateOTPapi, otpLoginApi, updateEmailApi } from "@/redux/reducer/resident";
 import Image from "next/image";
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from "react";
@@ -75,7 +75,63 @@ export default function CreateAppointment() {
         pet_vaccination: ''
     })
 
+    const [resetEmail, setResetEmail] = useState(false);
+    const [firstName, setFirstName] = useState('');
+    const [middleName, setMiddleName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [oldEmail, setOldEmail] = useState('');
+    const [newEmail, setNewEmail] = useState('');
 
+    const toggleResetEmailForm = () => {
+      setResetEmail(!resetEmail);
+    };
+
+    const validateForm = () => {
+      if (!firstName || !lastName || !birthday || !oldEmail || !newEmail) {
+        setMessage("All fields are required.");
+        setShowSuccess(true);
+        return false;
+      }
+      return true;
+    };
+
+    const updateEmail = async () => {
+      if (!validateForm()) return;
+      // Prepare the data to send
+      let data = {
+        first_name: firstName,
+        middle_name: middleName,
+        last_name: lastName,
+        birthday: moment(birthday).format('YYYY-MM-DD'),
+        old_email: oldEmail,
+        new_email: newEmail,
+      };
+    
+      try {
+        // Call the API using a Redux thunk or direct Axios call
+        const result = await dispatch(updateEmailApi(data)).unwrap();
+    
+        // Handle response
+        if (result.success) {
+          setMessage("Email updated successfully. Please check your new email for verification.");
+          setShowSuccess(true);
+          // Optionally reset the form
+          setResetEmail(false);
+          setFirstName('');
+          setMiddleName('');
+          setLastName('');
+          setBirthday('');
+          setOldEmail('');
+          setNewEmail('');
+        } else {
+          setMessage(result.message || "Failed to update email.");
+          setShowSuccess(true);
+        }
+      } catch (error) {
+        setMessage(error);
+        setShowSuccess(true);
+      }
+    };    
 
     useEffect(() => {
 
@@ -605,7 +661,7 @@ export default function CreateAppointment() {
                         <div className="schedule-form p-2 p-md-4 rounded">
                           <h4>Scheduling Form</h4>
           
-                          {!success && (
+                          {!resetEmail && !success && (
                             <div>
                               <div className="d-flex flex-column mt-4">
                                   <label>Email address</label>
@@ -637,7 +693,111 @@ export default function CreateAppointment() {
                               </div>
                                         )}
                             </div>
+                            <button
+                              className="btn btn-link mt-3 p-0 text-primary"
+                              onClick={toggleResetEmailForm}
+                            >
+                              Reset Email
+                            </button>
                           </div>
+                            )}
+
+                          {resetEmail && (
+                            <div>
+                              <div className="d-flex flex-column mt-4">
+                                <label>First Name</label>
+                                <input
+                                  onChange={(e) => setFirstName(e.target.value)}
+                                  value={firstName}
+                                  type="text"
+                                  className="form-control rounded mt-2"
+                                  placeholder="Enter first name"
+                                />
+                              </div>
+
+                              <div className="d-flex flex-column mt-3">
+                                <label>Middle Name</label>
+                                <input
+                                  onChange={(e) => setMiddleName(e.target.value)}
+                                  value={middleName}
+                                  type="text"
+                                  className="form-control rounded mt-2"
+                                  placeholder="Enter middle name"
+                                />
+                              </div>
+
+                              <div className="d-flex flex-column mt-3">
+                                <label>Last Name</label>
+                                <input
+                                  onChange={(e) => setLastName(e.target.value)}
+                                  value={lastName}
+                                  type="text"
+                                  className="form-control rounded mt-2"
+                                  placeholder="Enter last name"
+                                />
+                              </div>
+
+                              <div className="d-flex flex-column mt-3">
+                                <label>Birthday</label>
+                                <input
+                                  value={birthday || ''}
+                                  onFocus={() => setShowCalendar(true)}
+                                  className="form-control rounded mt-2"
+                                  placeholder="YYYY-MM-DD"
+                                  readOnly
+                                />
+                                {showCalendar && (
+                                  <div className="w-100 mt-3">
+                                    <Calendar
+                                      onChange={handleBirthdateChange}
+                                      value={birthday ? new Date(birthday) : new Date()}
+                                      className="calendar-component"
+                                    />
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className="d-flex flex-column mt-3">
+                                <label>Old Email</label>
+                                <input
+                                  onChange={(e) => setOldEmail(e.target.value)}
+                                  value={oldEmail}
+                                  type="email"
+                                  className="form-control rounded mt-2"
+                                  placeholder="e.g john@gmail.com"
+                                />
+                              </div>
+
+                              <div className="d-flex flex-column mt-3">
+                                <label>New Email</label>
+                                <input
+                                  onChange={(e) => setNewEmail(e.target.value)}
+                                  value={newEmail}
+                                  type="email"
+                                  className="form-control rounded mt-2"
+                                  placeholder="e.g john@gmail.com"
+                                />
+                              </div>
+
+                              <button
+                                onClick={(v) => {
+                                  updateEmail();
+                                  // Call your reset email function
+                                  v.preventDefault();
+                                  // Add reset logic here
+                                }}
+                                type="button"
+                                className="btn btn-primary bg-green mt-4 col-12"
+                              >
+                                Reset Email
+                              </button>
+                              <button
+                                className="btn btn-link mt-3 p-0 text-primary"
+                                onClick={toggleResetEmailForm}
+                              >
+                                Scheduling Form
+                              </button>
+                            </div>
                             )}
             
                             {success && !successOTP && (
@@ -738,7 +898,7 @@ export default function CreateAppointment() {
                                 </div>
                             )}
             
-                            {!success && !successOTP && (
+                            {!resetEmail && !success && !successOTP && (
                                 <button
                                     disabled={isButtonDisabled}
                                     onClick={(v) => {

@@ -223,6 +223,23 @@ export const createAppointmentApi = createAsyncThunk('user/createAppointment', a
   return res.data;
 });
 
+export const updateEmailApi = createAsyncThunk('user/updateEmail', async (data) => {
+  const res = await apiClient.post('/updateEmail', {
+    first_name: data.first_name,
+    middle_name: data.middle_name,
+    last_name: data.last_name,
+    birthday: data.birthday,
+    old_email: data.old_email,
+    new_email: data.new_email,
+  }, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  return res.data;
+});
+
+
 export const viewAppointmentListApi = createAsyncThunk('user/viewAppointmentListApi', async (data) => {
   const res = await apiClient.get('/viewAppointmentList', {
     headers: {

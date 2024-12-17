@@ -3,7 +3,8 @@ import Button from "@/components/Button";
 import { addResidentApi, applyNewResidentApi, checkDateAvailabilityApi, createAppointmentApi, generateOTPapi, otpLoginApi, updateEmailApi } from "@/redux/reducer/resident";
 import Image from "next/image";
 import { useRouter } from 'next/navigation'
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
+import Webcam from "react-webcam";
 import { useDispatch, useSelector } from "react-redux";
 import { useDropzone } from 'react-dropzone'
 import DatePicker from 'react-datepicker';
@@ -48,6 +49,8 @@ export default function CreateAppointment() {
 
     const [hasAgreedToPrivacy, setHasAgreedToPrivacy] = useState(false);
     const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+    const webcamRef = useRef(null);
+    const [isCameraOpen, setIsCameraOpen] = useState(false);
 
     const [startDate, setStartDate] = useState();
     const [resident, setResident] = useState({
@@ -178,11 +181,14 @@ export default function CreateAppointment() {
 
 
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
-        onDrop, accept: {
-            'image/*': [] // Accept only image files
-        }
-    })
+    const captureImage = () => {
+        const imageSrc = webcamRef.current.getScreenshot();
+        setFiles((prevFiles) => [
+            ...prevFiles,
+            { fileName: `captured_image_${Date.now()}.jpg`, base64: imageSrc },
+        ]);
+        setIsCameraOpen(false); // Close the camera after capturing
+    };
 
 
     const getDocumentList = async () => {
@@ -339,6 +345,9 @@ export default function CreateAppointment() {
         if (resident.renting == "") {
             alert("Please select Renting.");
         }
+        if (files.length === 0) {
+            alert("Please capture at least one supporting document before submitting.");
+        }
 
         if (
             resident.first_name != "" &&
@@ -365,15 +374,12 @@ export default function CreateAppointment() {
             files.length > 0
         ) {
 
-            let base64List = []
-
-            files.map((i, k) => {
-
-                base64List.push(JSON.stringify({
-                    data: i.base64,
-                    file_name: i.fileName
-                }))
-            })
+            let base64List = files.map((file) =>
+                JSON.stringify({
+                    data: file.base64,
+                    file_name: file.fileName,
+                })
+            );
 
             image: {
 
@@ -1525,56 +1531,82 @@ export default function CreateAppointment() {
                     </div>
 
 
-                    <div className="mt-4 mb-4" >
-                        <label class="form-label">Supporting Documents: <span className="fw-bold" style={{ color: "red" }}>Valid ID</span></label>
-                        <div {...getRootProps()} style={{ borderStyle: "dotted" }}>
-                            <input {...getInputProps()} />
-                            {
-                                isDragActive ?
-                                    <p>Drop the files here ...</p> :
-                                    <p>Drag 'n' drop some files here, or click to select files</p>
-                            }
-
-
-                        </div>
-
-                        <div className="mt-3">
-                            {
-                                files.length != 0 && files.map((i, k) => {
-                                    return (
-                                        <div
-                                            className="d-flex align-items-center justify-content-between mt-2"
-                                        >
-                                            <span
-                                                className="pointer"
-                                                onClick={() => {
-
-                                                    setSelectedFileForViewing(i)
-                                                    setShowImage(true)
-                                                }}
-                                            >{i.fileName}</span>
-
-                                            <div className="pointer"
-
-                                                onClick={() => {
-                                                    let tmpArr = files
-                                                    tmpArr.splice(k, 1);
-
-
-                                                    setFiles([...tmpArr])
-                                                }}
-
-                                            >
-                                                <i class="bi bi-trash" style={{ fontSize: "30px", color: "red" }}></i>
-                                            </div>
-
-                                        </div>
-                                    )
-                                })
-                            }
-                        </div>
+                    <div className="mt-4 mb-4">
+                        <label className="form-label d-block mb-2">Capture ID</label>
                         
+                        {/* Camera Capture Button */}
+                        {!isCameraOpen && (
+                            <button
+                                className="btn btn-primary"
+                                onClick={() => setIsCameraOpen(true)}
+                            >
+                                Open Camera
+                            </button>
+                        )}
+
+                        {/* Camera Feed */}
+                        {isCameraOpen && (
+                            <div className="d-flex flex-column align-items-center">
+                                <Webcam
+                                    audio={false}
+                                    ref={webcamRef}
+                                    screenshotFormat="image/jpeg"
+                                    videoConstraints={{
+                                        width: 640,
+                                        height: 480,
+                                        facingMode: "user", // Change to "environment" for rear camera
+                                    }}
+                                    className="custom-webcam"
+                                />
+                                <div className="mt-3 d-flex justify-content-center gap-2">
+                                    <button
+                                        className="btn btn-success"
+                                        onClick={captureImage}
+                                    >
+                                        Capture Photo
+                                    </button>
+
+                                    <button
+                                        className="btn btn-danger"
+                                        onClick={() => setIsCameraOpen(false)}
+                                    >
+                                        Close Camera
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
+
+                    {/* Display Captured Images */}
+                    <div className="mt-3">
+                        {files.length !== 0 &&
+                            files.map((file, index) => (
+                                <div key={index} className="d-flex align-items-center justify-content-between mt-2">
+                                    <span
+                                        className="pointer"
+                                        onClick={() => {
+                                            const newWindow = window.open();
+                                            newWindow.document.write(
+                                                `<img src="${file.base64}" alt="Captured Image" />`
+                                            );
+                                        }}
+                                    >
+                                        {file.fileName}
+                                    </span>
+                                    <div
+                                        className="pointer"
+                                        onClick={() => {
+                                            let tmpArr = [...files];
+                                            tmpArr.splice(index, 1);
+                                            setFiles(tmpArr);
+                                        }}
+                                    >
+                                        <i className="bi bi-trash" style={{ fontSize: '30px', color: 'red' }}></i>
+                                    </div>
+                                </div>
+                            ))}
+                    </div>
+
 
                     {/* Add privacy statement checkbox */}
                     <div className="form-check mt-3 mb-4">
@@ -1602,7 +1634,7 @@ export default function CreateAppointment() {
 
 
                     <button
-                        disabled={files.length == 0 ? true : false}
+                        disabled={hasAgreedToPrivacy == 0 ? true : false}
                         type="button" onClick={() => {
                             addResident()
                         }} class="btn btn-primary bg-green">Submit</button>

@@ -588,6 +588,14 @@ a {
  height: auto;
 }
 
+.custom-webcam {
+  width: 100%; /* Responsive */
+  max-width: 400px; /* Set a max width */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 8px; /* Optional: Rounded corners */
+  border: 2px solid #ddd; /* Optional: Add a border */
+}
+
 /* .blotter-form div:nth-child(2) {
   overflow-y: auto;
   border: 2px solid red;

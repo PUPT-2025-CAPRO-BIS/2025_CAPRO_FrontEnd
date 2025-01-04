@@ -3,7 +3,7 @@ import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
 import { addOfficials, dashboardViewApi, deleteOffialsApi, filterData, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
 import { addResidentApi, approveNewResidentApi, approveOrRejectAppointmentApi, markAsPaidApi, deleteResidentInformationApi, editBlotterReportApi, editResidentApi, fileBlotterReportApi, importExcelResidentsApi, loadAllUsers, logOutResident, settingPeding, viewAllBlottersApi, viewAppointmentListApi } from "@/redux/reducer/resident";
-import { LogOut, viewAdminLogsApi } from "@/redux/reducer/user";
+import { LogOut, viewAdminLogsApi, updateSlotLimitApi } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -66,6 +66,9 @@ export default function Official({ params }) {
   const [dashboard_filter, setDashboardFilter] = useState('all')
 
   const [isPending, setIsPending] = useState(0)
+
+  const [slotLimit, setSlotLimit] = useState(5);
+  
 
   useEffect(() => {
     if (tab === 2 && fromDate && toDate) { 
@@ -1627,6 +1630,22 @@ export default function Official({ params }) {
 
   }
 
+  const handleSlotLimitChange = (e) => {
+    const newSlotLimit = slotLimit; // Already set via the dropdown
+  
+    // Dispatch Redux action
+    dispatch(updateSlotLimitApi({ slotLimit: newSlotLimit, token: token.token }))
+      .then((res) => {
+        if (res.success) {
+          alert('Slot limit updated successfully!');
+        } else {
+          alert('Failed to update slot limit');
+        }
+      })
+      .catch((err) => console.error('Error updating slot limit:', err));
+  };
+  
+
   return (
     <main className={``}>
       <Auth>
@@ -2854,6 +2873,28 @@ export default function Official({ params }) {
                         id="exampleFormControlInput1" placeholder=" Search Document Type"
                         style={{ width: '250px' }} 
                     />
+                  </div>
+
+                  <div className="d-flex align-items-center">
+                    {/* Dropdown for Slot Limit */}
+                    <select
+                      id="slotLimitDropdown"
+                      className="form-select me-2"
+                      style={{ width: "150px" }}
+                      value={slotLimit}
+                      onChange={(e) => setSlotLimit(e.target.value)} // Update state
+                    >
+                      {[5, 10, 20, 50, 75, 100, 125, 150, 175, 200].map((value) => (
+                        <option key={value} value={value}>
+                          {value}
+                        </option>
+                      ))}
+                    </select>
+
+                    {/* Change Button */}
+                    <button className="btn btn-primary" onClick={handleSlotLimitChange}>
+                      Change
+                    </button>
                   </div>
 
                   <div >

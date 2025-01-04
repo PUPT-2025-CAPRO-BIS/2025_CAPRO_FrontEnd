@@ -100,6 +100,26 @@ export const otpChangePasswordForgotApi = createAsyncThunk('user/otpChangePasswo
   return res.data;
 });
 
+export const updateSlotLimitApi = createAsyncThunk('user/updateSlotLimitApi', async (data) => {
+  try {
+    const response = await apiClient.post(
+      '/updateSlotLimit',
+      { slot_limit: data.slotLimit }, // Body data
+      {
+        headers: {
+          Authorization: `Bearer ${data.token}`, // Use token for authentication
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    return response.data; // Return success response
+  } catch (error) {
+    console.error('Error updating slot limit:', error);
+    throw error; // Re-throw error to be handled by Redux
+  }
+});
+
+
 
 // Create slice
 const userSlice = createSlice({

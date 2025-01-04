@@ -1630,19 +1630,27 @@ export default function Official({ params }) {
 
   }
 
-  const handleSlotLimitChange = (e) => {
-    const newSlotLimit = slotLimit; // Already set via the dropdown
+  const handleSlotLimitChange = () => {
+    if (!slotLimit) {
+      alert('Please select a valid slot limit.');
+      return;
+    }
   
     // Dispatch Redux action
-    dispatch(updateSlotLimitApi({ slotLimit: newSlotLimit, token: token.token }))
+    dispatch(updateSlotLimitApi({ slotLimit, token: token.token }))
       .then((res) => {
-        if (res.success) {
+        // Check if the response has payload and success
+        if (res.payload && res.payload.success) {
           alert('Slot limit updated successfully!');
         } else {
-          alert('Failed to update slot limit');
+          alert('Failed to update slot limit.');
+          console.error('Error details:', res.payload || 'No response payload.');
         }
       })
-      .catch((err) => console.error('Error updating slot limit:', err));
+      .catch((err) => {
+        console.error('Unexpected error updating slot limit:', err);
+        alert('An unexpected error occurred. Check the console for details.');
+      });
   };
   
 

@@ -3129,7 +3129,7 @@ export default function Official({ params }) {
                       Complainant
                     </HeaderItem>
                     <HeaderItem style={{ fontWeight: 'bold' }}>
-                      Complainee
+                      Respondent
                     </HeaderItem>
                     <HeaderItem style={{ fontWeight: 'bold' }}>
                       Date
@@ -3417,7 +3417,7 @@ export default function Official({ params }) {
                     type="button"
                     class="btn btn-primary bg-green"
                     data-bs-dismiss="modal"
-                    disabled={!selectedItem?.chairmanship || !selectedItem?.position} // Disable if required fields are empty
+                    disabled={!selectedItem?.position} // Disable if required fields are empty
                   >
                     Save changes
                   </button>
@@ -3497,7 +3497,7 @@ export default function Official({ params }) {
                     data-bs-dismiss="modal"
                     onClick={() => addOfficial()}
                     class="btn btn-primary bg-green"
-                    disabled={!selectedSearchItem?.chairmanship || !selectedSearchItem?.position} // Disable if required fields are empty
+                    disabled={ !selectedSearchItem?.position} // Disable if required fields are empty
                   >
                     Save changes!!
                   </button>
@@ -4381,7 +4381,7 @@ export default function Official({ params }) {
                     <label class="form-label">Legend</label>
                     
                     <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'honorifics'}</span>
-                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'name'}</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. ${'full_name'}</span>
                     <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'first_name'}</span>
                     <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'middle_name'}</span>
                     <span className="ms-3" style={{ fontSize: "12px", color: "red" }}> ${'last_name'}</span>
@@ -4800,7 +4800,7 @@ export default function Official({ params }) {
                   }
 
                   <div class="mb-3 w-100" style={{ position: "relative" }}>
-                    <label class="form-label">Complainee</label>
+                    <label class="form-label">Respondent</label>
                     <input
                       id='complaineeinput'
                       // value={cost}
@@ -4851,7 +4851,7 @@ export default function Official({ params }) {
                   </div>
 
                   <div className="mb-3 w-100">
-                    <label className="form-label">Complainee Phone Number</label>
+                    <label className="form-label">Respondent Phone Number</label>
                     <input
                       value={blotter.complainee_phone_number || ""}
                       onChange={(val) => {
@@ -4867,7 +4867,7 @@ export default function Official({ params }) {
                   {
                     (blotter.is_complainee_resident === 0 || blotter.is_resident === false) &&
                     <div class="mb-3 w-100">
-                      <label class="form-label">Non-resident Complainee Address</label>
+                      <label class="form-label">Non-resident Respondent Address</label>
                       <input
                         value={blotter.non_resident_address || ""}
                         onChange={(val) => {

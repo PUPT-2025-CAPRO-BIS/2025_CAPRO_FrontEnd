@@ -179,7 +179,11 @@ export default function CreateAppointment() {
             });
     }, []);
 
-
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop, accept: {
+            'image/*': [] // Accept only image files
+        }
+    })
 
     const captureImage = () => {
         const imageSrc = webcamRef.current.getScreenshot();
@@ -862,8 +866,11 @@ export default function CreateAppointment() {
                                             ))}
                                         </select>
                                     </div>
-            
-                                    <div {...getRootProps()} className="mt-4 p-3" style={{ borderStyle: 'dotted', width: '100%' }}>
+
+                                    <div className="mt-3">
+                                        <label>Valid ID</label>
+                                    </div>
+                                    <div {...getRootProps()} className="mt-3 p-3" style={{ borderStyle: 'dotted', width: '100%' }}>
                                         <input {...getInputProps()} />
                                         {isDragActive ? (
                                             <p>Drop the files here ...</p>

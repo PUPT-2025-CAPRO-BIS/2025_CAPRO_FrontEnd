@@ -596,6 +596,47 @@ a {
   border: 2px solid #ddd; /* Optional: Add a border */
 }
 
+.file-drop-zone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #4CAF50; /* Green border */
+  border-radius: 10px;
+  background-color: #f9f9f9; /* Light background */
+  padding: 20px;
+  text-align: center;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  cursor: pointer;
+}
+
+.file-drop-zone:hover {
+  background-color: #e8f5e9; /* Light green background on hover */
+  border-color: #388e3c; /* Darker green border on hover */
+}
+
+.file-drop-text {
+  font-size: 1rem;
+  color: #555;
+}
+
+.file-drop-text .upload-link {
+  color: #4CAF50; /* Green text for clickable link */
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.file-drop-zone:active {
+  background-color: #dcedc8; /* Even lighter green on active */
+}
+
+.success-message {
+  color: #4CAF50; /* Green text for success */
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center; /* Align text to the center */
+}
+
 /* .blotter-form div:nth-child(2) {
   overflow-y: auto;
   border: 2px solid red;

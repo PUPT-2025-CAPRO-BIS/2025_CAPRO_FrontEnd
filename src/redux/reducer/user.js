@@ -12,8 +12,8 @@ const initialState = {
 
 // Create axios instance
 export const apiClient = axios.create({
-  baseURL: 'https://000040122.xyz/api',
-  //'https://000040122.xyz/api',
+  baseURL: 'http://127.0.0.1:8000.xyz/api',
+  //'http://127.0.0.1:8000.xyz/api',
   // baseURL: 'https://bis-nine.vercel.app/api/api'
 });
 
@@ -99,6 +99,26 @@ export const otpChangePasswordForgotApi = createAsyncThunk('user/otpChangePasswo
   });
   return res.data;
 });
+
+export const updateSlotLimitApi = createAsyncThunk('user/updateSlotLimitApi', async (data) => {
+  try {
+    const response = await apiClient.post(
+      '/updateSlotLimit',
+      { slot_limit: data.slotLimit }, // Body data
+      {
+        headers: {
+          Authorization: `Bearer ${data.token}`, // Use token for authentication
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    return response.data; // Return success response
+  } catch (error) {
+    console.error('Error updating slot limit:', error);
+    throw error; // Re-throw error to be handled by Redux
+  }
+});
+
 
 
 // Create slice

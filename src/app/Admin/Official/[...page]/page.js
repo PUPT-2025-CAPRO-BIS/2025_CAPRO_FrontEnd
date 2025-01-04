@@ -3,7 +3,7 @@ import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
 import { addOfficials, dashboardViewApi, deleteOffialsApi, filterData, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
 import { addResidentApi, approveNewResidentApi, approveOrRejectAppointmentApi, markAsPaidApi, deleteResidentInformationApi, editBlotterReportApi, editResidentApi, fileBlotterReportApi, importExcelResidentsApi, loadAllUsers, logOutResident, settingPeding, viewAllBlottersApi, viewAppointmentListApi } from "@/redux/reducer/resident";
-import { LogOut, viewAdminLogsApi } from "@/redux/reducer/user";
+import { LogOut, viewAdminLogsApi, updateSlotLimitApi } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -66,6 +66,9 @@ export default function Official({ params }) {
   const [dashboard_filter, setDashboardFilter] = useState('all')
 
   const [isPending, setIsPending] = useState(0)
+
+  const [slotLimit, setSlotLimit] = useState(5);
+  
 
   useEffect(() => {
     if (tab === 2 && fromDate && toDate) { 
@@ -161,7 +164,7 @@ export default function Official({ params }) {
     setErrorMessage("");
 
     // Construct the dynamic URL for downloading appointments based on fromDate and toDate
-    let url = 'https://000040122.xyz/api/downloadAppointments?';
+    let url = 'http://127.0.0.1:8000.xyz/api/downloadAppointments?';
 
     if (fromDate && toDate) {
       // Append both from_date and to_date to the URL
@@ -195,8 +198,9 @@ export default function Official({ params }) {
   };  
 
   const handleDownloadBlotter = () => {
-    let url = 'https://000040122.xyz/api/downloadBlotters?';
+    let url = 'http://127.0.0.1:8000.xyz/api/downloadBlotters?';
 
+    //https://000040122
     if (fromDate && toDate) {
       // Append both from_date and to_date to the URL
       url += `from_date=${moment(fromDate).format('YYYY-MM-DD')}&to_date=${moment(toDate).format('YYYY-MM-DD')}&`;
@@ -1444,8 +1448,8 @@ export default function Official({ params }) {
   const viewCreatedTemplate = (val) => {
 
 
-    window.open(`https://000040122.xyz/api/generatePdf?doc_id=${val.id}&download=0`)
-    // https://000040122.xyz/api/generatePdf?doc_id=14&download=0
+    window.open(`http://127.0.0.1:8000.xyz/api/generatePdf?doc_id=${val.id}&download=0`)
+    // http://127.0.0.1:8000.xyz/api/generatePdf?doc_id=14&download=0
 
   }
 
@@ -1626,6 +1630,22 @@ export default function Official({ params }) {
 
 
   }
+
+  const handleSlotLimitChange = (e) => {
+    const newSlotLimit = slotLimit; // Already set via the dropdown
+  
+    // Dispatch Redux action
+    dispatch(updateSlotLimitApi({ slotLimit: newSlotLimit, token: token.token }))
+      .then((res) => {
+        if (res.success) {
+          alert('Slot limit updated successfully!');
+        } else {
+          alert('Failed to update slot limit');
+        }
+      })
+      .catch((err) => console.error('Error updating slot limit:', err));
+  };
+  
 
   return (
     <main className={``}>
@@ -2324,7 +2344,7 @@ export default function Official({ params }) {
                   <div className="d-flex">
                     {
                       alluser.isPending == 0 && (
-                        <button onClick={() => window.open('https://000040122.xyz/api/downloadUsers')} type="button"
+                        <button onClick={() => window.open('http://127.0.0.1:8000.xyz/api/downloadUsers')} type="button"
                           className="btn btn-warning bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                           style={{ width: "200px" }}>
 
@@ -2336,7 +2356,7 @@ export default function Official({ params }) {
 
                     {
                       alluser.isPending == 1 && (
-                        <button onClick={() => window.open('https://000040122.xyz/api/downloadPendingResidents')} type="button"
+                        <button onClick={() => window.open('http://127.0.0.1:8000.xyz/api/downloadPendingResidents')} type="button"
                           className="btn btn-warning bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                           style={{ width: "200px" }}>
 
@@ -2765,7 +2785,7 @@ export default function Official({ params }) {
                                         <button
 
                                           onClick={() => {
-                                            window.open(`https://000040122.xyz/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
+                                            window.open(`http://127.0.0.1:8000.xyz/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
 
 
                                           }}
@@ -2854,6 +2874,28 @@ export default function Official({ params }) {
                         id="exampleFormControlInput1" placeholder=" Search Document Type"
                         style={{ width: '250px' }} 
                     />
+                  </div>
+
+                  <div className="d-flex align-items-center">
+                    {/* Dropdown for Slot Limit */}
+                    <select
+                      id="slotLimitDropdown"
+                      className="form-select me-2"
+                      style={{ width: "150px" }}
+                      value={slotLimit}
+                      onChange={(e) => setSlotLimit(e.target.value)} // Update state
+                    >
+                      {[5, 10, 20, 50, 75, 100, 125, 150, 175, 200].map((value) => (
+                        <option key={value} value={value}>
+                          {value}
+                        </option>
+                      ))}
+                    </select>
+
+                    {/* Change Button */}
+                    <button className="btn btn-primary" onClick={handleSlotLimitChange}>
+                      Change
+                    </button>
                   </div>
 
                   <div >
@@ -3199,7 +3241,7 @@ export default function Official({ params }) {
                                   type="button" class="btn btn-primary ms-3">View</button>
 
                                 <button
-                                  onClick={() => window.open(`https://000040122.xyz/api/downloadBlotterPDF?blotter_id=${i.id}&download=0`)}
+                                  onClick={() => window.open(`http://127.0.0.1:8000.xyz/api/downloadBlotterPDF?blotter_id=${i.id}&download=0`)}
                                   type="button" class="btn btn-warning ms-3">Download
                                 </button>
 

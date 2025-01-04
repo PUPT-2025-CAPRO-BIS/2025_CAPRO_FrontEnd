@@ -83,7 +83,7 @@ export default function Home() {
           <div>
             <Image
               className='logo-size'
-              src={require('../assets/central.png')}
+              src={require('../assets/central_logo.png')}
             />
             <Image
               className='logo-size'

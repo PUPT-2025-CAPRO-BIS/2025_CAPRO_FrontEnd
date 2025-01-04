@@ -17,7 +17,7 @@ let html = `
                                 width: "150px"
                             }}
                             // src={require('../assets/')}
-                            src='/images/central.png'
+                            src='/images/central_logo.png'
                         />
                 </div>
 
@@ -220,7 +220,7 @@ export const DocumentTemplate = () => {
                             width: "150px"
                         }}
                         // src={require('../assets/')}
-                        src='/images/central.png'
+                        src='/images/central_logo.png'
                     />
                 </div>
 

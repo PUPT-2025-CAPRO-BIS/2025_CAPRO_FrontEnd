@@ -164,7 +164,7 @@ export default function Official({ params }) {
     setErrorMessage("");
 
     // Construct the dynamic URL for downloading appointments based on fromDate and toDate
-    let url = 'http://127.0.0.1:8000.xyz/api/downloadAppointments?';
+    let url = 'https://000040122.xyz/api/downloadAppointments?';
 
     if (fromDate && toDate) {
       // Append both from_date and to_date to the URL
@@ -198,9 +198,8 @@ export default function Official({ params }) {
   };  
 
   const handleDownloadBlotter = () => {
-    let url = 'http://127.0.0.1:8000.xyz/api/downloadBlotters?';
+    let url = 'https://000040122.xyz/api/downloadBlotters?';
 
-    //https://000040122
     if (fromDate && toDate) {
       // Append both from_date and to_date to the URL
       url += `from_date=${moment(fromDate).format('YYYY-MM-DD')}&to_date=${moment(toDate).format('YYYY-MM-DD')}&`;
@@ -1448,8 +1447,8 @@ export default function Official({ params }) {
   const viewCreatedTemplate = (val) => {
 
 
-    window.open(`http://127.0.0.1:8000.xyz/api/generatePdf?doc_id=${val.id}&download=0`)
-    // http://127.0.0.1:8000.xyz/api/generatePdf?doc_id=14&download=0
+    window.open(`https://000040122.xyz/api/generatePdf?doc_id=${val.id}&download=0`)
+    // https://000040122.xyz/api/generatePdf?doc_id=14&download=0
 
   }
 
@@ -2344,7 +2343,7 @@ export default function Official({ params }) {
                   <div className="d-flex">
                     {
                       alluser.isPending == 0 && (
-                        <button onClick={() => window.open('http://127.0.0.1:8000.xyz/api/downloadUsers')} type="button"
+                        <button onClick={() => window.open('https://000040122.xyz/api/downloadUsers')} type="button"
                           className="btn btn-warning bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                           style={{ width: "200px" }}>
 
@@ -2356,7 +2355,7 @@ export default function Official({ params }) {
 
                     {
                       alluser.isPending == 1 && (
-                        <button onClick={() => window.open('http://127.0.0.1:8000.xyz/api/downloadPendingResidents')} type="button"
+                        <button onClick={() => window.open('https://000040122.xyz/api/downloadPendingResidents')} type="button"
                           className="btn btn-warning bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                           style={{ width: "200px" }}>
 
@@ -2785,7 +2784,7 @@ export default function Official({ params }) {
                                         <button
 
                                           onClick={() => {
-                                            window.open(`http://127.0.0.1:8000.xyz/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
+                                            window.open(`https://000040122.xyz/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
 
 
                                           }}
@@ -3241,7 +3240,7 @@ export default function Official({ params }) {
                                   type="button" class="btn btn-primary ms-3">View</button>
 
                                 <button
-                                  onClick={() => window.open(`http://127.0.0.1:8000.xyz/api/downloadBlotterPDF?blotter_id=${i.id}&download=0`)}
+                                  onClick={() => window.open(`https://000040122.xyz/api/downloadBlotterPDF?blotter_id=${i.id}&download=0`)}
                                   type="button" class="btn btn-warning ms-3">Download
                                 </button>
 

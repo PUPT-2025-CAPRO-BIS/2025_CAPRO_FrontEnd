@@ -75,7 +75,7 @@ export default function CreateAppointment() {
         renting: '',
         relationship_to_owner: '',
         pet_details: '',
-        pet_vaccination: ''
+        pet_vaccination: '',
     })
 
     const [resetEmail, setResetEmail] = useState(false);
@@ -147,9 +147,11 @@ export default function CreateAppointment() {
         setHasAgreedToPrivacy(!hasAgreedToPrivacy); // Toggle checkbox state
     };
 
+    const [uploadMessage, setUploadMessage] = useState('');
 
     const onDrop = useCallback((acceptedFiles) => {
         // Convert files to base64 and update state
+        setUploadMessage(`File(s) successfully uploaded. Please Check Below`);
         const fileReaders = acceptedFiles.map(file => {
             const reader = new FileReader();
 
@@ -381,7 +383,7 @@ export default function CreateAppointment() {
             let base64List = files.map((file) =>
                 JSON.stringify({
                     data: file.base64,
-                    file_name: file.fileName,
+                    file_name: file.fileName,   
                 })
             );
 
@@ -870,12 +872,12 @@ export default function CreateAppointment() {
                                     <div className="mt-3">
                                         <label>Valid ID</label>
                                     </div>
-                                    <div {...getRootProps()} className="mt-3 p-3" style={{ borderStyle: 'dotted', width: '100%' }}>
+                                    <div {...getRootProps()} className="file-drop-zone">
                                         <input {...getInputProps()} />
                                         {isDragActive ? (
-                                            <p>Drop the files here ...</p>
+                                            <p className="file-drop-text">Drop the files here...</p>
                                         ) : (
-                                            <p>Drag 'n' drop some files here, or click to select files</p>
+                                            <p className="file-drop-text">Drag and drop files here, or <span className="upload-link">click to upload</span></p>
                                         )}
                                     </div>
             
@@ -1226,8 +1228,8 @@ export default function CreateAppointment() {
                     </div>
 
                     {/* Renting (Yes/No/Other: Please specify) */}
-                    <div class="mb-3">
-                        <label class="form-label">Renting (Yes/No/Other: Please specify)</label>
+                    <div className="mb-3">
+                        <label className="form-label">Renting (Yes/No/Other: Please specify)</label>
                         <select
                             value={resident.renting.startsWith('Other') ? 'Other' : resident.renting}
                             onChange={(val) => {
@@ -1237,7 +1239,7 @@ export default function CreateAppointment() {
                                     setResident({ ...resident, renting: val.target.value });
                                 }
                             }}
-                            class="form-select"
+                            className="form-select"
                         >
                             <option value="">Select</option>
                             <option value="Yes">Yes</option>
@@ -1252,10 +1254,43 @@ export default function CreateAppointment() {
                                 onChange={(val) => {
                                     setResident({ ...resident, renting: `Other, ${val.target.value}` });
                                 }}
-                                class="form-control mt-2"
+                                className="form-control mt-2"
                             />
                         )}
                     </div>
+
+                    {/* File upload section for Renting = Yes */}
+                    {resident.renting === 'Yes' && (
+                        <div className="mt-3">
+                            <p>
+                                Please upload the following documents:
+                                <ul>
+                                    <li>Authorization Letter from the landlord indicating since when they started renting on the said address.</li>
+                                    <li>Photocopy of identification of the owner with 3 signatures.</li>
+                                </ul>
+                            </p>
+                            <div>
+                                <label>Upload Documents</label>
+                            </div>
+                            <div
+                                {...getRootProps()}
+                                className="file-drop-zone"
+                            >
+                                <input {...getInputProps()} />
+                                {isDragActive ? (
+                                    <p className="file-drop-text">Drop the files here...</p>
+                                ) : (
+                                    <p className="file-drop-text">Drag and drop files here, or <span className="upload-link">click to upload</span></p>
+                                )}
+                            </div>
+                            {uploadMessage && (
+                                <div className="upload-success-message mt-2">
+                                    <p>{uploadMessage}</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
 
                     {/* Relationship to House and Lot Owner */}
                     <div class="mb-3">
@@ -1537,10 +1572,8 @@ export default function CreateAppointment() {
 
                     </div>
 
-
                     <div className="mt-4 mb-4">
                         <label className="form-label d-block mb-2">Capture ID</label>
-                        
                         {/* Camera Capture Button */}
                         {!isCameraOpen && (
                             <button

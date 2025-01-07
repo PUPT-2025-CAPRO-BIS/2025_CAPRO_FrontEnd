@@ -68,7 +68,10 @@ export default function Official({ params }) {
   const [isPending, setIsPending] = useState(0)
 
   const [slotLimit, setSlotLimit] = useState(5);
-  
+
+  const [showReasonModal, setShowReasonModal] = useState(false);
+  const [reason, setReason] = useState("");
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
 
   useEffect(() => {
     if (tab === 2 && fromDate && toDate) { 
@@ -2741,7 +2744,18 @@ export default function Official({ params }) {
                                           }}
                                           type="button" class="btn btn-primary">Approve</button>
 
-                                        <button
+                                        <button 
+                                          onClick={() => {
+                                            setSelectedAppointment(i);
+                                            setShowReasonModal(true)
+                                          }}
+                                          type="button"
+                                          className="btn btn-danger ms-3"
+                                        >
+                                          Reject
+                                        </button>
+
+                                        {/* <button
                                           onClick={() => {
 
                                             setLoading()
@@ -2781,7 +2795,7 @@ export default function Official({ params }) {
                                             fetchData();
 
                                           }}
-                                          type="button" class="btn btn-danger ms-3">Reject</button>
+                                          type="button" class="btn btn-danger ms-3">Reject</button> */}
 
                                       </div>
 
@@ -3341,7 +3355,7 @@ export default function Official({ params }) {
 
                     { }
                     {
-                      logs.length != 0 && logs.data.map((i, k) => {
+                      logs && logs.length != 0 && logs.data.map((i, k) => {
                         return (
 
                           // Put dynamic className
@@ -5144,6 +5158,98 @@ export default function Official({ params }) {
                 </div>
               </div>
             </div>
+          }
+
+          {
+            showReasonModal && selectedAppointment && (
+              <div
+                id="rejectModal"
+                className="modal fade show d-flex align-items-center justify-content-center"
+              >
+                <div className="col-6 d-flex flex-column align-items-center justify-content-center box mt-5">
+                  {/* Header */}
+                  <div className="mt-5">
+                    <h4>Reject Request</h4>
+                  </div>
+
+                  {/* Modal Content */}
+                  <div className="d-flex align-items-center flex-column justify-content-center w-100 p-5">
+                    {/* Reason Input */}
+                    <div className="mb-3 w-100">
+                      <label htmlFor="reasonInput" className="form-label">
+                        Reason for Rejection
+                      </label>
+                      <textarea
+                        id="reasonInput"
+                        className="form-control"
+                        value={reason}
+                        onChange={(e) => setReason(e.target.value)}
+                        placeholder="Provide the reason for rejection..."
+                      />
+                    </div>
+
+                    {/* Action Button */}
+                    <div>
+                      <button
+                        onClick={async () => {
+                          setLoading(true); // Start loading
+
+                          let merge = {
+                            token: token.token,
+                            id: selectedAppointment.appointment_id,  // Assuming `i` is the current appointment object
+                            status: 1,  // Set the status to rejected
+                            reason: reason, // Add the reason for rejection
+                          };
+
+                          const fetchData = async () => {
+                            try {
+                              const result = await dispatch(approveOrRejectAppointmentApi(merge)).unwrap(); // Using approveOrRejectAppointmentApi
+
+                              if (result.success) {
+                                setLoading(false);
+                                setSuccess(true);
+                                setShowSuccess(true);
+                                SetMessage("Request successfully rejected.");
+                                setShowReasonModal(false);
+                                setReason(""); // Clear reason after success
+
+                                window.location.reload();
+                              }
+                            } catch (error) {
+                              // Handle error
+                              setLoading(false);
+                              setSuccess(false);
+                              setShowSuccess(true);
+                              SetMessage("Failed to reject the request.");
+                            }
+                          };
+
+                          fetchData();
+                        }}
+                        type="button"
+                        className="btn btn-danger ms-3"
+                        disabled={!reason.trim()} // Disable button if no reason is provided
+                      >
+                        Reject
+                      </button>
+                    </div>
+
+                    {/* Close Button */}
+                    <div>
+                      <button
+                        onClick={() => {
+                          setShowReasonModal(false);
+                          setReason(""); // Clear reason when modal is closed
+                        }}
+                        className="primary p-2 rounded border-0 mt-3"
+                      >
+                        <span className="fw-bold">Close</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
           }
 
           {/* Modal */}

@@ -2899,10 +2899,11 @@ export default function Official({ params }) {
                   </div>
 
                   <div className="d-flex align-items-center">
+                    <span className="fw-bold f-white">Schedule Limit: </span>
                     {/* Dropdown for Slot Limit */}
                     <select
                       id="slotLimitDropdown"
-                      className="form-select me-2"
+                      className="form-select me-2 ms-2"
                       style={{ width: "150px" }}
                       value={slotLimit}
                       onChange={(e) => setSlotLimit(e.target.value)} // Update state

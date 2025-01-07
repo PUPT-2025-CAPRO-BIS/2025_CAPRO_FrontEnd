@@ -1625,7 +1625,7 @@ export default function CreateAppointment() {
                     </div>
 
                     <div className="mt-4 mb-4">
-                        <label className="form-label d-block mb-2">Capture ID</label>
+                        <label className="form-label d-block mb-2">Capture a Selfie with Your Valid ID</label>
                         {/* Camera Capture Button */}
                         {!isCameraOpen && (
                             <button

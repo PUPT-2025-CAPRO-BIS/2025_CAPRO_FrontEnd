@@ -76,6 +76,7 @@ export default function CreateAppointment() {
         relationship_to_owner: '',
         pet_details: '',
         pet_vaccination: '',
+        id_type: '',
     })
 
     const [resetEmail, setResetEmail] = useState(false);
@@ -351,6 +352,12 @@ export default function CreateAppointment() {
         if (resident.renting == "") {
             alert("Please select Renting.");
         }
+
+        if (resident.id_type === "") {
+          alert("Please select the type of ID used.");
+          return;
+        }
+
         if (files.length === 0) {
             alert("Please capture at least one supporting document before submitting.");
         }
@@ -377,6 +384,7 @@ export default function CreateAppointment() {
             resident.house_and_lot_ownership != "" &&
             resident.living_with_owner != "" &&
             resident.renting != "" &&
+            resident.id_type !== "" &&
             files.length > 0
         ) {
 
@@ -395,6 +403,7 @@ export default function CreateAppointment() {
             let merge = {
                 resident,
                 birthday: startDate,
+                id_type: resident.id_type,
                 file_upload: base64List
                 // token: token.token
             }
@@ -429,6 +438,7 @@ export default function CreateAppointment() {
                         pet_details: "",
                         house_and_lot_ownership: "",
                         living_with_owner: "",
+                        id_type: '',
                         renting: "",
                     })
                     setFiles([])
@@ -1570,6 +1580,48 @@ export default function CreateAppointment() {
                             </label>
                         </div>
 
+                    </div>
+
+                    <div className="mb-3">
+                      <label className="form-label">Type of ID Used</label>
+                      <select
+                          className="form-select"
+                          value={resident.id_type || ''}
+                          onChange={(e) =>
+                              setResident({
+                                  ...resident,
+                                  id_type: e.target.value,
+                              })
+                          }
+                      >
+                          <option value="" disabled>
+                              Select an ID type
+                          </option>
+                          <option value="PhilSys National ID">PhilSys National ID</option>
+                          <option value="Philippine Passport">Philippine Passport</option>
+                          <option value="Driver's License">Driver's License</option>
+                          <option value="Unified Multi-Purpose ID (UMID)">
+                              Unified Multi-Purpose ID (UMID)
+                          </option>
+                          <option value="Social Security System (SSS) ID">
+                              Social Security System (SSS) ID
+                          </option>
+                          <option value="Professional Regulation Commission (PRC) ID">
+                              Professional Regulation Commission (PRC) ID
+                          </option>
+                          <option value="Government Service Insurance System (GSIS) ID">
+                              Government Service Insurance System (GSIS) ID
+                          </option>
+                          <option value="Voter’s ID">Voter’s ID</option>
+                          <option value="Postal ID">Postal ID</option>
+                          <option value="PhilHealth ID">PhilHealth ID</option>
+                          <option value="Overseas Workers Welfare Administration (OWWA) ID">
+                              Overseas Workers Welfare Administration (OWWA) ID
+                          </option>
+                          <option value="OFW ID">OFW ID</option>
+                          <option value="Barangay ID">Barangay ID</option>
+                          <option value="Student ID">Student ID</option>
+                      </select>
                     </div>
 
                     <div className="mt-4 mb-4">

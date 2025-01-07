@@ -371,6 +371,7 @@ export const approveOrRejectAppointmentApi = createAsyncThunk('user/approveOrRej
   const res = await apiClient.post('/approveOrRejectAppointment', {
     appointment_id: data.id,
     approve_reject: data.status,
+    reason: data.reason,
 
   }, {
     headers: {

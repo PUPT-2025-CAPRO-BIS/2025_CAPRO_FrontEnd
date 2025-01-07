@@ -70,6 +70,7 @@ export default function Official({ params }) {
   const [slotLimit, setSlotLimit] = useState(5);
 
   const [showReasonModal, setShowReasonModal] = useState(false);
+  const [showReasonDeniedModal, setShowReasonDeniedModal] = useState(false);
   const [reason, setReason] = useState("");
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
@@ -1587,7 +1588,8 @@ export default function Official({ params }) {
     let merge = {
       token: token.token,
       id: resident.id,
-      status: 1
+      status: 1,
+      reason: reason
     }
 
 
@@ -4315,7 +4317,7 @@ export default function Official({ params }) {
                     <div class="mb-3">
                       <label class="form-label">ID Type</label>
                       <select
-                        disabled={true}
+                        disabled={isViewing || isEdit}
                         value={resident.id_type}
                         id="idtypeinput"
                         onChange={(v) => {
@@ -4420,7 +4422,11 @@ export default function Official({ params }) {
                             }} class="btn btn-primary bg-green">Approve</button>
                             <button type="button" onClick={() => {
                               // addResident()
-                              rejectResident()
+                              //rejectResident()
+                              setIsViewing(false)
+                              setIsEdit(false)
+                              setShowAddResident(false)
+                              setShowReasonDeniedModal(true)
                             }} class="btn btn-primary" style={{ backgroundColor: "red" }}>Reject</button>
                           </>
                         }
@@ -5288,6 +5294,60 @@ export default function Official({ params }) {
                       <button
                         onClick={() => {
                           setShowReasonModal(false);
+                          setReason(""); // Clear reason when modal is closed
+                        }}
+                        className="primary p-2 rounded border-0 mt-3"
+                      >
+                        <span className="fw-bold">Close</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          }
+
+          {
+            showReasonDeniedModal && (
+              <div
+                id="rejectModal"
+                className="modal fade show d-flex align-items-center justify-content-center"
+              >
+                <div className="col-6 d-flex flex-column align-items-center justify-content-center box mt-5">
+                  {/* Header */}
+                  <div className="mt-5">
+                    <h4>Reject Resident</h4>
+                  </div>
+
+                  {/* Modal Content */}
+                  <div className="d-flex align-items-center flex-column justify-content-center w-100 p-5">
+                    {/* Reason Input */}
+                    <div className="mb-3 w-100">
+                      <label htmlFor="reasonInput" className="form-label">
+                        Reason for Rejection
+                      </label>
+                      <textarea
+                        id="reasonInput"
+                        className="form-control"
+                        value={reason}
+                        onChange={(e) => setReason(e.target.value)}
+                        placeholder="Provide the reason for rejection..."
+                      />
+                    </div>
+
+                    {/* Action Button */}
+                    <div>
+                    <button type="button" onClick={() => {
+                      rejectResident()
+                      setShowReasonDeniedModal(false)
+                    }} class="btn btn-primary" style={{ backgroundColor: "red" }}>Reject</button>
+                    </div>
+
+                    {/* Close Button */}
+                    <div>
+                      <button
+                        onClick={() => {
+                          setShowReasonDeniedModal(false);
                           setReason(""); // Clear reason when modal is closed
                         }}
                         className="primary p-2 rounded border-0 mt-3"

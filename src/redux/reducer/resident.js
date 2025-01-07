@@ -147,7 +147,8 @@ export const approveNewResidentApi = createAsyncThunk('user/editNewResidentStatu
 
   const res = await apiClient.post('/editNewResidentStatus', {
     user_id: data.id,
-    approve_reject: data.status
+    approve_reject: data.status,
+    reason: data.reason
   }, {
     headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token

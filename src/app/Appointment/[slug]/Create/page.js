@@ -22,6 +22,8 @@ export default function CreateAppointment() {
     const dispatch = useDispatch()
     const router = useRouter()
 
+    const [loading, setLoading] = useState(false)
+
     const [isDateValid, setIsDateValid] = useState(false);
 
     const [birthday, setBirthday] = useState('')
@@ -241,12 +243,15 @@ export default function CreateAppointment() {
         const fetchData = async () => {
 
             try {
+                setLoading(true);
                 const result = await dispatch(generateOTPapi(merge)).unwrap();
                 if (result.error) {
+                    setLoading(false);
                     setShowSuccess(true)
                     setMessage(result.error_msg)
                 }
                 else {
+                    setLoading(false)
                     setIsButtonDisabled(true)
                     setSuccess(result.success)
                 }
@@ -411,9 +416,11 @@ export default function CreateAppointment() {
 
 
             try {
+                setLoading(true);
                 const result = await dispatch(applyNewResidentApi(merge)).unwrap();
 
                 if (result.success == true) {
+                    setLoading(false)
                     setSuccess(true)
                     setShowSuccess(true)
                     setMessage(`Successfully registered, kindly wait for the approval.`)
@@ -445,6 +452,7 @@ export default function CreateAppointment() {
                     setNewResident(null)
                 }
                 else {
+                    setLoading(false);
                     setMessage(result.error_msg || 'An error occurred');
                     setSuccess(false)
                     setShowSuccess(true)
@@ -462,7 +470,6 @@ export default function CreateAppointment() {
 
 
     const submitOTP = () => {
-
         let merge = {
             email,
             otp
@@ -471,18 +478,20 @@ export default function CreateAppointment() {
         const fetchData = async () => {
 
             try {
-
+                setLoading(true);
                 const result = await dispatch(otpLoginApi(merge)).unwrap();
 
 
                 // Handle success, e.g., navigate to another page
 
                 if (result.success) {
+                    setLoading(false);
                     setSuccessOTP(result.success)
                     setAccessToken(result.access_token)
                     setIsButtonDisabled(true)
                 }
                 else {
+                    setLoading(false);
                     setShowSuccess(true)
                     setMessage(result.error_msg)
                     setIsButtonDisabled(true)
@@ -490,7 +499,7 @@ export default function CreateAppointment() {
 
 
             } catch (error) {
-
+                setLoading(false);
                 setShowSuccess(true)
                 setMessage("Invalid OTP")
                 setIsButtonDisabled(true)
@@ -523,7 +532,6 @@ export default function CreateAppointment() {
   
 
     const createAppoint = async () => {
-
         if (!isDateValid) {
           setMessage("The selected date is full. Please choose another date.");
           setShowSuccess(true);
@@ -552,11 +560,12 @@ export default function CreateAppointment() {
 
 
         try {
-
+            setLoading(true);
             const result = await dispatch(createAppointmentApi(data)).unwrap();
 
 
             if (result.error == false || result.success == true) {
+                setLoading(false);
                 setSuccess(true)
                 setIsButtonDisabled(false)
                 setMessage("Successfully created an appointment please check your email for more details")
@@ -650,6 +659,36 @@ export default function CreateAppointment() {
                             <span className="f-white">Sunflower Street, Taguig City, Metro Manila</span>
                         </div>
                     </>
+                )}
+
+                {loading && (
+                  <div
+                    id="statusModal"
+                    className="modal fade show d-block"
+                    style={{
+                      position: "fixed",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100vh",
+                      backgroundColor: "rgba(0,0,0,0.4)",
+                      zIndex: 1050,
+                    }}
+                  >
+                    <div
+                      className="d-flex align-items-center justify-content-center"
+                      style={{ height: "100%" }}
+                    >
+                      <div
+                        className="modal-content d-flex align-items-center"
+                        style={{ backgroundColor: "transparent" }}
+                      >
+                        <div>
+                          <h2 className="text-white">Loading .....</h2>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 )}
 
                 {newResident === null && (

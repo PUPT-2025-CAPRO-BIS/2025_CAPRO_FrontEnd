@@ -316,6 +316,7 @@ export default function Official({ params }) {
     relationship_to_owner: '',
     pet_details: '',
     pet_vaccination: '',
+    id_type: '',
     isPendingResident: 0,
     supporting_files_obj: []
   })
@@ -4309,6 +4310,53 @@ export default function Official({ params }) {
                       </div>
 
                     </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">ID Type</label>
+                      <select
+                        disabled={true}
+                        value={resident.id_type}
+                        id="idtypeinput"
+                        onChange={(v) => {
+                          document.getElementById('idtypeinput').style.border = '1px solid #dee2e6';
+                          setResident({
+                            ...resident,
+                            id_type: v.target.value,
+                          });
+                        }}
+                        class="form-select"
+                        aria-label="Default select example"
+                      >
+                        <option value="" disabled>
+                            Select an ID type
+                        </option>
+                        <option value="PhilSys National ID">PhilSys National ID</option>
+                        <option value="Philippine Passport">Philippine Passport</option>
+                        <option value="Driver's License">Driver's License</option>
+                        <option value="Unified Multi-Purpose ID (UMID)">
+                            Unified Multi-Purpose ID (UMID)
+                        </option>
+                        <option value="Social Security System (SSS) ID">
+                            Social Security System (SSS) ID
+                        </option>
+                        <option value="Professional Regulation Commission (PRC) ID">
+                            Professional Regulation Commission (PRC) ID
+                        </option>
+                        <option value="Government Service Insurance System (GSIS) ID">
+                            Government Service Insurance System (GSIS) ID
+                        </option>
+                        <option value="Voter’s ID">Voter’s ID</option>
+                        <option value="Postal ID">Postal ID</option>
+                        <option value="PhilHealth ID">PhilHealth ID</option>
+                        <option value="Overseas Workers Welfare Administration (OWWA) ID">
+                            Overseas Workers Welfare Administration (OWWA) ID
+                        </option>
+                        <option value="OFW ID">OFW ID</option>
+                        <option value="Barangay ID">Barangay ID</option>
+                        <option value="Student ID">Student ID</option>
+                      </select>
+                    </div>
+
 
                     {
                       isViewing && (

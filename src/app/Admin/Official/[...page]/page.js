@@ -4350,6 +4350,7 @@ export default function Official({ params }) {
                         </option>
                         <option value="Voter’s ID">Voter’s ID</option>
                         <option value="Postal ID">Postal ID</option>
+                        <option value="TIN ID">TIN ID</option>
                         <option value="PhilHealth ID">PhilHealth ID</option>
                         <option value="Overseas Workers Welfare Administration (OWWA) ID">
                             Overseas Workers Welfare Administration (OWWA) ID

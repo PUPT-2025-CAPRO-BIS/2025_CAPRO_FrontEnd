@@ -404,6 +404,11 @@ a {
   cursor: pointer;
 }
 
+.required {
+  color: red;
+}
+
+
 
 @media (max-width: 576px) {
   .new-resident-form {

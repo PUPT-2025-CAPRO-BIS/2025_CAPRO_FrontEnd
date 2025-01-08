@@ -268,203 +268,108 @@ export default function CreateAppointment() {
     }
 
     const addResident = async () => {
-
         const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         let validateEmail = emailPattern.test(resident.email);
-
-
+    
         const numberPattern = /^09\d{9}$/;
         let validateNumber = numberPattern.test(resident.cell_number);
-
-
-        if (resident.first_name == "") {
-            document.getElementById('fnameinput').style.border = '1px solid red'
-        }
-
-        if (resident.middle_name == "") {
-            document.getElementById('mnameinput').style.border = '1px solid red'
-        }
-
-        if (resident.last_name == "") {
-            document.getElementById('lnameinput').style.border = '1px solid red'
-        }
-
-        if (!hasAgreedToPrivacy) { // Check if privacy statement is agreed upon
-            alert("You must agree to the privacy policy before proceeding.");
+    
+        let missingFields = [];
+        
+        if (resident.first_name === "") missingFields.push("First Name");
+        if (resident.last_name === "") missingFields.push("Last Name");
+        if (resident.email === "" || !validateEmail) missingFields.push("Email");
+        if (resident.birthday === "") missingFields.push("Birthday");
+        if (resident.cell_number === "" || !validateNumber) missingFields.push("Phone Number");
+        if (resident.male_female === "") missingFields.push("Gender");
+        if (resident.voter_status === "") missingFields.push("Voter Status");
+        if (resident.civil_status_id === "") missingFields.push("Civil Status");
+        if (resident.block === "") missingFields.push("Block");
+        if (resident.lot === "") missingFields.push("Lot");
+        if (resident.purok === "") missingFields.push("Purok");
+        if (resident.street === "") missingFields.push("Street");
+        if (resident.household === "") missingFields.push("Household");
+        if (resident.relationship_to_owner === "") missingFields.push("Relationship to Owner");
+        if (resident.pet_details === "") missingFields.push("Pet Details");
+        if (resident.id_type === "") missingFields.push("ID Type");
+        if (resident.house_and_lot_ownership === "") missingFields.push("House and Lot Ownership");
+        if (resident.living_with_owner === "") missingFields.push("Living with Owner");
+        if (resident.renting === "") missingFields.push("Renting");
+        if (files.length === 0) missingFields.push("File Upload");
+    
+        if (missingFields.length > 0) {
+            alert(`Please complete the following fields: ${missingFields.join(", ")}`);
             return;
         }
+    
+        let base64List = files.map((file) =>
+            JSON.stringify({
+                data: file.base64,
+                file_name: file.fileName,
+            })
+        );
+    
+        let merge = {
+            resident,
+            birthday: resident.birthday,
+            id_type: resident.id_type,
+            house_and_lot_ownership: resident.house_and_lot_ownership,
+            living_with_owner: resident.living_with_owner,
+            renting: resident.renting,
+            file_upload: base64List,
+        };
 
-        if (resident.email == "" || !validateEmail) {
-            document.getElementById('emailinput').style.border = '1px solid red'
-        }
-
-        if (resident.birthday == "") {
-            // document.getElementById('bdayinput').style.border = '1px solid red'
-        }
-
-        if (resident.cell_number == "" || !validateNumber) {
-            document.getElementById('phoneinput').style.border = '1px solid red'
-        }
-
-        if (resident.male_female === "") {
-            document.getElementById('genderinput').style.border = '1px solid red';
-        }
-
-        if (resident.voter_status === "") {
-            document.getElementById('voterinput').style.border = '1px solid red'
-        }
-
-        if (resident.civil_status_id == "") {
-            document.getElementById('civilinput').style.border = '1px solid red'
-        }
-
-        if (resident.block == "") {
-            document.getElementById('blockinput').style.border = '1px solid red';
+        if (resident.pet_vaccination !== "") {
+            merge.pet_vaccination = resident.pet_vaccination;
         }
     
-        if (resident.lot == "") {
-            document.getElementById('lotinput').style.border = '1px solid red';
-        }
+        try {
+            setLoading(true);
+            const result = await dispatch(applyNewResidentApi(merge)).unwrap();
     
-        if (resident.purok == "") {
-            document.getElementById('purokinput').style.border = '1px solid red';
-        }
-    
-        if (resident.street == "") {
-            document.getElementById('streetinput').style.border = '1px solid red';
-        }
-    
-        if (resident.household == "") {
-            document.getElementById('housenoinput').style.border = '1px solid red';
-        }
-    
-        if (resident.relationship_to_owner == "") {
-            document.getElementById('relationinput').style.border = '1px solid red';
-        }
-    
-        if (resident.pet_details == "") {
-            document.getElementById('haspetsinput').style.border = '1px solid red';
-        }
-    
-        if (resident.house_and_lot_ownership == "") {
-            alert("Please select House and Lot Ownership.");
-        }
-    
-        if (resident.living_with_owner == "") {
-            alert("Please select Living with Owner.");
-        }
-    
-        if (resident.renting == "") {
-            alert("Please select Renting.");
-        }
-
-        if (resident.id_type === "") {
-          alert("Please select the type of ID used.");
-          return;
-        }
-
-        if (files.length === 0) {
-            alert("Please capture at least one supporting document before submitting.");
-        }
-
-        if (
-            resident.first_name != "" &&
-            resident.middle_name != "" &&
-            resident.last_name != "" &&
-            resident.email != "" &&
-            validateEmail &&
-            resident.birthday != "" &&
-            resident.cell_number != "" &&
-            validateNumber &&
-            resident.block != "" &&
-            resident.lot != "" &&
-            resident.purok != "" &&
-            resident.street != "" &&
-            resident.household != "" &&
-            resident.relationship_to_owner != "" &&
-            resident.pet_details != "" &&
-            resident.civil_status_id != "" &&
-            resident.voter_status !== "" &&
-            resident.male_female !== "" &&
-            resident.house_and_lot_ownership != "" &&
-            resident.living_with_owner != "" &&
-            resident.renting != "" &&
-            resident.id_type !== "" &&
-            files.length > 0
-        ) {
-
-            let base64List = files.map((file) =>
-                JSON.stringify({
-                    data: file.base64,
-                    file_name: file.fileName,   
-                })
-            );
-
-            image: {
-
+            if (result.success) {
+                setLoading(false);
+                setSuccess(true);
+                setShowSuccess(true);
+                setMessage("Successfully registered, kindly wait for the approval.");
+                setResident({
+                    first_name: '',
+                    middle_name: '',
+                    last_name: '',
+                    email: '',
+                    pass: '',
+                    birthday: '',
+                    cell_number: '',
+                    civil_status_id: '',
+                    male_female: '',
+                    voter_status: '',
+                    block: '',
+                    lot: '',
+                    purok: '',
+                    street: '',
+                    household: '',
+                    relationship_to_owner: '',
+                    pet_details: '',
+                    id_type: '',
+                    house_and_lot_ownership: '',
+                    living_with_owner: '',
+                    renting: '',
+                    pet_vaccination: '',
+                });
+                setFiles([]);
+                setNewResident(null);
+            } else {
+                setLoading(false);
+                setMessage(result.error_msg || "An error occurred");
+                setSuccess(false);
+                setShowSuccess(true);
             }
-
-
-            let merge = {
-                resident,
-                birthday: startDate,
-                id_type: resident.id_type,
-                file_upload: base64List
-                // token: token.token
-            }
-
-
-
-            try {
-                setLoading(true);
-                const result = await dispatch(applyNewResidentApi(merge)).unwrap();
-
-                if (result.success == true) {
-                    setLoading(false)
-                    setSuccess(true)
-                    setShowSuccess(true)
-                    setMessage(`Successfully registered, kindly wait for the approval.`)
-                    setResident({
-                        first_name: '',
-                        middle_name: '',
-                        last_name: '',
-                        email: '',
-                        pass: '',
-                        birthday: '',
-                        cell_number: '',
-                        civil_status_id: '',
-                        male_female: '',
-                        voter_status: 0,
-                        file_upload: '',
-                        block: "",
-                        lot: "",
-                        purok: "",
-                        street: "",
-                        household: "",
-                        relationship_to_owner: "",
-                        pet_details: "",
-                        house_and_lot_ownership: "",
-                        living_with_owner: "",
-                        id_type: '',
-                        renting: "",
-                    })
-                    setFiles([])
-                    setNewResident(null)
-                }
-                else {
-                    setLoading(false);
-                    setMessage(result.error_msg || 'An error occurred');
-                    setSuccess(false)
-                    setShowSuccess(true)
-                }
-            }
-            catch (error) {
-
-            }
-
+        } catch (error) {
+            setLoading(false);
+            setMessage("An error occurred while submitting the form.");
+            setShowSuccess(true);
         }
-
-    }
+    };    
 
 
 
@@ -1312,7 +1217,7 @@ export default function CreateAppointment() {
                     {resident.renting === 'Yes' && (
                         <div className="mt-3">
                             <p>
-                                Please upload the following documents:
+                                Please upload the following documents: <span class="required">(Required) </span>
                                 <ul>
                                     <li>Authorization Letter from the landlord indicating since when they started renting on the said address.</li>
                                     <li>Photocopy of identification of the owner with 3 signatures.</li>
@@ -1451,25 +1356,19 @@ export default function CreateAppointment() {
                             </>
                     </div>
 
-                    <div class="mb-3 d-flex flex-column">
+                    <div class="mb-3 mt-2">
                         <label class="form-label">Birthday</label>
-                        <span>{moment(resident.birthday).format('YYYY-MM-DD')}</span>
-                        <Calendar
-                            id='bdayinput'
-                            className="mt-3"
-                            value={resident.birthday}
-                            onChange={(v) => {
-                                // document.getElementById('bdayinput').style.border = '1px solid #dee2e6'
-
-                                setResident({
-                                    ...resident, ...{
-                                        birthday: moment(v).format("YYYY-MM-DD")
-                                    }
-                                })
-                                setStartDate(moment(v).format("YYYY-MM-DD"))
+                        <small className="ms-3">Format: yyyy/mm/dd</small>
+                        <input
+                            type="text"
+                            placeholder="YYYY/MM/DD"
+                            value={resident.birthday || ''}
+                            onChange={(val) => {
+                                const newDate = val.target.value;
+                                setResident({ ...resident, birthday: newDate });
                             }}
+                            class="form-control"
                         />
-
                     </div>
 
                     <div class="mb-3">
@@ -1653,6 +1552,7 @@ export default function CreateAppointment() {
                           </option>
                           <option value="Voter’s ID">Voter’s ID</option>
                           <option value="Postal ID">Postal ID</option>
+                          <option value="TIN ID">TIN ID</option>
                           <option value="PhilHealth ID">PhilHealth ID</option>
                           <option value="Overseas Workers Welfare Administration (OWWA) ID">
                               Overseas Workers Welfare Administration (OWWA) ID
@@ -1663,8 +1563,30 @@ export default function CreateAppointment() {
                       </select>
                     </div>
 
+                    <div className="mt-3">
+                        <div>
+                            <label>Upload your Valid ID (must show an address in Central Bicutan) <span class="required">(Required)</span></label>
+                        </div>
+                        <div
+                            {...getRootProps()}
+                            className="file-drop-zone"
+                        >
+                            <input {...getInputProps()} />
+                            {isDragActive ? (
+                                <p className="file-drop-text">Drop the files here...</p>
+                            ) : (
+                                <p className="file-drop-text">Drag and drop files here, or <span className="upload-link">click to upload</span></p>
+                            )}
+                        </div>
+                        {uploadMessage && (
+                            <div className="upload-success-message mt-2">
+                                <p>{uploadMessage}</p>
+                            </div>
+                        )}
+                    </div>
+
                     <div className="mt-4 mb-4">
-                        <label className="form-label d-block mb-2">Capture a Selfie with Your Valid ID</label>
+                        <label className="form-label d-block mb-2">Capture a Selfie with Your Valid ID <span class="required">(Required)</span></label>
                         {/* Camera Capture Button */}
                         {!isCameraOpen && (
                             <button

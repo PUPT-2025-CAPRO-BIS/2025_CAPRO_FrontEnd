@@ -4019,30 +4019,29 @@ export default function Official({ params }) {
                       />
                     </div>
 
-                    <div class="mb-3 d-flex flex-column">
-                      <label class="form-label">Birthday</label>
+                    <div className="mb-3 d-flex flex-column">
+                      <label className="form-label">Birthday</label>
                       <span className="fw-bold">{moment(resident.birthday).format('YYYY-MM-DD')}</span>
 
                       {!isViewing &&
-                        <Calendar
-                          id='bdayinput'
-                          className="mt-3"
+                        <input
+                          id="bdayinput"
+                          type="date"
+                          className="mt-3 form-control"
                           disabled={isViewing}
-                          value={resident.birthday}
-                          onChange={(v) => {
-                            // document.getElementById('bdayinput').style.border = '1px solid #dee2e6'
-
+                          value={moment(resident.birthday).format("YYYY-MM-DD")}
+                          onChange={(e) => {
+                            // Update the resident's birthday
                             setResident({
-                              ...resident, ...{
-                                birthday: moment(v).format("YYYY-MM-DD")
-                              }
-                            })
-                            setStartDate(moment(v).format("YYYY-MM-DD"))
+                              ...resident, 
+                              birthday: moment(e.target.value).format("YYYY-MM-DD")
+                            });
+                            setStartDate(moment(e.target.value).format("YYYY-MM-DD"));
                           }}
                         />
                       }
-
                     </div>
+
 
                     <div class="mb-3">
                       <label class="form-label">Civil Status</label>
@@ -4068,7 +4067,7 @@ export default function Official({ params }) {
 
                     </div>
 
-                    {/* Has Pets */}
+                    {/* Has Pets 
                     <div class="mb-3">
                       <label class="form-label">Has Pets (Specify Type and Number - if none N/A)</label>
                       <input
@@ -4091,13 +4090,13 @@ export default function Official({ params }) {
                         class="form-control"
                         placeholder="e.g., 2 Dogs, 1 Cat"
                       />
-                    </div>
+                    </div>*/}
 
-                    {/* Pets Vaccinated (Yes - When / No) */}
+                    {/* Pets Vaccinated (Yes - When / No) 
                     <div class="mb-3">
-                      <label class="form-label">Pets Vaccinated (Yes - When / No)</label>
+                      <label class="form-label">Pets Vaccinated (Yes - When / No)</label>*/}
                       
-                      {/* Check if we are in view mode */}
+                      {/* Check if we are in view mode 
                       {isViewing ? (
                         // Display concatenated value directly when viewing
                         <input
@@ -4106,9 +4105,9 @@ export default function Official({ params }) {
                           class="form-control"
                         />
                       ) : (
-                        // Show dropdown and date input for editing/adding a resident
-                        <>
-                          {/* Dropdown for Yes/No */}
+                        // Show dropdown and date input for editing/adding a resident 
+                        <>*/}
+                          {/* Dropdown for Yes/No 
                           <select
                             value={
                               resident.pet_vaccination? (resident.pet_vaccination.startsWith('Yes') 
@@ -4136,9 +4135,9 @@ export default function Official({ params }) {
                             <option value="">Select</option>
                             <option value="Yes">Yes</option>
                             <option value="No">No</option>
-                          </select>
+                          </select>*/}
 
-                          {/* Show date input if "Yes" is selected */}
+                          {/* Show date input if "Yes" is selected 
                           {resident.pet_vaccination && resident.pet_vaccination.startsWith('Yes') && (
                             <div class="mb-3 mt-2">
                               <label class="form-label">Vaccination Date</label>
@@ -4161,7 +4160,7 @@ export default function Official({ params }) {
                           )}
                         </>
                       )}
-                    </div>
+                    </div>*/}
 
                     <div class="mb-3">
                       <label class="form-label">Email</label>

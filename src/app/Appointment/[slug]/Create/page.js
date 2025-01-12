@@ -199,6 +199,12 @@ export default function CreateAppointment() {
         setIsCameraOpen(false); // Close the camera after capturing
     };
 
+    const [cameraMode, setCameraMode] = useState("user");
+
+    const toggleCameraMode = () => {
+        setCameraMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
+    };
+ 
 
     const getDocumentList = async () => {
         let data = {
@@ -290,7 +296,7 @@ export default function CreateAppointment() {
         if (resident.street === "") missingFields.push("Street");
         if (resident.household === "") missingFields.push("Household");
         if (resident.relationship_to_owner === "") missingFields.push("Relationship to Owner");
-        if (resident.pet_details === "") missingFields.push("Pet Details");
+        // if (resident.pet_details === "") missingFields.push("Pet Details");
         if (resident.id_type === "") missingFields.push("ID Type");
         if (resident.house_and_lot_ownership === "") missingFields.push("House and Lot Ownership");
         if (resident.living_with_owner === "") missingFields.push("Living with Owner");
@@ -640,24 +646,18 @@ export default function CreateAppointment() {
                                   />
                               </div>
             
-                              <div className="d-flex flex-column mt-3">
-                                  <label>Birthday</label>
-                                  <input
-                                      value={birthday || ''}
-                                      onFocus={() => setShowCalendar(true)}
-                                      className="form-control rounded mt-2"
-                                      placeholder="YYYY-MM-DD"
-                                      readOnly
-                                  />
-                                  {showCalendar && (
-                                      <div className="w-100 mt-3">
-                                          <Calendar
-                                              onChange={handleBirthdateChange}
-                                              value={birthday ? new Date(birthday) : new Date()}
-                                              className="calendar-component"
-                                          />
-                              </div>
-                                        )}
+                                <div className="d-flex flex-column mt-3">
+                                <label>Birthday</label>
+                                    <input
+                                        type="date"  // Changed to a date input field
+                                        value={birthday || ''}
+                                        onChange={(e) => {
+                                        const newDate = e.target.value;
+                                        setBirthday(newDate);  // Update birthday state
+                                        }}
+                                        className="form-control rounded mt-2"
+                                        placeholder="YYYY-MM-DD"
+                                    />
                             </div>
                             <button
                               className="btn btn-link mt-3 p-0 text-primary"
@@ -706,22 +706,17 @@ export default function CreateAppointment() {
                               <div className="d-flex flex-column mt-3">
                                 <label>Birthday</label>
                                 <input
-                                  value={birthday || ''}
-                                  onFocus={() => setShowCalendar(true)}
-                                  className="form-control rounded mt-2"
-                                  placeholder="YYYY-MM-DD"
-                                  readOnly
+                                    type="date"  // Changed to a date input field
+                                    value={birthday || ''}
+                                    onChange={(e) => {
+                                    const newDate = e.target.value;
+                                    setBirthday(newDate);  // Update birthday state
+                                    }}
+                                    className="form-control rounded mt-2"
+                                    placeholder="YYYY-MM-DD"
                                 />
-                                {showCalendar && (
-                                  <div className="w-100 mt-3">
-                                    <Calendar
-                                      onChange={handleBirthdateChange}
-                                      value={birthday ? new Date(birthday) : new Date()}
-                                      className="calendar-component"
-                                    />
-                                  </div>
-                                )}
-                              </div>
+                                </div>
+
 
                               <div className="d-flex flex-column mt-3">
                                 <label>Old Email</label>
@@ -909,7 +904,7 @@ export default function CreateAppointment() {
                             )}
             
                             <div className="mt-5">
-                                <p>
+                                <p style={{ fontSize: '15px' }}>
                                     Not registered yet?{' '}
                                     <a 
                                       className="text-primary" 
@@ -1293,32 +1288,32 @@ export default function CreateAppointment() {
 
                     </div>
 
-                    {/* Pet Details */}
+                    {/* Pet Details
                     <div class="mb-3">
-                      <label class="form-label">Has Pets (Specify Type and Number - if none N/A)</label>
-                      <input
+                        <label class="form-label">Has Pets (Specify Type and Number - if none N/A)</label>
+                        <input
                         id='haspetsinput'
                         value={resident.pet_details}
                         onChange={(val) => {
-                          if (val.target.value != "") {
+                            if (val.target.value != "") {
                             document.getElementById('haspetsinput').style.border = '1px solid #dee2e6'
-                          }
-                          else {
+                            }
+                            else {
                             document.getElementById('haspetsinput').style.border = '1px solid red'
-                          }
-                          setResident({
+                            }
+                            setResident({
                             ...resident, ...{ 
                             pet_details: val.target.value
                             }
-                          });
+                            });
                         }}
                         class="form-control"
                         placeholder="e.g., 2 Dogs, 1 Cat"
-                      />
-                    </div>
+                        />
+                    </div> */}
 
                     {/* Pet Vaccination */}
-                    <div class="mb-3">
+                    {/* <div class="mb-3">
                         <label class="form-label">Pets Vaccinated (Yes - When / No)</label>
                             <>
                                 <select
@@ -1354,22 +1349,23 @@ export default function CreateAppointment() {
                                     </div>
                                 )}
                             </>
-                    </div>
+                    </div> */}
 
-                    <div class="mb-3 mt-2">
-                        <label class="form-label">Birthday</label>
+                    <div className="mb-3 mt-2">
+                        <label className="form-label">Birthday</label>
                         <small className="ms-3">Format: yyyy/mm/dd</small>
                         <input
-                            type="text"
+                            type="date"  // Changed to date input
                             placeholder="YYYY/MM/DD"
-                            value={resident.birthday || ''}
-                            onChange={(val) => {
-                                const newDate = val.target.value;
-                                setResident({ ...resident, birthday: newDate });
+                            value={resident.birthday ? moment(resident.birthday).format('YYYY-MM-DD') : ''}
+                            onChange={(e) => {
+                            const newDate = e.target.value;
+                            setResident({ ...resident, birthday: newDate });
                             }}
-                            class="form-control"
-                        />
+                            className="form-control"
+                    />
                     </div>
+
 
                     <div class="mb-3">
                         <label class="form-label">Phone number</label>
@@ -1607,7 +1603,7 @@ export default function CreateAppointment() {
                                     videoConstraints={{
                                         width: 640,
                                         height: 480,
-                                        facingMode: "user", // Change to "environment" for rear camera
+                                        facingMode: cameraMode, // Change to "environment" for rear camera
                                     }}
                                     className="custom-webcam"
                                 />
@@ -1617,6 +1613,12 @@ export default function CreateAppointment() {
                                         onClick={captureImage}
                                     >
                                         Capture Photo
+                                    </button>
+
+                                    <button 
+                                        className="btn btn-warning" 
+                                        onClick={toggleCameraMode}>
+                                        Switch Camera
                                     </button>
 
                                     <button

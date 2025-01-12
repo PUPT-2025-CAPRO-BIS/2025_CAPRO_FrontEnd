@@ -1524,7 +1524,8 @@ export default function CreateAppointment() {
                           onChange={(e) =>
                               setResident({
                                   ...resident,
-                                  id_type: e.target.value,
+                                  id_type: e.target.value === "Others" ? resident.other_id_type || "Others" : e.target.value,
+                                  other_id_type: e.target.value ===  "Others" ? resident.other_id_type || "" : "",
                               })
                           }
                       >
@@ -1554,9 +1555,30 @@ export default function CreateAppointment() {
                               Overseas Workers Welfare Administration (OWWA) ID
                           </option>
                           <option value="OFW ID">OFW ID</option>
+                          <option value="PWD ID">Person With Disability (PWD) ID</option>
                           <option value="Barangay ID">Barangay ID</option>
                           <option value="Student ID">Student ID</option>
+                          <option value="Others">Others</option>
                       </select>
+
+                      {resident.id_type === "Others" || resident.id_type === resident.other_id_type ? (
+                        <div className="mt-3">
+                        <label className="form-label">Specify Other ID</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={resident.other_id_type || ''}
+                            onChange={(e) =>
+                            setResident({
+                                ...resident,
+                                id_type: e.target.value, // Update id_type with the input value
+                                other_id_type: e.target.value,
+                            })
+                            }
+                            placeholder="Enter the ID type"
+                        />
+                        </div>
+                    ) : null}
                     </div>
 
                     <div className="mt-3">
